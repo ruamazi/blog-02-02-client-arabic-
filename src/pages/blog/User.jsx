@@ -77,7 +77,7 @@ const User = () => {
      src={profileUser.profilePicture || profilePlaceHolder}
      alt="Profile"
      className={`${
-      profileUser.role === "superAdmin" ? "border-amber-500" : ""
+      profileUser?.role === "superAdmin" ? "border-amber-500" : ""
      } w-24 h-24 rounded-full object-cover border-4`}
     />
 
@@ -91,10 +91,10 @@ const User = () => {
     <div className="mt-5 flex flex-col w-40 gap-2 text-center">
      <h2
       className={`${
-       profileUser.role === "superAdmin" ? "text-amber-400" : ""
+       profileUser?.role === "superAdmin" ? "text-amber-400" : ""
       } text-xl`}
      >
-      {profileUser.role}
+      {profileUser?.role}
      </h2>
      {currentUser?.role != "user" && (
       <button
@@ -106,7 +106,7 @@ const User = () => {
        {profileUser.role === "user" ? "اجعل العضو أدمن" : "حذف صلاحية الأدمن"}
       </button>
      )}
-     {currentUser.role === "superAdmin" && (
+     {currentUser?.role === "superAdmin" && (
       <button
        onClick={() => handleDeleteUser(profileUser._id)}
        disabled={deletingUser}
