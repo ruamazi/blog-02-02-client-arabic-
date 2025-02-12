@@ -36,8 +36,8 @@ const BlogsByTag = () => {
  return (
   <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
    <div className="container mx-auto">
-    <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-     Blogs Tagged with: <span className="text-blue-500">{tag}</span>
+    <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+     منشورات تتضمن هاشتاغ: <span className="text-blue-500">{tag}</span>
     </h1>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
      {blogs.map((blog) => (
