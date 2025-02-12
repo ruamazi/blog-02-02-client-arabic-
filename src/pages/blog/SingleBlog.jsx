@@ -61,7 +61,7 @@ const SingleBlog = () => {
     return (
      <div key={index} className="my-2">
       <iframe
-       className="max-w-full w-[500px] h-[350px] mx-auto"
+       className="w-full max-w-[650px] h-[350px] mx-auto"
        src={`https://www.youtube.com/embed/${videoId}`}
        title="YouTube video player"
        frameBorder="0"

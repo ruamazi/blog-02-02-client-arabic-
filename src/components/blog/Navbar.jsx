@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { BiLogOut } from "react-icons/bi";
 import { BLOG_NAME } from "../../../constants";
 import { RiLoginBoxFill } from "react-icons/ri";
+import { MdOutlineCreate } from "react-icons/md";
 
 const Navbar = () => {
  const { currentUser, setCurrentUser } = useAuth();
@@ -26,9 +27,9 @@ const Navbar = () => {
       <>
        <Link
         to="/publish"
-        className="text-gray-800 dark:text-white hover:text-gray-600"
+        className="text-gray-800 dark:text-white hover:text-purple-300 flex items-center justify-center gap-1 hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
        >
-        قم بالنشر
+        انشر <MdOutlineCreate size={20} />
        </Link>
        <div className="flex items-center space-x-2">
         <img
@@ -42,7 +43,7 @@ const Navbar = () => {
        </div>
        <button
         onClick={handleLogout}
-        className="flex items-center justify-center gap-1 text-gray-800 dark:text-white hover:text-gray-600 cursor-pointer"
+        className="flex items-center justify-center gap-1 text-gray-800 dark:text-white hover:text-gray-600 cursor-pointer hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
        >
         تسجيل الخروج
         <BiLogOut className="rotate-x-15 -rotate-y-30" size={20} />
