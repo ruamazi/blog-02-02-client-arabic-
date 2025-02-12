@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export const apiUrl =
  import.meta.env.VITE_ENV === "development"
   ? "http://localhost:3030"
-  : "https://mern-blog-api-02-02.onrender.com";
+  : "https://blog-02-02-api-arabic.onrender.com";
 
 const Register = () => {
  const [username, setUsername] = useState("");
