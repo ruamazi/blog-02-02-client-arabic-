@@ -11,6 +11,13 @@ import { FaLock, FaLockOpen } from "react-icons/fa6";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import ConfirmationModal from "../../components/blog/ConfirmationModal";
 import Line from "../../components/Line";
+import {
+ AiFillLike,
+ AiFillDislike,
+ AiOutlineDislike,
+ AiOutlineLike,
+} from "react-icons/ai";
+import { dateFormatter } from "../../functions/dateFormatter";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -24,6 +31,7 @@ const SingleBlog = () => {
  const [showDeleteBlogModal, setShowDeleteBlogModal] = useState(false);
  const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
  const [commentToDelete, setCommentToDelete] = useState(null);
+ const [likingLoading, setLikingLoading] = useState(false);
  const navigate = useNavigate();
  const token = localStorage.getItem("token");
 
@@ -140,6 +148,29 @@ const SingleBlog = () => {
   }
  };
 
+ const handleLikeDislike = async (action) => {
+  setLikingLoading(true);
+  try {
+   const resp = await axios.put(
+    `${apiUrl}/api/blogs/${action}/${blog._id}`,
+    {},
+    {
+     headers: {
+      Authorization: `Bearer ${token}`,
+     },
+    }
+   );
+   setBlog(resp.data);
+  } catch (error) {
+   console.log(error);
+  } finally {
+   setLikingLoading(false);
+  }
+ };
+
+ const likedByCurrentUser = blog?.likedBy?.includes(currentUser?._id);
+ const dislikedByCurrentUser = blog?.dislikedBy?.includes(currentUser?._id);
+
  if (!blog) return <Loader />;
 
  return (
@@ -152,6 +183,7 @@ const SingleBlog = () => {
      <p className="text-gray-700 text-xl dark:text-gray-300 mb-4">
       {renderContentWithMedia(blog.content)}
      </p>
+     <p className="text-end"> {dateFormatter(blog.createdAt)} </p>
      <Link
       to={`/user/${blog.author.username}`}
       className="flex items-center mb-6 gap-2 bg-black/30 w-fit py-2 px-3 rounded-xl hover:bg-black/70"
@@ -165,6 +197,42 @@ const SingleBlog = () => {
        {blog.author.username}
       </span>
      </Link>
+     {currentUser && (
+      <div className="flex items-center justify-center gap-4 w-fit my-4">
+       <button
+        onClick={() => handleLikeDislike("like")}
+        className=" relative cursor-pointer hover:text-blue-400"
+        disabled={likingLoading}
+       >
+        {blog.likedBy.length > 0 && (
+         <span className="text-[0.7rem] font-bold absolute right-[-1px] top-[-8px]">
+          {blog.likedBy.length}
+         </span>
+        )}
+        {likedByCurrentUser ? (
+         <AiFillLike className="text-blue-400" size={24} />
+        ) : (
+         <AiOutlineLike size={24} />
+        )}
+       </button>
+       <button
+        onClick={() => handleLikeDislike("dislike")}
+        className=" relative cursor-pointer hover:text-red-400"
+        disabled={likingLoading}
+       >
+        {blog.dislikedBy.length > 0 && (
+         <span className="text-[0.7rem] font-bold absolute left-[-3px] bottom-[-10px]">
+          {blog.dislikedBy.length}
+         </span>
+        )}
+        {dislikedByCurrentUser ? (
+         <AiFillDislike className="text-red-400" size={24} />
+        ) : (
+         <AiOutlineDislike size={24} />
+        )}
+       </button>
+      </div>
+     )}
      {blog?.tags[0] != "" &&
       blog.tags.map((each, i) => (
        <Link
