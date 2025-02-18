@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { apiUrl } from "./Register";
-import { profilePlaceHolder } from "../../components/blog/BlogCard";
-import { MdDelete } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/blog/Loader";
-import { FaLock, FaLockOpen } from "react-icons/fa6";
-import { MdOutlineDeleteOutline } from "react-icons/md";
 import ConfirmationModal from "../../components/blog/ConfirmationModal";
 import Line from "../../components/Line";
-import {
- AiFillLike,
- AiFillDislike,
- AiOutlineDislike,
- AiOutlineLike,
-} from "react-icons/ai";
 import { dateFormatter } from "../../functions/dateFormatter";
+import {
+ deleteBlog,
+ deleteComment,
+ fetchBlog,
+ likeDislike,
+ makeBlogPrivate,
+ postComment,
+ toggleComments,
+} from "../../functions/api";
+import BlogAuthor from "../../components/blog/BlogAuthor";
+import LikeDislikeButtons from "../../components/blog/LikeDislikeBtns";
+import CommentList from "../../components/blog/CommentList";
+import CommentForm from "../../components/blog/CommentForm";
+import BlogActionBtns from "../../components/blog/BlogActionBtns";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -33,18 +34,87 @@ const SingleBlog = () => {
  const [commentToDelete, setCommentToDelete] = useState(null);
  const [likingLoading, setLikingLoading] = useState(false);
  const navigate = useNavigate();
- const token = localStorage.getItem("token");
 
  useEffect(() => {
-  fetchBlog();
+  fetchBlogData();
  }, [id, deletingComment]);
 
- const fetchBlog = async () => {
+ const fetchBlogData = async () => {
   try {
-   const response = await axios.get(`${apiUrl}/api/blogs/${id}`);
-   setBlog(response.data);
+   const blogData = await fetchBlog(id);
+   setBlog(blogData);
   } catch (err) {
    setError("Failed to fetch blog");
+  }
+ };
+
+ const handleCommentSubmit = async (e) => {
+  e.preventDefault();
+  setCommenting(true);
+  try {
+   await postComment(comment, id);
+   setComment("");
+   fetchBlogData();
+  } catch (err) {
+   setError("Failed to post comment");
+  } finally {
+   setCommenting(false);
+  }
+ };
+
+ const handleDeleteBlog = async () => {
+  setDeletingBlog(true);
+  try {
+   await deleteBlog(blog._id);
+   navigate("/");
+  } catch (error) {
+   console.log(error);
+  } finally {
+   setDeletingBlog(false);
+   setShowDeleteBlogModal(false);
+  }
+ };
+
+ const handleDeleteComment = async (commentId) => {
+  setDeletingComment(true);
+  try {
+   await deleteComment(commentId);
+   fetchBlogData();
+  } catch (error) {
+   console.log(error);
+  } finally {
+   setDeletingComment(false);
+   setShowDeleteCommentModal(false);
+  }
+ };
+
+ const handleBlockComments = async () => {
+  try {
+   const updatedBlog = await toggleComments(blog._id);
+   setBlog(updatedBlog);
+  } catch (error) {
+   console.log(error);
+  }
+ };
+
+ const handleLikeDislike = async (action) => {
+  setLikingLoading(true);
+  try {
+   const updatedBlog = await likeDislike(action, blog._id);
+   setBlog(updatedBlog);
+  } catch (error) {
+   console.log(error);
+  } finally {
+   setLikingLoading(false);
+  }
+ };
+
+ const handlePrivate = async (blogId) => {
+  try {
+   const updateBlog = await makeBlogPrivate(blogId);
+   setBlog(updateBlog);
+  } catch (error) {
+   console.log(error);
   }
  };
 
@@ -84,90 +154,6 @@ const SingleBlog = () => {
   });
  };
 
- const handleCommentSubmit = async (e) => {
-  e.preventDefault();
-  setCommenting(true);
-  try {
-   await axios.post(
-    `${apiUrl}/api/comments`,
-    { content: comment, blogId: id },
-    { headers: { Authorization: `Bearer ${token}` } }
-   );
-   setComment("");
-   fetchBlog();
-  } catch (err) {
-   setError("Failed to post comment");
-  } finally {
-   setCommenting(false);
-  }
- };
-
- const handleDeleteBlog = async () => {
-  setDeletingBlog(true);
-  try {
-   await axios.delete(`${apiUrl}/api/blogs/${blog._id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-   });
-   navigate("/");
-  } catch (error) {
-   console.log(error);
-  } finally {
-   setDeletingBlog(false);
-   setShowDeleteBlogModal(false);
-  }
- };
-
- const handleDeleteComment = async (commentId) => {
-  setDeletingComment(true);
-  try {
-   await axios.delete(`${apiUrl}/api/comments/${commentId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-   });
-  } catch (error) {
-   console.log(error);
-  } finally {
-   setDeletingComment(false);
-   setShowDeleteCommentModal(false);
-  }
- };
-
- const handleBlockComments = async () => {
-  try {
-   const resp = await axios.patch(
-    `${apiUrl}/api/blogs/${blog._id}/toggle-comments`,
-    {},
-    {
-     headers: {
-      Authorization: `Bearer ${token}`,
-     },
-    }
-   );
-   setBlog(resp.data.blog);
-  } catch (error) {
-   console.log(error);
-  }
- };
-
- const handleLikeDislike = async (action) => {
-  setLikingLoading(true);
-  try {
-   const resp = await axios.put(
-    `${apiUrl}/api/blogs/${action}/${blog._id}`,
-    {},
-    {
-     headers: {
-      Authorization: `Bearer ${token}`,
-     },
-    }
-   );
-   setBlog(resp.data);
-  } catch (error) {
-   console.log(error);
-  } finally {
-   setLikingLoading(false);
-  }
- };
-
  const likedByCurrentUser = blog?.likedBy?.includes(currentUser?._id);
  const dislikedByCurrentUser = blog?.dislikedBy?.includes(currentUser?._id);
 
@@ -184,54 +170,15 @@ const SingleBlog = () => {
       {renderContentWithMedia(blog.content)}
      </p>
      <p className="text-end"> {dateFormatter(blog.createdAt)} </p>
-     <Link
-      to={`/user/${blog.author.username}`}
-      className="flex items-center mb-6 gap-2 bg-black/30 w-fit py-2 px-3 rounded-xl hover:bg-black/70"
-     >
-      <img
-       src={blog.author.profilePicture || profilePlaceHolder}
-       alt="Author"
-       className="w-10 h-10 rounded-full mr-2 object-cover"
-      />
-      <span className="text-gray-700 dark:text-gray-400">
-       {blog.author.username}
-      </span>
-     </Link>
+     <BlogAuthor author={blog.author} />
      {currentUser && (
-      <div className="flex items-center justify-center gap-4 w-fit my-4">
-       <button
-        onClick={() => handleLikeDislike("like")}
-        className=" relative cursor-pointer hover:text-blue-400"
-        disabled={likingLoading}
-       >
-        {blog.likedBy.length > 0 && (
-         <span className="text-[0.7rem] font-bold absolute right-[-1px] top-[-8px]">
-          {blog.likedBy.length}
-         </span>
-        )}
-        {likedByCurrentUser ? (
-         <AiFillLike className="text-blue-400" size={24} />
-        ) : (
-         <AiOutlineLike size={24} />
-        )}
-       </button>
-       <button
-        onClick={() => handleLikeDislike("dislike")}
-        className=" relative cursor-pointer hover:text-red-400"
-        disabled={likingLoading}
-       >
-        {blog.dislikedBy.length > 0 && (
-         <span className="text-[0.7rem] font-bold absolute left-[-3px] bottom-[-10px]">
-          {blog.dislikedBy.length}
-         </span>
-        )}
-        {dislikedByCurrentUser ? (
-         <AiFillDislike className="text-red-400" size={24} />
-        ) : (
-         <AiOutlineDislike size={24} />
-        )}
-       </button>
-      </div>
+      <LikeDislikeButtons
+       blog={blog}
+       likedByCurrentUser={likedByCurrentUser}
+       dislikedByCurrentUser={dislikedByCurrentUser}
+       handleLikeDislike={handleLikeDislike}
+       likingLoading={likingLoading}
+      />
      )}
      {blog?.tags[0] != "" &&
       blog.tags.map((each, i) => (
@@ -246,95 +193,35 @@ const SingleBlog = () => {
      {currentUser &&
       (currentUser?._id === blog?.author._id ||
        currentUser?.role !== "user") && (
-       <div className="flex gap-4 w-full my-2 p-2 flex-wrap">
-        <button
-         disabled={deletingBlog}
-         onClick={() => setShowDeleteBlogModal(true)}
-         className="flex items-center gap-1 bg-red-400 px-2 hover:bg-red-500 cursor-pointer"
-        >
-         {deletingBlog ? "جاري الحذف" : "حذف"} <MdDelete size={20} />
-        </button>
-        <button
-         onClick={() => navigate(`/update-blog/${blog._id}`)}
-         className="flex items-center gap-1 bg-blue-500 px-2 hover:bg-blue-600 cursor-pointer"
-        >
-         تعديل <CiEdit size={20} />
-        </button>
-        <button
-         onClick={handleBlockComments}
-         className="flex items-center gap-1 bg-gray-500 px-2 hover:bg-gray-600 cursor-pointer"
-        >
-         {blog.commentsEnabled ? "غلق التعليقات" : "فتح التعليقات"}
-         {blog.commentsEnabled ? (
-          <FaLockOpen size={18} />
-         ) : (
-          <FaLock size={18} />
-         )}
-        </button>
-       </div>
+       <BlogActionBtns
+        blog={blog}
+        setShowDeleteBlogModal={setShowDeleteBlogModal}
+        deletingBlog={deletingBlog}
+        handleBlockComments={handleBlockComments}
+        showDeleteCommentModal={showDeleteBlogModal}
+        handlePrivate={handlePrivate}
+       />
       )}
 
      <Line />
      <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white mt-5">
       التعليقات
      </h2>
-     {blog.comments.map((comment) => (
-      <div
-       key={comment._id}
-       className="m-2 bg-black/30 p-2 rounded-xl shadow max-w-4xl mx-auto"
-      >
-       <Link
-        to={`/user/${comment.author?.username}`}
-        className="flex items-center mb-2 bg-black/30 w-fit px-2 py-1 rounded-xl gap-2 hover:bg-black/70"
-       >
-        <img
-         src={comment.author?.profilePicture || profilePlaceHolder}
-         alt="Author"
-         className="w-8 h-8 rounded-full mr-2 object-cover"
-        />
-        <span className="text-gray-700 dark:text-gray-400">
-         {comment.author?.username}
-        </span>
-       </Link>
-       <div className="flex items-center justify-between">
-        <p className="text-gray-600 dark:text-white ml-10">{comment.content}</p>
+     <CommentList
+      comments={blog.comments}
+      currentUser={currentUser}
+      deletingComment={deletingComment}
+      setShowDeleteCommentModal={setShowDeleteCommentModal}
+      setCommentToDelete={setCommentToDelete}
+     />
 
-        {currentUser &&
-         (currentUser?._id === blog?.author._id ||
-          currentUser?.role !== "user" ||
-          currentUser?._id === comment.author._id) && (
-          <button
-           onClick={() => {
-            setCommentToDelete(comment._id);
-            setShowDeleteCommentModal(true);
-           }}
-           disabled={deletingComment}
-           className="cursor-pointer text-red-400 hover:text-red-500"
-          >
-           <MdOutlineDeleteOutline size={20} />
-          </button>
-         )}
-       </div>
-      </div>
-     ))}
      {currentUser && blog.commentsEnabled && (
-      <form onSubmit={handleCommentSubmit} className="mt-6">
-       <textarea
-        placeholder="اكتب تعليق ..."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
-        rows="3"
-        required
-       />
-       <button
-        disabled={commenting}
-        type="submit"
-        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
-       >
-        {commenting ? "جاري التعليق ..." : "التعليق"}
-       </button>
-      </form>
+      <CommentForm
+       comment={comment}
+       setComment={setComment}
+       handleCommentSubmit={handleCommentSubmit}
+       commenting={commenting}
+      />
      )}
     </div>
    </div>

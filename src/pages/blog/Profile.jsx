@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { apiUrl } from "./Register";
-import { useAuth } from "../../context/AuthContext";
+import Loader from "../../components/blog/Loader";
+import { Link } from "react-router-dom";
+import BlogCard from "../../components/blog/BlogCard";
 
 const Profile = () => {
  const [profilePicture, setProfilePicture] = useState("");
  const [oldPassword, setOldPassword] = useState("");
  const [newPassword, setNewPassword] = useState("");
  const [message, setMessage] = useState("");
+ const [blogs, setBlogs] = useState([]);
+ const [totalPages, setTotalPages] = useState();
+ const [currentPage, setCurrentPage] = useState(1);
+ const [isLoading, setIsLoading] = useState(false);
  const token = localStorage.getItem("token");
 
  const handleProfileUpdate = async (e) => {
@@ -38,8 +44,33 @@ const Profile = () => {
   }
  };
 
+ useEffect(() => {
+  fetchBlogs();
+ }, [currentPage]);
+
+ const fetchBlogs = async () => {
+  setIsLoading(true);
+  try {
+   const response = await axios.get(
+    `${apiUrl}/api/blogs/user?page=${currentPage}&limit=10`,
+    {
+     headers: { Authorization: `Bearer ${token}` },
+    }
+   );
+   console.log(response);
+   setBlogs(response.data.blogs);
+   setTotalPages(response.data.totalPages);
+  } catch (err) {
+   console.error(err);
+  } finally {
+   setIsLoading(false);
+  }
+ };
+
+ if (isLoading) return <Loader />;
+
  return (
-  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4 ">
+  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4 flex flex-col gap-6 mx-auto container">
    <div className="container mx-auto">
     <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
      الصفحة الشخصية
@@ -89,6 +120,18 @@ const Profile = () => {
       </button>
      </form>
      {message && <p className="mt-4 text-green-500">{message}</p>}
+    </div>
+   </div>
+   <div>
+    <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+     منشوراتي
+    </h1>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+     {blogs?.map((blog) => (
+      <Link to={`/blog/${blog._id}`} key={blog._id}>
+       <BlogCard blog={blog} />
+      </Link>
+     ))}
     </div>
    </div>
   </div>
