@@ -17,7 +17,7 @@ const Navbar = () => {
  };
 
  return (
-  <nav className="bg-white dark:bg-gray-800 shadow-md">
+  <nav className="bg-white dark:bg-gray-800">
    <div className="container mx-auto px-4 py-2 flex justify-between items-center">
     <Link to="/" className="text-xl text-gray-800 dark:text-white font-light">
      {BLOG_NAME}
@@ -27,11 +27,11 @@ const Navbar = () => {
       <>
        <Link
         to="/publish"
-        className="text-gray-800 dark:text-white hover:text-purple-300 flex items-center justify-center gap-1 hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
+        className="text-gray-800 dark:text-white hover:text-blue-500 flex items-center justify-center gap-1 hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
        >
         انشر <MdOutlineCreate size={20} />
        </Link>
-       <div className="flex items-center space-x-2">
+       <div className="flex items-center space-x-2 bg-blue-500/30 hover:bg-blue-500/50 py-1 px-2 rounded-2xl">
         <img
          src={currentUser.profilePicture || profilePlaceHolder}
          alt="Profile"
@@ -53,13 +53,13 @@ const Navbar = () => {
       <>
        <Link
         to="/login"
-        className="text-gray-800 dark:text-white hover:text-gray-600 flex items-center gap-1 justify-center"
+        className="text-gray-800 dark:text-white hover:text-blue-500 flex items-center gap-1 justify-center"
        >
         <RiLoginBoxFill size={20} /> تسجيل الدخول
        </Link>
        <Link
         to="/register"
-        className="text-gray-800 dark:text-white hover:text-gray-600"
+        className="text-gray-800 dark:text-white hover:text-blue-500"
        >
         التسجيل
        </Link>

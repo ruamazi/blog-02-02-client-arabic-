@@ -7,6 +7,7 @@ const Publish = () => {
  const [title, setTitle] = useState("");
  const [content, setContent] = useState("");
  const [tags, setTags] = useState("");
+ const [isPrivate, setIsPrivate] = useState(false);
  const [error, setError] = useState("");
  const navigate = useNavigate();
 
@@ -16,7 +17,7 @@ const Publish = () => {
    const token = localStorage.getItem("token");
    await axios.post(
     `${apiUrl}/api/blogs`,
-    { title, content, tags: tags.split(",") },
+    { title, content, tags: tags.split(","), isPrivate },
     { headers: { Authorization: `Bearer ${token}` } }
    );
    navigate("/");
@@ -80,6 +81,35 @@ const Publish = () => {
         onChange={(e) => setTags(e.target.value)}
         className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
        />
+      </div>
+      <div className="mb-4 flex gap-1">
+       <label className="block text-gray-700 dark:text-gray-300">النشر:</label>
+       <div className="flex items-center gap-[2px]">
+        <input
+         type="radio"
+         id="public"
+         name="visibility"
+         value="true"
+         checked={isPrivate === false}
+         onChange={() => setIsPrivate(false)}
+         className="mr-2"
+        />
+        <label htmlFor="public" className=" text-gray-700 dark:text-gray-300">
+         عام
+        </label>
+        <input
+         type="radio"
+         id="private"
+         name="visibility"
+         value="false"
+         checked={isPrivate === true}
+         onChange={() => setIsPrivate(true)}
+         className="mr-2"
+        />
+        <label htmlFor="private" className="text-gray-700 dark:text-gray-300">
+         خاص
+        </label>
+       </div>
       </div>
       <button
        type="submit"
