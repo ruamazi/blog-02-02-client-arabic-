@@ -6,7 +6,7 @@ export const profilePlaceHolder =
 
 const BlogCard = ({ blog }) => {
  return (
-  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden">
    <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white transition-colors duration-200">
     {blog.title}
    </h2>

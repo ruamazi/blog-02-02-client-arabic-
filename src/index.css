@@ -6,6 +6,10 @@
 button {
  cursor: pointer;
 }
+.btndisabled:disabled {
+ cursor: not-allowed;
+ background-color: gray;
+}
 
 @layer base {
  body {

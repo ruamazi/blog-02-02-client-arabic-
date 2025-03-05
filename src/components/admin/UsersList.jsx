@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
+import ConfirmationModal from "../blog/ConfirmationModal";
 
 const UsersList = () => {
  const [users, setUsers] = useState([]);
@@ -38,7 +39,6 @@ const UsersList = () => {
 
  const handleDeleteUser = async (userId) => {
   if (!window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
-
   try {
    await axios.delete(`${apiUrl}/api/admin/users/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -84,14 +84,14 @@ const UsersList = () => {
         <div className="flex flex-col sm:flex-row gap-2">
          <button
           onClick={() => handleRoleUpdate(user._id)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm  btndisabled"
           disabled={user.role === "superAdmin"}
          >
           تغيير الدور
          </button>
          <button
           onClick={() => handleDeleteUser(user._id)}
-          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
+          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm btndisabled"
           disabled={user.role === "superAdmin"}
          >
           حذف

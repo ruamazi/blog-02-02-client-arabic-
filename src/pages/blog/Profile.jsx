@@ -131,18 +131,20 @@ const Profile = () => {
      {message && <p className="mt-4 text-green-500">{message}</p>}
     </div>
    </div>
-   <div>
-    <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-     منشوراتي
-    </h1>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-     {blogs?.map((blog) => (
-      <Link to={`/blog/${blog._id}`} key={blog._id}>
-       <BlogCard blog={blog} />
-      </Link>
-     ))}
+   {blogs.length > 0 && (
+    <div>
+     <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+      منشوراتي
+     </h1>
+     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {blogs?.map((blog) => (
+       <Link to={`/blog/${blog._id}`} key={blog._id}>
+        <BlogCard blog={blog} />
+       </Link>
+      ))}
+     </div>
     </div>
-   </div>
+   )}
   </div>
  );
 };

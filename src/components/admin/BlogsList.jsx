@@ -38,8 +38,9 @@ const BlogsList = () => {
  };
 
  const handleDeleteBlog = async (blogId) => {
+  if (!window.confirm("هل أنت متأكد؟")) return;
   try {
-   await axios.delete(`${apiUrl}/api/admin/blogs/${blogId}`, {
+   await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
     headers: { Authorization: `Bearer ${token}` },
    });
    fetchBlogs();
