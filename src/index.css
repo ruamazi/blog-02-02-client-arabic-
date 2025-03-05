@@ -1,13 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap");
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+button {
+ cursor: pointer;
+}
 
 @layer base {
  body {
   font-family: "Tajawal", "Roboto", serif;
   font-optical-sizing: auto;
-  background: #030014;
-  color: white;
+  @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-200;
  }
 }
 @keyframes float {

@@ -35,7 +35,7 @@ const Publish = () => {
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
      {error && <p className="text-red-500 mb-4">{error}</p>}
      <form onSubmit={handleSubmit}>
-      <div className="mb-4">
+      <div className="mb-4 ">
        <label
         htmlFor="title"
         className="block text-gray-700 dark:text-gray-300 mb-2"
@@ -45,9 +45,10 @@ const Publish = () => {
        <input
         type="text"
         id="title"
+        placeholder="اكتب عنوان المدونة ..."
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white placeholder:text-gray-400"
         required
        />
       </div>
@@ -60,9 +61,10 @@ const Publish = () => {
        </label>
        <textarea
         id="content"
+        placeholder="اكتب محتوى المدونة ..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white placeholder:text-gray-400"
         rows="6"
         required
        />
@@ -77,9 +79,10 @@ const Publish = () => {
        <input
         type="text"
         id="tags"
+        placeholder="اكتب هاشتاغ المدونة ..."
         value={tags}
         onChange={(e) => setTags(e.target.value)}
-        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white placeholder:text-gray-400"
        />
       </div>
       <div className="mb-4 flex gap-1">

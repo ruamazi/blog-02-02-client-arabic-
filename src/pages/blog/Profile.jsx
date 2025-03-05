@@ -4,8 +4,10 @@ import { apiUrl } from "./Register";
 import Loader from "../../components/blog/Loader";
 import { Link } from "react-router-dom";
 import BlogCard from "../../components/blog/BlogCard";
+import { useAuth } from "../../context/AuthContext";
 
 const Profile = () => {
+ const { currentUser } = useAuth();
  const [profilePicture, setProfilePicture] = useState("");
  const [oldPassword, setOldPassword] = useState("");
  const [newPassword, setNewPassword] = useState("");
@@ -57,7 +59,6 @@ const Profile = () => {
      headers: { Authorization: `Bearer ${token}` },
     }
    );
-   console.log(response);
    setBlogs(response.data.blogs);
    setTotalPages(response.data.totalPages);
   } catch (err) {
@@ -75,6 +76,14 @@ const Profile = () => {
     <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
      الصفحة الشخصية
     </h1>
+    {currentUser?.role !== "user" && (
+     <Link
+      to="/admin"
+      className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition duration-200 cursor-pointer mb-4 inline-block cursor-pointer"
+     >
+      لوحة التحكم
+     </Link>
+    )}
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
       تعديل المعلومات الشخصية

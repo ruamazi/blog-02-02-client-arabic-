@@ -10,7 +10,7 @@ const CommentForm = ({
     placeholder="اكتب تعليق ..."
     value={comment}
     onChange={(e) => setComment(e.target.value)}
-    className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+    className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white placeholder:text-gray-400"
     rows="3"
     required
    />
