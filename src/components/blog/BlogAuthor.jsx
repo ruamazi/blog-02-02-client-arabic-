@@ -13,9 +13,7 @@ const BlogAuthor = ({ author }) => {
     alt="Author"
     className="w-10 h-10 rounded-full mr-2 object-cover border-white border-2"
    />
-   <span className="text-gray-700 text-white dark:text-gray-400">
-    {author.username}
-   </span>
+   <span className=" text-white dark:text-gray-400">{author.username}</span>
   </Link>
  );
 };
