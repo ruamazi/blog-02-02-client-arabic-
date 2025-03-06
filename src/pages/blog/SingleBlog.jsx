@@ -19,6 +19,7 @@ import LikeDislikeButtons from "../../components/blog/LikeDislikeBtns";
 import CommentList from "../../components/blog/CommentList";
 import CommentForm from "../../components/blog/CommentForm";
 import BlogActionBtns from "../../components/blog/BlogActionBtns";
+import BackToHome from "../../components/BackToHome";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -160,88 +161,92 @@ const SingleBlog = () => {
  if (!blog) return <Loader />;
 
  return (
-  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200">
-   <div className="container mx-auto">
-    <h1 className="text-3xl font-bold mb-2 text-center text-gray-800 dark:text-white transition-colors duration-200">
-     {blog.title}
-    </h1>
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-200">
-     <p className="text-gray-700 dark:text-gray-300 text-xl mb-4 transition-colors duration-200">
-      {renderContentWithMedia(blog.content)}
-     </p>
-     <p className="text-end text-gray-600 dark:text-gray-400 transition-colors duration-200">
-      {dateFormatter(blog.createdAt)}
-     </p>
-     <BlogAuthor author={blog.author} />
-     {currentUser && (
-      <LikeDislikeButtons
-       blog={blog}
-       likedByCurrentUser={likedByCurrentUser}
-       dislikedByCurrentUser={dislikedByCurrentUser}
-       handleLikeDislike={handleLikeDislike}
-       likingLoading={likingLoading}
-      />
-     )}
-     {blog?.tags[0] != "" &&
-      blog.tags.map((each, i) => (
-       <Link
-        to={`/blogs/${each}`}
-        key={i}
-        className="mr-2 bg-slate-300 dark:bg-slate-500 px-2 py-1 text-[0.8rem]"
-       >
-        {each}
-       </Link>
-      ))}
-     {currentUser &&
-      (currentUser?._id === blog?.author._id ||
-       currentUser?.role !== "user") && (
-       <BlogActionBtns
+  <>
+   {" "}
+   <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200">
+    <div className="container mx-auto">
+     <h1 className="text-3xl font-bold mb-2 text-center text-gray-800 dark:text-white transition-colors duration-200">
+      {blog.title}
+     </h1>
+     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-200">
+      <p className="text-gray-700 dark:text-gray-300 text-xl mb-4 transition-colors duration-200">
+       {renderContentWithMedia(blog.content)}
+      </p>
+      <p className="text-end text-gray-600 dark:text-gray-400 transition-colors duration-200">
+       {dateFormatter(blog.createdAt)}
+      </p>
+      <BlogAuthor author={blog.author} />
+      {currentUser && (
+       <LikeDislikeButtons
         blog={blog}
-        setShowDeleteBlogModal={setShowDeleteBlogModal}
-        deletingBlog={deletingBlog}
-        handleBlockComments={handleBlockComments}
-        showDeleteCommentModal={showDeleteBlogModal}
-        handlePrivate={handlePrivate}
+        likedByCurrentUser={likedByCurrentUser}
+        dislikedByCurrentUser={dislikedByCurrentUser}
+        handleLikeDislike={handleLikeDislike}
+        likingLoading={likingLoading}
        />
       )}
+      {blog?.tags[0] != "" &&
+       blog.tags.map((each, i) => (
+        <Link
+         to={`/blogs/${each}`}
+         key={i}
+         className="mr-2 bg-slate-300 dark:bg-slate-500 px-2 py-1 text-[0.8rem]"
+        >
+         {each}
+        </Link>
+       ))}
+      {currentUser &&
+       (currentUser?._id === blog?.author._id ||
+        currentUser?.role !== "user") && (
+        <BlogActionBtns
+         blog={blog}
+         setShowDeleteBlogModal={setShowDeleteBlogModal}
+         deletingBlog={deletingBlog}
+         handleBlockComments={handleBlockComments}
+         showDeleteCommentModal={showDeleteBlogModal}
+         handlePrivate={handlePrivate}
+        />
+       )}
 
-     <Line />
-     <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white mt-5">
-      التعليقات
-     </h2>
-     <CommentList
-      comments={blog.comments}
-      currentUser={currentUser}
-      deletingComment={deletingComment}
-      setShowDeleteCommentModal={setShowDeleteCommentModal}
-      setCommentToDelete={setCommentToDelete}
-     />
-
-     {currentUser && blog.commentsEnabled && (
-      <CommentForm
-       comment={comment}
-       setComment={setComment}
-       handleCommentSubmit={handleCommentSubmit}
-       commenting={commenting}
+      <Line />
+      <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white mt-5">
+       التعليقات
+      </h2>
+      <CommentList
+       comments={blog.comments}
+       currentUser={currentUser}
+       deletingComment={deletingComment}
+       setShowDeleteCommentModal={setShowDeleteCommentModal}
+       setCommentToDelete={setCommentToDelete}
       />
-     )}
+
+      {currentUser && blog.commentsEnabled && (
+       <CommentForm
+        comment={comment}
+        setComment={setComment}
+        handleCommentSubmit={handleCommentSubmit}
+        commenting={commenting}
+       />
+      )}
+     </div>
     </div>
+
+    <ConfirmationModal
+     isOpen={showDeleteBlogModal}
+     onClose={() => setShowDeleteBlogModal(false)}
+     onConfirm={handleDeleteBlog}
+     message="انت على وشك حذف الموضوع, هل أنت متأكد ؟"
+    />
+
+    <ConfirmationModal
+     isOpen={showDeleteCommentModal}
+     onClose={() => setShowDeleteCommentModal(false)}
+     onConfirm={() => handleDeleteComment(commentToDelete)}
+     message="هل أنت متأكد من حذف التعليق ؟"
+    />
    </div>
-
-   <ConfirmationModal
-    isOpen={showDeleteBlogModal}
-    onClose={() => setShowDeleteBlogModal(false)}
-    onConfirm={handleDeleteBlog}
-    message="انت على وشك حذف الموضوع, هل أنت متأكد ؟"
-   />
-
-   <ConfirmationModal
-    isOpen={showDeleteCommentModal}
-    onClose={() => setShowDeleteCommentModal(false)}
-    onConfirm={() => handleDeleteComment(commentToDelete)}
-    message="هل أنت متأكد من حذف التعليق ؟"
-   />
-  </div>
+   <BackToHome />
+  </>
  );
 };
 

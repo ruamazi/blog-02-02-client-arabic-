@@ -5,6 +5,7 @@ import DashboardStats from "../../components/admin/DashboardStats";
 import UsersList from "../../components/admin/UsersList";
 import BlogsList from "../../components/admin/BlogsList";
 import Loader from "../../components/blog/Loader";
+import BackToHome from "../../components/BackToHome";
 
 const Dashboard = () => {
  const [stats, setStats] = useState(null);
@@ -32,52 +33,55 @@ const Dashboard = () => {
  if (loading) return <Loader />;
 
  return (
-  <div className="p-4 sm:p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
-   <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-white">
-    لوحة التحكم
-   </h1>
+  <>
+   <div className="p-4 sm:p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-white">
+     لوحة التحكم
+    </h1>
 
-   <div className="mb-4 sm:mb-6">
-    <div className="flex flex-wrap gap-2 sm:gap-4">
-     <button
-      onClick={() => setActiveTab("stats")}
-      className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
-       activeTab === "stats"
-        ? "bg-blue-500 text-white"
-        : "bg-gray-200 dark:bg-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
-      }`}
-     >
-      الإحصائيات
-     </button>
-     <button
-      onClick={() => setActiveTab("users")}
-      className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
-       activeTab === "users"
-        ? "bg-blue-500 text-white"
-        : "bg-gray-200 dark:bg-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
-      }`}
-     >
-      المستخدمون
-     </button>
-     <button
-      onClick={() => setActiveTab("blogs")}
-      className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
-       activeTab === "blogs"
-        ? "bg-blue-500 text-white"
-        : "bg-gray-200 dark:bg-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
-      }`}
-     >
-      المدونات
-     </button>
+    <div className="mb-4 sm:mb-6">
+     <div className="flex flex-wrap gap-2 sm:gap-4">
+      <button
+       onClick={() => setActiveTab("stats")}
+       className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
+        activeTab === "stats"
+         ? "bg-blue-500 text-white"
+         : "bg-gray-200 dark:bg-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
+       }`}
+      >
+       الإحصائيات
+      </button>
+      <button
+       onClick={() => setActiveTab("users")}
+       className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
+        activeTab === "users"
+         ? "bg-blue-500 text-white"
+         : "bg-gray-200 dark:bg-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
+       }`}
+      >
+       المستخدمون
+      </button>
+      <button
+       onClick={() => setActiveTab("blogs")}
+       className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
+        activeTab === "blogs"
+         ? "bg-blue-500 text-white"
+         : "bg-gray-200 dark:bg-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
+       }`}
+      >
+       المدونات
+      </button>
+     </div>
+    </div>
+
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+     {activeTab === "stats" && <DashboardStats stats={stats} />}
+     {activeTab === "users" && <UsersList />}
+     {activeTab === "blogs" && <BlogsList />}
     </div>
    </div>
-
-   <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-    {activeTab === "stats" && <DashboardStats stats={stats} />}
-    {activeTab === "users" && <UsersList />}
-    {activeTab === "blogs" && <BlogsList />}
-   </div>
-  </div>
+   <BackToHome />
+  </>
  );
 };
 

@@ -5,6 +5,7 @@ import Loader from "../../components/blog/Loader";
 import { Link } from "react-router-dom";
 import BlogCard from "../../components/blog/BlogCard";
 import { useAuth } from "../../context/AuthContext";
+import BackToHome from "../../components/BackToHome";
 
 const Profile = () => {
  const { currentUser } = useAuth();
@@ -71,81 +72,85 @@ const Profile = () => {
  if (isLoading) return <Loader />;
 
  return (
-  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4 flex flex-col gap-6 mx-auto container">
-   <div className="container mx-auto">
-    <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-     الصفحة الشخصية
-    </h1>
-    {currentUser?.role !== "user" && (
-     <Link
-      to="/admin"
-      className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition duration-200 cursor-pointer mb-4 inline-block cursor-pointer"
-     >
-      لوحة التحكم
-     </Link>
-    )}
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-     <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-      تعديل المعلومات الشخصية
-     </h2>
-     <form onSubmit={handleProfileUpdate} className="mb-6">
-      <input
-       type="text"
-       placeholder="رابط الصورة"
-       value={profilePicture}
-       onChange={(e) => setProfilePicture(e.target.value)}
-       className="w-full px-4 py-2 border rounded-lg mb-4 dark:bg-gray-700 dark:text-white"
-      />
-      <button
-       type="submit"
-       className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
-      >
-       حفظ
-      </button>
-     </form>
-     <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-      تغيير الرمز السري
-     </h2>
-     <form onSubmit={handlePasswordChange}>
-      <input
-       type="password"
-       placeholder="الرمز السري القديم"
-       value={oldPassword}
-       onChange={(e) => setOldPassword(e.target.value)}
-       className="w-full px-4 py-2 border rounded-lg mb-4 dark:bg-gray-700 dark:text-white"
-      />
-      <input
-       type="password"
-       placeholder="الرمز السري الجديد"
-       value={newPassword}
-       onChange={(e) => setNewPassword(e.target.value)}
-       className="w-full px-4 py-2 border rounded-lg mb-4 dark:bg-gray-700 dark:text-white"
-      />
-      <button
-       type="submit"
-       className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
-      >
-       حفظ الرمز السري الجديد
-      </button>
-     </form>
-     {message && <p className="mt-4 text-green-500">{message}</p>}
-    </div>
-   </div>
-   {blogs.length > 0 && (
-    <div>
+  <>
+   {" "}
+   <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4 flex flex-col gap-6 mx-auto container">
+    <div className="container mx-auto">
      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-      منشوراتي
+      الصفحة الشخصية
      </h1>
-     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {blogs?.map((blog) => (
-       <Link to={`/blog/${blog._id}`} key={blog._id}>
-        <BlogCard blog={blog} />
-       </Link>
-      ))}
+     {currentUser?.role !== "user" && (
+      <Link
+       to="/admin"
+       className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition duration-200 cursor-pointer mb-4 inline-block cursor-pointer"
+      >
+       لوحة التحكم
+      </Link>
+     )}
+     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+       تعديل المعلومات الشخصية
+      </h2>
+      <form onSubmit={handleProfileUpdate} className="mb-6">
+       <input
+        type="text"
+        placeholder="رابط الصورة"
+        value={profilePicture}
+        onChange={(e) => setProfilePicture(e.target.value)}
+        className="w-full px-4 py-2 border rounded-lg mb-4 dark:bg-gray-700 dark:text-white"
+       />
+       <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+       >
+        حفظ
+       </button>
+      </form>
+      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+       تغيير الرمز السري
+      </h2>
+      <form onSubmit={handlePasswordChange}>
+       <input
+        type="password"
+        placeholder="الرمز السري القديم"
+        value={oldPassword}
+        onChange={(e) => setOldPassword(e.target.value)}
+        className="w-full px-4 py-2 border rounded-lg mb-4 dark:bg-gray-700 dark:text-white"
+       />
+       <input
+        type="password"
+        placeholder="الرمز السري الجديد"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+        className="w-full px-4 py-2 border rounded-lg mb-4 dark:bg-gray-700 dark:text-white"
+       />
+       <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+       >
+        حفظ الرمز السري الجديد
+       </button>
+      </form>
+      {message && <p className="mt-4 text-green-500">{message}</p>}
      </div>
     </div>
-   )}
-  </div>
+    {blogs.length > 0 && (
+     <div>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+       منشوراتي
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+       {blogs?.map((blog) => (
+        <Link to={`/blog/${blog._id}`} key={blog._id}>
+         <BlogCard blog={blog} />
+        </Link>
+       ))}
+      </div>
+     </div>
+    )}
+   </div>
+   <BackToHome />
+  </>
  );
 };
 
