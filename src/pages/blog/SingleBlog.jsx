@@ -162,16 +162,15 @@ const SingleBlog = () => {
 
  return (
   <>
-   {" "}
    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200">
     <div className="container mx-auto">
      <h1 className="text-3xl font-bold mb-2 text-center text-gray-800 dark:text-white transition-colors duration-200">
       {blog.title}
      </h1>
      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-200">
-      <p className="text-gray-700 dark:text-gray-300 text-xl mb-4 transition-colors duration-200">
+      <div className="text-gray-700 dark:text-gray-300 text-xl mb-4 transition-colors duration-200">
        {renderContentWithMedia(blog.content)}
-      </p>
+      </div>
       <p className="text-end text-gray-600 dark:text-gray-400 transition-colors duration-200">
        {dateFormatter(blog.createdAt)}
       </p>

@@ -14,7 +14,7 @@ const Profile = () => {
  const [newPassword, setNewPassword] = useState("");
  const [message, setMessage] = useState("");
  const [blogs, setBlogs] = useState([]);
- const [totalPages, setTotalPages] = useState();
+ const [totalPages, setTotalPages] = useState(1);
  const [currentPage, setCurrentPage] = useState(1);
  const [isLoading, setIsLoading] = useState(false);
  const token = localStorage.getItem("token");
@@ -73,7 +73,6 @@ const Profile = () => {
 
  return (
   <>
-   {" "}
    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4 flex flex-col gap-6 mx-auto container">
     <div className="container mx-auto">
      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
@@ -82,7 +81,7 @@ const Profile = () => {
      {currentUser?.role !== "user" && (
       <Link
        to="/admin"
-       className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition duration-200 cursor-pointer mb-4 inline-block cursor-pointer"
+       className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-600/70 transition duration-200 cursor-pointer mb-4 inline-block"
       >
        لوحة التحكم
       </Link>
@@ -134,6 +133,7 @@ const Profile = () => {
       {message && <p className="mt-4 text-green-500">{message}</p>}
      </div>
     </div>
+
     {blogs.length > 0 && (
      <div>
       <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
@@ -146,6 +146,25 @@ const Profile = () => {
         </Link>
        ))}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+       <div className="flex justify-center mt-8">
+        {Array.from({ length: totalPages }, (_, i) => (
+         <button
+          key={i + 1}
+          onClick={() => setCurrentPage(i + 1)}
+          className={`mx-1 px-4 py-2 rounded ${
+           currentPage === i + 1
+            ? "bg-blue-500 text-white"
+            : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
+          }`}
+         >
+          {i + 1}
+         </button>
+        ))}
+       </div>
+      )}
      </div>
     )}
    </div>

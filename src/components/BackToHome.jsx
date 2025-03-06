@@ -5,8 +5,8 @@ const BackToHome = () => {
  return (
   <Link to={"/"} className="md:hidden mx-auto float-end m-2">
    <button
-    className="bg-blue-500 text-white px-2 py-1 rounded-lg
-    hover:bg-blue-600/70 transition duration-200 cursor-pointer flex
+    className="bg-slate-600 text-white px-2 py-1 rounded-lg
+    hover:bg-slate-700 transition duration-200 cursor-pointer flex
      items-center justify-center gap-1 text-sm"
    >
     الرئيسية

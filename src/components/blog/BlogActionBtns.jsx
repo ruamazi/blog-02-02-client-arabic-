@@ -37,7 +37,7 @@ const BlogActionBtns = ({
    </button>
    <button
     onClick={() => handlePrivate(blog._id)}
-    className="flex items-center gap-1 bg-black dark:bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 dark:hover:bg-gray-700 transition-colors duration-200"
+    className="flex items-center gap-1 bg-slate-600 dark:bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-900 dark:hover:bg-black transition-colors duration-200"
    >
     {blog.private ? <MdPublicOff /> : <MdPublic />}
     {blog.private ? "منشور خاص" : "منشور عام"}

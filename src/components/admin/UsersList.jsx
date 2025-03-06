@@ -5,6 +5,8 @@ import ConfirmationModal from "../blog/ConfirmationModal";
 
 const UsersList = () => {
  const [users, setUsers] = useState([]);
+ const [deletingUser, setDeletingUser] = useState(false);
+ const [updatingUserRole, setUpdatingUserRole] = useState(false);
  const token = localStorage.getItem("token");
 
  useEffect(() => {
@@ -23,6 +25,7 @@ const UsersList = () => {
  };
 
  const handleRoleUpdate = async (userId) => {
+  setUpdatingUserRole(true);
   try {
    await axios.put(
     `${apiUrl}/api/admin/users/${userId}/role`,
@@ -34,11 +37,14 @@ const UsersList = () => {
    fetchUsers();
   } catch (error) {
    console.error(error);
+  } finally {
+   setUpdatingUserRole(false);
   }
  };
 
  const handleDeleteUser = async (userId) => {
   if (!window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
+  setDeletingUser(true);
   try {
    await axios.delete(`${apiUrl}/api/admin/users/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -46,6 +52,8 @@ const UsersList = () => {
    fetchUsers();
   } catch (error) {
    console.error(error);
+  } finally {
+   setDeletingUser(false);
   }
  };
 
@@ -85,16 +93,16 @@ const UsersList = () => {
          <button
           onClick={() => handleRoleUpdate(user._id)}
           className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm  btndisabled"
-          disabled={user.role === "superAdmin"}
+          disabled={user.role === "superAdmin" || updatingUserRole}
          >
-          تغيير الدور
+          {updatingUserRole ? "جاري التحديث" : "تعديل الدور"}
          </button>
          <button
           onClick={() => handleDeleteUser(user._id)}
           className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm btndisabled"
-          disabled={user.role === "superAdmin"}
+          disabled={user.role === "superAdmin" || deletingUser}
          >
-          حذف
+          {deletingUser ? "جاري الحذف" : "حذف"}
          </button>
         </div>
        </td>

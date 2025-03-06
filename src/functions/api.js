@@ -63,8 +63,6 @@ export const likeDislike = async (action, blogId) => {
    {},
    { headers: { Authorization: `Bearer ${token}` } }
   );
-  console.log(resp);
-
   return resp.data;
  } catch (err) {
   throw new Error("Failed to like/dislike blog");

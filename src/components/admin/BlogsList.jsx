@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 
 const BlogsList = () => {
  const [blogs, setBlogs] = useState([]);
+ const [deletingBlog, setDeletingBlog] = useState(false);
+ const [updatingStatus, setUpdatingStatus] = useState(false);
  const token = localStorage.getItem("token");
 
  useEffect(() => {
@@ -23,6 +25,7 @@ const BlogsList = () => {
  };
 
  const handleToggleStatus = async (blogId) => {
+  setUpdatingStatus(true);
   try {
    await axios.put(
     `${apiUrl}/api/admin/blogs/${blogId}/status`,
@@ -34,11 +37,14 @@ const BlogsList = () => {
    fetchBlogs();
   } catch (error) {
    console.error(error);
+  } finally {
+   setUpdatingStatus(false);
   }
  };
 
  const handleDeleteBlog = async (blogId) => {
   if (!window.confirm("هل أنت متأكد؟")) return;
+  setDeletingBlog(true);
   try {
    await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -46,6 +52,8 @@ const BlogsList = () => {
    fetchBlogs();
   } catch (error) {
    console.error(error);
+  } finally {
+   setDeletingBlog(false);
   }
  };
 
@@ -102,15 +110,17 @@ const BlogsList = () => {
         <div className="flex flex-col sm:flex-row gap-2">
          <button
           onClick={() => handleToggleStatus(blog._id)}
+          disabled={updatingStatus}
           className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
          >
-          {!blog.private ? "اخفاء" : "نشر"}
+          {updatingStatus ? "جاري التحديث" : !blog.private ? "اخفاء" : "نشر"}
          </button>
          <button
           onClick={() => handleDeleteBlog(blog._id)}
+          disabled={deletingBlog}
           className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
          >
-          حذف
+          {deletingBlog ? "جاري الحذف" : "حذف"}
          </button>
         </div>
        </td>
