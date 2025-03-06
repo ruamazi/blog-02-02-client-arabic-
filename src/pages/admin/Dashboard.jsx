@@ -6,18 +6,24 @@ import UsersList from "../../components/admin/UsersList";
 import BlogsList from "../../components/admin/BlogsList";
 import Loader from "../../components/blog/Loader";
 import BackToHome from "../../components/BackToHome";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
  const [stats, setStats] = useState(null);
  const [activeTab, setActiveTab] = useState("stats");
  const [loading, setLoading] = useState(true);
  const token = localStorage.getItem("token");
+ const navigate = useNavigate();
 
  useEffect(() => {
   fetchDashboardStats();
  }, []);
 
  const fetchDashboardStats = async () => {
+  if (!token) {
+   navigate("/login");
+   return;
+  }
   try {
    const response = await axios.get(`${apiUrl}/api/admin/stats`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -34,7 +40,7 @@ const Dashboard = () => {
 
  return (
   <>
-   <div className="p-4 sm:p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
+   <div className=" md:p-4 sm:p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
     <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 dark:text-white">
      لوحة التحكم
     </h1>

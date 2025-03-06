@@ -80,6 +80,9 @@ const BlogsList = () => {
           ? blog.title.substring(0, 30) + "..."
           : blog.title}
         </Link>
+        <p className="text-xs text-gray-500 dark:text-gray-400 block sm:hidden">
+         الكاتب: {blog.author.username}
+        </p>
        </td>
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200 hidden sm:table-cell">
         {blog.author.username}

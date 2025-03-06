@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import BlogCard from "../../components/blog/BlogCard";
 import { apiUrl } from "./Register";
 import Loader from "../../components/blog/Loader";
+import BackToHome from "../../components/BackToHome";
 
 const BlogsByTag = () => {
  const { tag } = useParams(); // Get the tag from the URL
@@ -34,51 +35,54 @@ const BlogsByTag = () => {
  if (isLoading) return <Loader />;
 
  return (
-  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
-   <div className="container mx-auto">
-    {blogs.length > 0 ? (
-     <>
-      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-       منشورات تتضمن هاشتاغ: <span className="text-blue-500">{tag}</span>
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-       {blogs.map((blog) => (
-        <Link to={`/blog/${blog._id}`} key={blog._id}>
-         <BlogCard blog={blog} />
-        </Link>
-       ))}
-      </div>
-      {totalPages > 1 && (
-       <div className="flex justify-center mt-8">
-        {Array.from({ length: totalPages }, (_, i) => (
-         <button
-          key={i + 1}
-          onClick={() => setCurrentPage(i + 1)}
-          className={`mx-1 px-4 py-2 rounded ${
-           currentPage === i + 1
-            ? "bg-blue-500 text-white"
-            : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-          }`}
-         >
-          {i + 1}
-         </button>
+  <>
+   <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+    <div className="container mx-auto">
+     {blogs.length > 0 ? (
+      <>
+       <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+        منشورات تتضمن هاشتاغ: <span className="text-blue-500">{tag}</span>
+       </h1>
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {blogs.map((blog) => (
+         <Link to={`/blog/${blog._id}`} key={blog._id}>
+          <BlogCard blog={blog} />
+         </Link>
         ))}
        </div>
-      )}
-     </>
-    ) : (
-     <div className="flex flex-col items-center">
-      <h1 className="text-lg md:text-2xl font-bold mb-6 text-gray-800 dark:text-white  mt-12">
-       لا يوجد منشورات تتضمن هاشتاغ:{" "}
-       <span className="text-blue-500">{tag}</span>
-      </h1>
-      <Link to="/" className="text-blue-500 hover:underline">
-       العودة إلى الصفحة الرئيسية
-      </Link>
-     </div>
-    )}
+       {totalPages > 1 && (
+        <div className="flex justify-center mt-8">
+         {Array.from({ length: totalPages }, (_, i) => (
+          <button
+           key={i + 1}
+           onClick={() => setCurrentPage(i + 1)}
+           className={`mx-1 px-4 py-2 rounded ${
+            currentPage === i + 1
+             ? "bg-blue-500 text-white"
+             : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
+           }`}
+          >
+           {i + 1}
+          </button>
+         ))}
+        </div>
+       )}
+      </>
+     ) : (
+      <div className="flex flex-col items-center">
+       <h1 className="text-lg md:text-2xl font-bold mb-6 text-gray-800 dark:text-white  mt-12">
+        لا يوجد منشورات تتضمن هاشتاغ:{" "}
+        <span className="text-blue-500">{tag}</span>
+       </h1>
+       <Link to="/" className="text-blue-500 hover:underline">
+        العودة إلى الصفحة الرئيسية
+       </Link>
+      </div>
+     )}
+    </div>
    </div>
-  </div>
+   {blogs.length > 0 && <BackToHome />}
+  </>
  );
 };
 
