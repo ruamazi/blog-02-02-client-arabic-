@@ -22,10 +22,10 @@ const Navbar = () => {
 
  return (
   <nav className="bg-white dark:bg-gray-800 shadow-md transition-colors duration-200">
-   <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+   <div className="container mx-auto px-4 py-2 flex justify-center items-center md:justify-between">
     <Link
      to="/"
-     className="text-xl text-gray-800 dark:text-white font-light transition-colors duration-200"
+     className="text-xl text-gray-800 dark:text-white font-light transition-colors duration-200 hidden md:block"
     >
      {BLOG_NAME}
     </Link>
@@ -66,7 +66,7 @@ const Navbar = () => {
         onClick={handleLogout}
         className="flex items-center justify-center gap-1 text-gray-800 dark:text-white hover:text-gray-600 hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
        >
-        تسجيل الخروج
+        الخروج
         <BiLogOut className="rotate-x-15 -rotate-y-30" size={20} />
        </button>
       </>
