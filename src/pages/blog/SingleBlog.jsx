@@ -30,10 +30,12 @@ const SingleBlog = () => {
  const [commenting, setCommenting] = useState(false);
  const [deletingComment, setDeletingComment] = useState(false);
  const [error, setError] = useState("");
+ const [commentingError, setCommentingError] = useState("");
  const [showDeleteBlogModal, setShowDeleteBlogModal] = useState(false);
  const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
  const [commentToDelete, setCommentToDelete] = useState(null);
  const [likingLoading, setLikingLoading] = useState(false);
+ const [loadingBlog, setLoadingBlog] = useState(false);
  const navigate = useNavigate();
 
  useEffect(() => {
@@ -41,23 +43,34 @@ const SingleBlog = () => {
  }, [id, deletingComment]);
 
  const fetchBlogData = async () => {
+  setError("");
+  setLoadingBlog(true);
   try {
    const blogData = await fetchBlog(id);
    setBlog(blogData);
   } catch (err) {
-   setError("Failed to fetch blog");
+   console.log(err);
+   setError("المدونة المطلوبة غير موجودة");
+  } finally {
+   setLoadingBlog(false);
   }
  };
 
  const handleCommentSubmit = async (e) => {
   e.preventDefault();
+  setCommentingError("");
+  if (comment === "" || comment.trim() === "") {
+   setCommentingError("التعليق لا يمكن ان يكون فارغا");
+   return;
+  }
   setCommenting(true);
   try {
    await postComment(comment, id);
    setComment("");
    fetchBlogData();
   } catch (err) {
-   setError("Failed to post comment");
+   console.log(err);
+   setCommentingError("فشل في إضافة تعليق");
   } finally {
    setCommenting(false);
   }
@@ -155,10 +168,11 @@ const SingleBlog = () => {
   });
  };
 
+ if (loadingBlog) return <Loader />;
+ if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
+ if (!blog) return null;
  const likedByCurrentUser = blog?.likedBy?.includes(currentUser?._id);
  const dislikedByCurrentUser = blog?.dislikedBy?.includes(currentUser?._id);
-
- if (!blog) return <Loader />;
 
  return (
   <>
@@ -226,6 +240,9 @@ const SingleBlog = () => {
         handleCommentSubmit={handleCommentSubmit}
         commenting={commenting}
        />
+      )}
+      {commentingError && (
+       <p className="text-red-500 mt-2">{commentingError}</p>
       )}
      </div>
     </div>
