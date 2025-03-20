@@ -12,9 +12,11 @@ const Register = () => {
  const [email, setEmail] = useState("");
  const [password, setPassword] = useState("");
  const [error, setError] = useState("");
- const navigate = useNavigate();
+ const [loading, setLoading] = useState(false);
 
  const handleSubmit = async (e) => {
+  setLoading(true);
+  setError("");
   e.preventDefault();
   try {
    await axios.post(`${apiUrl}/api/auth/register`, {
@@ -22,9 +24,12 @@ const Register = () => {
     email,
     password,
    });
-   navigate("/login"); // Redirect to login page after registration
+   window.location.href = "/confirm-email";
   } catch (err) {
-   setError(err.response?.data?.message || "Registration failed");
+   console.log(err);
+   setError(err.response?.data?.error || "حدث خطأ اثناء التسجيل");
+  } finally {
+   setLoading(false);
   }
  };
 
@@ -86,9 +91,10 @@ const Register = () => {
      </div>
      <button
       type="submit"
+      disabled={loading}
       className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
      >
-      تأكيد
+       {loading ? "جاري التسجيل ..." : "التسجيل"}
      </button>
     </form>
     <p className="mt-4 text-center text-gray-700 dark:text-gray-300">

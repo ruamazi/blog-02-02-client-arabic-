@@ -12,6 +12,7 @@ const Login = () => {
  const { setCurrentUser } = useAuth();
 
  const handleSubmit = async (e) => {
+  setError("");
   e.preventDefault();
   try {
    const response = await axios.post(`${apiUrl}/api/auth/login`, {

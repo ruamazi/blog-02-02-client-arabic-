@@ -15,6 +15,7 @@ import User from "./pages/blog/User";
 import BlogsByTag from "./pages/blog/BlogsByTag";
 import PageNotFound from "./components/blog/PageNotFound";
 import Dashboard from "./pages/admin/Dashboard";
+import ConfirmEmail from "./pages/ConfirmEmail";
 
 function App() {
  const { currentUser, setCurrentUser } = useAuth();
@@ -65,6 +66,10 @@ function App() {
      <Route path="/update-blog/:id" element={<UpdateBlog />} />
      <Route path="/user/:username" element={<User />} />
      <Route path="/blogs/:tag" element={<BlogsByTag />} />
+     <Route
+      path="/confirm-email"
+      element={currentUser ? <Navigate to="/" /> : <ConfirmEmail />}
+     />
      <Route
       path="/admin"
       element={
