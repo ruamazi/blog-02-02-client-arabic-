@@ -99,7 +99,7 @@ const User = () => {
       >
        {profileUser?.role}
       </h2>
-      {currentUser?.role != "user" && (
+      {profileUser.role !== "superAdmin" && currentUser?.role != "user" && (
        <button
         onClick={() => {
          handleAdmin(profileUser._id);
@@ -109,15 +109,16 @@ const User = () => {
         {profileUser.role === "user" ? "اجعل العضو أدمن" : "حذف صلاحية الأدمن"}
        </button>
       )}
-      {currentUser?.role === "superAdmin" && (
-       <button
-        onClick={() => handleDeleteUser(profileUser._id)}
-        disabled={deletingUser}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
-       >
-        حذف العضو
-       </button>
-      )}
+      {profileUser.role !== "superAdmin" &&
+       currentUser?.role === "superAdmin" && (
+        <button
+         onClick={() => handleDeleteUser(profileUser._id)}
+         disabled={deletingUser}
+         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+        >
+         حذف العضو
+        </button>
+       )}
      </div>
     </div>
    </div>

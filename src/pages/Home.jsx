@@ -69,9 +69,7 @@ const Home = () => {
      </div>
 
      {/* Sidebar for Most Used Tags */}
-     <div className="lg:col-span-1">
-      <MostUsedTags />
-     </div>
+     {blogs.length > 0 && <MostUsedTags />}
     </div>
    </div>
   </div>
