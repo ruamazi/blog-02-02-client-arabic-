@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export const apiUrl =
  import.meta.env.VITE_ENV === "development"
   ? "http://localhost:3030"
-  : "https://blog-02-02-api-arabic.onrender.com";
+  : "https://blog-02-02-api-arabic.vercel.app";
 
 const Register = () => {
  const [username, setUsername] = useState("");
