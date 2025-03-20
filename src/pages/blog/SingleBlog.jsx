@@ -144,7 +144,7 @@ const SingleBlog = () => {
       key={index}
       src={word}
       alt="Blog content"
-      className="my-2 max-w-full h-auto mx-auto"
+      className="my-2 w-full h-auto mx-auto  max-w-[700px]"
      />
     );
    } else if (youtubeRegex.test(word)) {
