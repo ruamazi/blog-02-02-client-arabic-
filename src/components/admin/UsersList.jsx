@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
 import ConfirmationModal from "../blog/ConfirmationModal";
+import Loader from "../blog/Loader";
 
 const UsersList = () => {
  const [users, setUsers] = useState([]);
+ const [loodingUsers, setLoodingUsers] = useState(true);
+ const [error, setError] = useState(null);
  const [deletingUser, setDeletingUser] = useState(false);
  const [updatingUserRole, setUpdatingUserRole] = useState(false);
  const token = localStorage.getItem("token");
@@ -14,6 +17,8 @@ const UsersList = () => {
  }, []);
 
  const fetchUsers = async () => {
+  setError(null);
+  setLoodingUsers(true);
   try {
    const response = await axios.get(`${apiUrl}/api/admin/users`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -21,6 +26,9 @@ const UsersList = () => {
    setUsers(response.data);
   } catch (error) {
    console.error(error);
+   setError("حدث خطأ أثناء جلب المستخدمين");
+  } finally {
+   setLoodingUsers(false);
   }
  };
 
@@ -56,6 +64,11 @@ const UsersList = () => {
    setDeletingUser(false);
   }
  };
+
+ if (loodingUsers) return <Loader />;
+ if (error) return <p className="text-center py-6 text-red-600">{error}</p>;
+ if (users.length === 0)
+  return <p className="text-center py-6">لا يوجد مستخدمين</p>;
 
  return (
   <div className="overflow-x-auto">

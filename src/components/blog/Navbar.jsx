@@ -2,15 +2,26 @@ import { Link, useNavigate } from "react-router-dom";
 import { profilePlaceHolder } from "./BlogCard";
 import { useAuth } from "../../context/AuthContext";
 import { BiLogOut } from "react-icons/bi";
-import { BLOG_NAME } from "../../../constants";
 import { RiLoginBoxFill } from "react-icons/ri";
 import { MdOutlineCreate } from "react-icons/md";
 import { BsSun, BsMoon } from "react-icons/bs";
 import { useTheme } from "../../context/ThemeContext";
+import { useEffect, useState } from "react";
+import { getWebData } from "../../functions/api";
 
 const Navbar = () => {
  const { currentUser, setCurrentUser } = useAuth();
  const { darkMode, toggleDarkMode } = useTheme();
+ const [webData, setWebData] = useState({
+  websiteName: "",
+  websiteTitle: "",
+  favicon: "",
+  websiteLogo: "",
+  canPublish: true,
+  showLogo: false,
+  showName: true,
+ });
+ console.log(webData);
 
  const navigate = useNavigate();
 
@@ -20,6 +31,15 @@ const Navbar = () => {
   navigate("/login");
  };
 
+ const setWebSettings = async () => {
+  const data = await getWebData();
+  setWebData(data);
+ };
+
+ useEffect(() => {
+  setWebSettings();
+ }, []);
+
  return (
   <nav className="bg-white dark:bg-gray-800 shadow-md transition-colors duration-200">
    <div className="container mx-auto px-4 py-2 flex justify-center items-center md:justify-between">
@@ -27,7 +47,7 @@ const Navbar = () => {
      to="/"
      className="text-xl text-gray-800 dark:text-white font-light transition-colors duration-200 hidden md:block"
     >
-     {BLOG_NAME}
+     {webData.websiteName || "مدونة ميرن ستاك"}
     </Link>
     <div className="flex items-center space-x-4">
      <button

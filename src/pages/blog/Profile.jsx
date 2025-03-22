@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import BlogCard from "../../components/blog/BlogCard";
 import { useAuth } from "../../context/AuthContext";
 import BackToHome from "../../components/BackToHome";
+import { MdDashboardCustomize } from "react-icons/md";
 
 const Profile = () => {
  const { currentUser } = useAuth();
@@ -81,9 +82,9 @@ const Profile = () => {
      {currentUser?.role !== "user" && (
       <Link
        to="/admin"
-       className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-600/70 transition duration-200 cursor-pointer mb-4 inline-block"
+       className="bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-600/70 transition duration-200 cursor-pointer mb-4 flex items-center gap-1 w-fit"
       >
-       لوحة التحكم
+       <MdDashboardCustomize /> لوحة التحكم
       </Link>
      )}
      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">

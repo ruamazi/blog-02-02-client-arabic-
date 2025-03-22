@@ -81,3 +81,13 @@ export const makeBlogPrivate = async (blogId) => {
   throw new Error("Failed to make this change");
  }
 };
+
+export const getWebData = async () => {
+ try {
+  const resp = await axios.get(`${apiUrl}/api/blogs/web-data`);
+  return resp.data;
+ } catch (error) {
+  log(error);
+  throw new Error("Failed to get web data");
+ }
+};

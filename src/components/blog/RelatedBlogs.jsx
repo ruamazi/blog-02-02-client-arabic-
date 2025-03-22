@@ -15,7 +15,6 @@ const RelatedBlogs = ({ blogId }) => {
   setError("");
   try {
    const response = await axios.get(`${apiUrl}/api/blogs/related/${blogId}`);
-   console.log(response.data);
    setRelatedBlogs(response.data);
   } catch (error) {
    console.log(error);

@@ -7,6 +7,7 @@ import BlogsList from "../../components/admin/BlogsList";
 import Loader from "../../components/blog/Loader";
 import BackToHome from "../../components/BackToHome";
 import { useNavigate } from "react-router-dom";
+import WebsiteSettings from "../../components/admin/WebsiteSettings";
 
 const Dashboard = () => {
  const [stats, setStats] = useState(null);
@@ -77,6 +78,16 @@ const Dashboard = () => {
       >
        المدونات
       </button>
+      <button
+       onClick={() => setActiveTab("settings")}
+       className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
+        activeTab === "settings"
+         ? "bg-blue-500 text-white"
+         : "bg-gray-200 dark:bg-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600"
+       }`}
+      >
+       اعدادات الموقع
+      </button>
      </div>
     </div>
 
@@ -84,6 +95,7 @@ const Dashboard = () => {
      {activeTab === "stats" && <DashboardStats stats={stats} />}
      {activeTab === "users" && <UsersList />}
      {activeTab === "blogs" && <BlogsList />}
+     {activeTab === "settings" && <WebsiteSettings token={token} />}
     </div>
    </div>
    <BackToHome />

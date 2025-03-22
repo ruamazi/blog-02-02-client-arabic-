@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
 import { Link } from "react-router-dom";
+import Loader from "../blog/Loader";
 
 const BlogsList = () => {
  const [blogs, setBlogs] = useState([]);
+ const [loadingBlogs, setLoadingBlogs] = useState(false);
+ const [error, setError] = useState(null);
  const [deletingBlog, setDeletingBlog] = useState(false);
  const [updatingStatus, setUpdatingStatus] = useState(false);
  const token = localStorage.getItem("token");
@@ -14,6 +17,8 @@ const BlogsList = () => {
  }, []);
 
  const fetchBlogs = async () => {
+  setLoadingBlogs(true);
+  setError(null);
   try {
    const response = await axios.get(`${apiUrl}/api/admin/blogs`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -21,6 +26,9 @@ const BlogsList = () => {
    setBlogs(response.data);
   } catch (error) {
    console.error(error);
+   setError(" حدث خطأ ما، يرجى المحاولة مرة أخرى.");
+  } finally {
+   setLoadingBlogs(false);
   }
  };
 
@@ -56,6 +64,8 @@ const BlogsList = () => {
    setDeletingBlog(false);
   }
  };
+ if (loadingBlogs) return <Loader />;
+ if (error) return <p className="text-red-600 py-6 text-center">{error}</p>;
 
  return (
   <div className="overflow-x-auto">
