@@ -11,6 +11,11 @@ button {
  background-color: gray;
 }
 
+.iframeStyle {
+ aspect-ratio: 16 / 9;
+ width: 100% !important;
+}
+
 @layer base {
  body {
   font-family: "Tajawal", "Roboto", serif;
