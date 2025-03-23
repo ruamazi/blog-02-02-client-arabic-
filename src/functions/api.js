@@ -91,3 +91,16 @@ export const getWebData = async () => {
   throw new Error("Failed to get web data");
  }
 };
+
+export const getCurrentUser = async () => {
+ if (!token) return;
+ try {
+  const resp = await axios.get(`${apiUrl}/api/users/profile`, {
+   headers: { Authorization: `Bearer ${token}` },
+  });
+  return resp.data;
+ } catch (error) {
+  console.error("Failed to fetch user profile", error);
+  localStorage.removeItem("token");
+ }
+};

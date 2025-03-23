@@ -8,7 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 import BackToHome from "../../components/BackToHome";
 import { MdDashboardCustomize } from "react-icons/md";
 
-const Profile = () => {
+const Profile = ({ setCurrentUser }) => {
  const { currentUser } = useAuth();
  const [profilePicture, setProfilePicture] = useState("");
  const [oldPassword, setOldPassword] = useState("");
@@ -18,33 +18,43 @@ const Profile = () => {
  const [totalPages, setTotalPages] = useState(1);
  const [currentPage, setCurrentPage] = useState(1);
  const [isLoading, setIsLoading] = useState(false);
+ const [updatingProfile, setUpdatingProfile] = useState(false);
  const token = localStorage.getItem("token");
 
  const handleProfileUpdate = async (e) => {
   e.preventDefault();
+  setUpdatingProfile(true);
+  setMessage("");
   try {
-   await axios.put(
+   const resp = await axios.put(
     `${apiUrl}/api/users/profile`,
     { profilePicture },
     { headers: { Authorization: `Bearer ${token}` } }
    );
-   setMessage("Profile updated successfully");
+   setCurrentUser(resp.data);
+   setMessage("تم تحديث الملف الشخصي بنجاح");
   } catch (err) {
    setMessage(err.response?.data?.message || "Failed to update profile");
+  } finally {
+   setUpdatingProfile(false);
   }
  };
 
  const handlePasswordChange = async (e) => {
   e.preventDefault();
+  setUpdatingProfile(true);
+  setMessage("");
   try {
    await axios.put(
     `${apiUrl}/api/users/change-password`,
     { oldPassword, newPassword },
     { headers: { Authorization: `Bearer ${token}` } }
    );
-   setMessage("Password changed successfully");
+   setMessage("تغيير الرمز السري بنجاح");
   } catch (err) {
    setMessage(err.response?.data?.message || "Failed to change password");
+  } finally {
+   setUpdatingProfile(false);
   }
  };
 
@@ -101,6 +111,7 @@ const Profile = () => {
        />
        <button
         type="submit"
+        disabled={updatingProfile}
         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
        >
         حفظ
@@ -126,6 +137,7 @@ const Profile = () => {
        />
        <button
         type="submit"
+        disabled={updatingProfile}
         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
        >
         حفظ الرمز السري الجديد

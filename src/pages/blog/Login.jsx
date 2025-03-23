@@ -8,11 +8,13 @@ const Login = () => {
  const [email, setEmail] = useState("");
  const [password, setPassword] = useState("");
  const [error, setError] = useState("");
+ const [loading, setLoading] = useState(false);
  const navigate = useNavigate();
  const { setCurrentUser } = useAuth();
 
  const handleSubmit = async (e) => {
   setError("");
+  setLoading(true);
   e.preventDefault();
   try {
    const response = await axios.post(`${apiUrl}/api/auth/login`, {
@@ -24,6 +26,8 @@ const Login = () => {
    navigate("/"); // Redirect to home page after login
   } catch (err) {
    setError(err.response?.data?.message || "Login failed");
+  } finally {
+   setLoading(false);
   }
  };
 
@@ -69,9 +73,10 @@ const Login = () => {
      </div>
      <button
       type="submit"
+      disabled={loading}
       className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
      >
-      الدخول
+      {loading ? "جاري التحقق..." : "تسجيل الدخول"}
      </button>
     </form>
     <p className="mt-4 text-center text-gray-700 dark:text-gray-300">

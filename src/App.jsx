@@ -16,7 +16,7 @@ import BlogsByTag from "./pages/blog/BlogsByTag";
 import PageNotFound from "./components/blog/PageNotFound";
 import Dashboard from "./pages/admin/Dashboard";
 import ConfirmEmail from "./pages/ConfirmEmail";
-import { getWebData } from "./functions/api";
+import { getCurrentUser, getWebData } from "./functions/api";
 
 function App() {
  const { currentUser, setCurrentUser } = useAuth();
@@ -39,6 +39,18 @@ function App() {
   setLoadingWebSettings(false);
  };
 
+ const fetchUser = async () => {
+  setLoadingUser(true);
+  try {
+   const user = await getCurrentUser();
+   setCurrentUser(user);
+  } catch (error) {
+   console.error("فشل في تحميل المستخدم", error);
+  } finally {
+   setLoadingUser(false);
+  }
+ };
+
  useEffect(() => {
   getWebSettingsData();
  }, []);
@@ -59,23 +71,7 @@ function App() {
  }, [webSettings]);
 
  useEffect(() => {
-  const getCurrentUser = async () => {
-   const token = localStorage.getItem("token");
-   if (!token) return;
-   setLoadingUser(true);
-   try {
-    const resp = await axios.get(`${apiUrl}/api/users/profile`, {
-     headers: { Authorization: `Bearer ${token}` },
-    });
-    setCurrentUser(resp.data);
-   } catch (error) {
-    console.error("Failed to fetch user profile", error);
-    localStorage.removeItem("token");
-   } finally {
-    setLoadingUser(false);
-   }
-  };
-  getCurrentUser();
+  fetchUser();
  }, [setCurrentUser]);
 
  if (loadingUser || loadingWebSettings) return <Loader />;
@@ -97,7 +93,10 @@ function App() {
       path="/login"
       element={currentUser ? <Navigate to="/" /> : <Login />}
      />
-     <Route path="/profile" element={<Profile />} />
+     <Route
+      path="/profile"
+      element={<Profile setCurrentUser={setCurrentUser} />}
+     />
      <Route path="/blog/:id" element={<SingleBlog />} />
      <Route path="/publish" element={<Publish />} />
      <Route path="/update-blog/:id" element={<UpdateBlog />} />

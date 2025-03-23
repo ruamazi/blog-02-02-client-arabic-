@@ -47,7 +47,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
      {blog.content.substring(0, 100)}...
     </p>
    </div>
-   <div className="flex items-center justify-between">
+   <div className="flex items-center justify-between flex-wrap">
     <div className="flex items-center gap-2">
      <img
       src={blog.author.profilePicture || profilePlaceHolder}
