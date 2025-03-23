@@ -27,7 +27,7 @@ const MostUsedTags = () => {
  if (isLoading) return <Loader />;
 
  return (
-  <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg">
+  <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg h-fit py4">
    <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
     هاشتاجات متداولة
    </h2>

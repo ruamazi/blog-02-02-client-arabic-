@@ -23,13 +23,12 @@ const Publish = () => {
    );
    navigate("/");
   } catch (err) {
-   setError(err.response?.data?.message || "Failed to publish blog");
+   setError(err.response?.data?.error || " حدث خطأ ما");
   }
  };
 
  return (
   <>
-   {" "}
    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
     <div className="container mx-auto">
      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">

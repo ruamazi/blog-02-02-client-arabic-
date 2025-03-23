@@ -155,7 +155,7 @@ const WebsiteSettings = ({ token }) => {
      />
     </div>
     <div className="flex items-center justify-center gap-4 text-center">
-     <div className="mb-4">
+     <div className="mb-4 dark:bg-gray-700 bg-gray-200 p-1 rounded">
       <label
        htmlFor="canPublish"
        className="block text-gray-700 dark:text-gray-300 mb-2"
@@ -172,7 +172,7 @@ const WebsiteSettings = ({ token }) => {
        className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500"
       />
      </div>
-     <div className="mb-4">
+     <div className="mb-4 dark:bg-gray-700 bg-gray-200  p-1 rounded">
       <label
        htmlFor="showLogo"
        className="block text-gray-700 dark:text-gray-300 mb-2"
@@ -189,7 +189,7 @@ const WebsiteSettings = ({ token }) => {
        className="w-4 h-4 text-blue-500 rounded focus:ring-blue-500"
       />
      </div>
-     <div className="mb-4">
+     <div className="mb-4 dark:bg-gray-700 bg-gray-200  p-1 rounded">
       <label
        htmlFor="showName"
        className="block text-gray-700 dark:text-gray-300 mb-2"

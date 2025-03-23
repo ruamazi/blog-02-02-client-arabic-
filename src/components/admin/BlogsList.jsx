@@ -10,6 +10,7 @@ const BlogsList = () => {
  const [error, setError] = useState(null);
  const [deletingBlog, setDeletingBlog] = useState(false);
  const [updatingStatus, setUpdatingStatus] = useState(false);
+ const [loadingApprove, setLoadingApprove] = useState(false);
  const token = localStorage.getItem("token");
 
  useEffect(() => {
@@ -64,6 +65,25 @@ const BlogsList = () => {
    setDeletingBlog(false);
   }
  };
+
+ const handleApproveBlog = async (blogId) => {
+  setLoadingApprove(true);
+  try {
+   const resp = await axios.get(`${apiUrl}/api/admin/approve-blog/${blogId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+   });
+   setBlogs((prevBlogs) =>
+    prevBlogs.map((blog) =>
+     blog._id === blogId ? { ...blog, status: resp.data.status } : blog
+    )
+   );
+  } catch (error) {
+   console.log(error);
+  } finally {
+   setLoadingApprove(false);
+  }
+ };
+
  if (loadingBlogs) return <Loader />;
  if (error) return <p className="text-red-600 py-6 text-center">{error}</p>;
 
@@ -79,7 +99,7 @@ const BlogsList = () => {
        الكاتب
       </th>
       <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
-       الحالة
+       الخصوصية
       </th>
       <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
        الإجراءات
@@ -88,7 +108,12 @@ const BlogsList = () => {
     </thead>
     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
      {blogs.map((blog) => (
-      <tr key={blog._id}>
+      <tr
+       key={blog._id}
+       className={`${
+        blog.status === "pending" ? "bg-yellow-100 dark:bg-blue-300/10" : ""
+       }`}
+      >
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
         <Link
          to={`/blog/${blog._id}`}
@@ -123,7 +148,7 @@ const BlogsList = () => {
           disabled={updatingStatus}
           className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
          >
-          {updatingStatus ? "جاري التحديث" : !blog.private ? "اخفاء" : "نشر"}
+          {updatingStatus ? "جاري التحديث" : !blog.private ? "اخفاء" : "عام"}
          </button>
          <button
           onClick={() => handleDeleteBlog(blog._id)}
@@ -132,6 +157,15 @@ const BlogsList = () => {
          >
           {deletingBlog ? "جاري الحذف" : "حذف"}
          </button>
+         {blog.status === "pending" && (
+          <button
+           onClick={() => handleApproveBlog(blog._id)}
+           disabled={loadingApprove}
+           className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
+          >
+           {loadingApprove ? "جاري الموافقة" : "موافقة"}
+          </button>
+         )}
         </div>
        </td>
       </tr>
