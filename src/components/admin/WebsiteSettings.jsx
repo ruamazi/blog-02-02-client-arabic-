@@ -76,7 +76,7 @@ const WebsiteSettings = ({ token }) => {
 
  return (
   <div className="w-full max-w-[800px] mx-auto">
-   <h1 className="text-center text-2xl m-2">في طور الانجاز ...</h1>
+   <h1 className="text-center text-2xl m-2">تحديث بيانات الموقع</h1>
    <form onSubmit={handleSubmit}>
     <div className="mb-4">
      <label
@@ -228,6 +228,9 @@ const WebsiteSettings = ({ token }) => {
    >
     {loading ? "جاري الاستعادة..." : "استعادة الوضع التلقائي"}
    </button>
+   <p className="text-end text-xs text-gray-700 dark:text-gray-400">
+    قم باعادة تحميل الصفحة لرؤية التغييرات
+   </p>
   </div>
  );
 };

@@ -8,6 +8,7 @@ import { BsSun, BsMoon } from "react-icons/bs";
 import { useTheme } from "../../context/ThemeContext";
 import { useEffect, useState } from "react";
 import { getWebData } from "../../functions/api";
+import Loader from "./Loader";
 
 const Navbar = () => {
  const { currentUser, setCurrentUser } = useAuth();
@@ -21,7 +22,7 @@ const Navbar = () => {
   showLogo: false,
   showName: true,
  });
- console.log(webData);
+ const [loadingSettings, setLoadingSettings] = useState(false);
 
  const navigate = useNavigate();
 
@@ -32,22 +33,34 @@ const Navbar = () => {
  };
 
  const setWebSettings = async () => {
+  setLoadingSettings(true);
   const data = await getWebData();
   setWebData(data);
+  setLoadingSettings(false);
  };
 
  useEffect(() => {
   setWebSettings();
  }, []);
 
+ if (loadingSettings) return <Loader />;
+
  return (
   <nav className="bg-white dark:bg-gray-800 shadow-md transition-colors duration-200">
    <div className="container mx-auto px-4 py-2 flex justify-center items-center md:justify-between">
     <Link
      to="/"
-     className="text-xl text-gray-800 dark:text-white font-light transition-colors duration-200 hidden md:block"
+     className="text-xl text-gray-800 dark:text-white font-light transition-colors
+      duration-200 hidden md:flex items-center space-x-2 gap-2"
     >
-     {webData.websiteName || "مدونة ميرن ستاك"}
+     {webData.showLogo && (
+      <img
+       src={webData.websiteLogo}
+       alt="Website Logo"
+       className="w-8 h-8 object-cover"
+      />
+     )}
+     {webData.showName && webData.websiteName}
     </Link>
     <div className="flex items-center space-x-4">
      <button

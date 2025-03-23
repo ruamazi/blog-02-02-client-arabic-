@@ -16,10 +16,47 @@ import BlogsByTag from "./pages/blog/BlogsByTag";
 import PageNotFound from "./components/blog/PageNotFound";
 import Dashboard from "./pages/admin/Dashboard";
 import ConfirmEmail from "./pages/ConfirmEmail";
+import { getWebData } from "./functions/api";
 
 function App() {
  const { currentUser, setCurrentUser } = useAuth();
  const [loadingUser, setLoadingUser] = useState(false);
+ const [webSettings, setWebSettings] = useState({
+  websiteName: "",
+  websiteTitle: "",
+  favicon: "",
+  websiteLogo: "",
+  canPublish: true,
+  showLogo: false,
+  showName: true,
+ });
+ const [loadingWebSettings, setLoadingWebSettings] = useState(false);
+
+ const getWebSettingsData = async () => {
+  setLoadingWebSettings(true);
+  const resp = await getWebData();
+  setWebSettings(resp);
+  setLoadingWebSettings(false);
+ };
+
+ useEffect(() => {
+  getWebSettingsData();
+ }, []);
+
+ useEffect(() => {
+  if (webSettings.websiteTitle && document.title !== webSettings.websiteTitle) {
+   document.title = webSettings.websiteTitle; // Set the title dynamically
+  }
+  if (webSettings.favicon) {
+   let link = document.querySelector("link[rel*='icon']");
+   if (!link) {
+    link = document.createElement("link");
+    link.rel = "icon";
+    document.head.appendChild(link);
+   }
+   link.href = webSettings.favicon; // Set the favicon dynamically
+  }
+ }, [webSettings]);
 
  useEffect(() => {
   const getCurrentUser = async () => {
@@ -41,7 +78,7 @@ function App() {
   getCurrentUser();
  }, [setCurrentUser]);
 
- if (loadingUser) return <Loader />;
+ if (loadingUser || loadingWebSettings) return <Loader />;
 
  return (
   <div
