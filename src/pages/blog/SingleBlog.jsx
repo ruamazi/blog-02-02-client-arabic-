@@ -248,16 +248,19 @@ const SingleBlog = () => {
          likingLoading={likingLoading}
         />
        )}
-       {blog?.tags[0] != "" &&
-        blog.tags.map((each, i) => (
-         <Link
-          to={`/blogs/${each}`}
-          key={i}
-          className="mr-2 bg-slate-300 dark:bg-slate-500 px-2 py-1 text-[0.8rem]"
-         >
-          {each}
-         </Link>
-        ))}
+       <div className="flex flex-wrap gap-1">
+        {blog?.tags[0] != "" &&
+         blog.tags.map((each, i) => (
+          <Link
+           to={`/blogs/${each}`}
+           key={i}
+           className="mr-2 bg-slate-300 dark:bg-slate-500 px-2 py-[0.2rem] text-[0.8rem] rounded"
+          >
+           {each}
+          </Link>
+         ))}
+       </div>
+
        {currentUser &&
         (currentUser?._id === blog?.author._id ||
          currentUser?.role !== "user") && (
