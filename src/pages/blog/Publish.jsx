@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./Register";
 import BackToHome from "../../components/BackToHome";
+import TextEditor from "../../components/blog/TextEditor";
 
 const Publish = () => {
  const [title, setTitle] = useState("");
@@ -25,6 +26,11 @@ const Publish = () => {
   } catch (err) {
    setError(err.response?.data?.error || " حدث خطأ ما");
   }
+ };
+
+ const handleEditorChange = (editorState) => {
+  console.log(editorState);
+  setContent(editorState);
  };
 
  return (
@@ -54,7 +60,7 @@ const Publish = () => {
          required
         />
        </div>
-       <div className="mb-4">
+       {/* <div className="mb-4">
         <label
          htmlFor="content"
          className="block text-gray-700 dark:text-gray-300 mb-2"
@@ -70,6 +76,16 @@ const Publish = () => {
          rows="6"
          required
         />
+       </div> */}
+       {/* Editor lexical */}
+       <div className="mb-4">
+        <label
+         htmlFor="content"
+         className="block text-gray-700 dark:text-gray-300 mb-2"
+        >
+         المحتوى
+        </label>
+        <TextEditor onChange={handleEditorChange} />
        </div>
        <div className="mb-4">
         <label

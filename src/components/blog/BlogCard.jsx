@@ -31,20 +31,52 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
   }
  };
 
+ const extractPlainText = (html) => {
+  // Remove HTML tags
+  let text = html.replace(/<[^>]*>/g, " ");
+
+  // Extract image URLs
+  const imgRegex = /<img[^>]+src="([^">]+)"/g;
+  let imgMatch;
+  while ((imgMatch = imgRegex.exec(html)) !== null) {
+   text += ` [Image: ${imgMatch[1]}]`;
+  }
+
+  // Extract YouTube URLs
+  const youtubeRegex =
+   /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/g;
+  let youtubeMatch;
+  while ((youtubeMatch = youtubeRegex.exec(html)) !== null) {
+   text += ` [YouTube: https://youtube.com/watch?v=${youtubeMatch[1]}]`;
+  }
+
+  // Extract regular links
+  const linkRegex = /<a[^>]+href="([^">]+)"[^>]*>([^<]*)<\/a>/g;
+  let linkMatch;
+  while ((linkMatch = linkRegex.exec(html)) !== null) {
+   text += ` [Link: ${linkMatch[2]} (${linkMatch[1]})]`;
+  }
+
+  // Clean up multiple spaces
+  text = text.replace(/\s+/g, " ").trim();
+
+  return text;
+ };
+
  if (loading) return <Loader />;
 
  return (
   <div
    className={`${
     isPending ? "opacity-50" : ""
-   } bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden  h-full  flex flex-col justify-between`}
+   } bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden h-full flex flex-col justify-between`}
   >
    <div>
     <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white transition-colors duration-200">
      {blog.title}
     </h2>
     <p className="text-gray-600 dark:text-gray-300 mb-4 transition-colors duration-200">
-     {blog.content.substring(0, 100)}...
+     {extractPlainText(blog.content).substring(0, 100)}...
     </p>
    </div>
    <div className="flex items-center justify-between flex-wrap">
@@ -66,7 +98,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
       موافقة
      </button>
     )}
-    {!isAdmin && isPending && <p className="text-xs">في انتضارالموافقة</p>}
+    {!isAdmin && isPending && <p className="text-xs">في انتظار الموافقة</p>}
     {blog.private && (
      <MdPublicOff className="text-gray-600 dark:text-gray-400" size={20} />
     )}

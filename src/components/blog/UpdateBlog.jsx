@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { apiUrl } from "../../pages/blog/Register";
 import Loader from "./Loader";
+import UpdateBlogEditor from "./UpdateBlogEditor";
 
 const UpdateBlog = () => {
  const { id } = useParams();
@@ -31,6 +31,10 @@ const UpdateBlog = () => {
  const handleInputChange = (e) => {
   const { name, value } = e.target;
   setBlog({ ...blog, [name]: value });
+ };
+
+ const handleEditorChange = (content) => {
+  setBlog({ ...blog, content });
  };
 
  const handleTagsChange = (e) => {
@@ -89,13 +93,9 @@ const UpdateBlog = () => {
       <label className="block text-gray-700 dark:text-gray-300 mb-2">
        Content
       </label>
-      <textarea
-       name="content"
-       value={blog.content}
-       onChange={handleInputChange}
-       className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
-       rows="6"
-       required
+      <UpdateBlogEditor
+       content={blog.content}
+       handleEditorChange={handleEditorChange}
       />
      </div>
      <div className="mb-4">
@@ -112,7 +112,8 @@ const UpdateBlog = () => {
      {error && <p className="text-red-500 mb-4">{error}</p>}
      <button
       type="submit"
-      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+      disabled={saving}
+      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer disabled:opacity-50"
      >
       {saving ? "Saving..." : "Save"}
      </button>
