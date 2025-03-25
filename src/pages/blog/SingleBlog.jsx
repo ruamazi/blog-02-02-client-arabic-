@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/blog/Loader";
@@ -21,7 +21,6 @@ import CommentForm from "../../components/blog/CommentForm";
 import BlogActionBtns from "../../components/blog/BlogActionBtns";
 import BackToHome from "../../components/BackToHome";
 import RelatedBlogs from "../../components/blog/RelatedBlogs";
-import DOMPurify from "dompurify";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -134,54 +133,7 @@ const SingleBlog = () => {
   }
  };
 
- const renderHtmlContent = (htmlString) => {
-  const cleanHtml = DOMPurify.sanitize(htmlString, {
-   ADD_TAGS: ["iframe"],
-   ADD_ATTR: [
-    "allow",
-    "allowfullscreen",
-    "frameborder",
-    "scrolling",
-    "target",
-    "rel",
-   ],
-   ALLOWED_ATTR: [
-    "href",
-    "src",
-    "width",
-    "height",
-    "alt",
-    "title",
-    "class",
-    "style",
-    "frameborder",
-    "allowfullscreen",
-    "allow",
-    "contenteditable",
-    "draggable",
-    "target",
-    "rel",
-    "data-*",
-   ],
-   ALLOW_DATA_ATTR: true,
-   ALLOW_ARIA_ATTR: true,
-   ALLOW_UNKNOWN_PROTOCOLS: true,
-  });
-  return { __html: cleanHtml };
- };
-
  const renderContentWithMedia = (content) => {
-  // Check for HTML content (Froala or other rich text)
-  if (/<[a-z][\s\S]*>/i.test(content)) {
-   return (
-    <div
-     className="froala-content"
-     dangerouslySetInnerHTML={renderHtmlContent(content)}
-    />
-   );
-  }
-
-  // Fallback for plain text with embedded media links
   const imageRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/i;
   const youtubeRegex =
    /(https?:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+))/i;
@@ -193,7 +145,7 @@ const SingleBlog = () => {
       key={index}
       src={word}
       alt="Blog content"
-      className="my-2 w-full h-auto mx-auto max-w-[700px]"
+      className="my-2 w-full h-auto mx-auto  max-w-[700px]"
      />
     );
    } else if (youtubeRegex.test(word)) {
@@ -202,7 +154,7 @@ const SingleBlog = () => {
     return (
      <div key={index} className="my-2">
       <iframe
-       className="w-full mx-auto iframeStyle max-w-[700px]"
+       className="w-full  mx-auto iframeStyle max-w-[700px]"
        src={`https://www.youtube.com/embed/${videoId}`}
        title="YouTube video player"
        frameBorder="0"
@@ -226,7 +178,7 @@ const SingleBlog = () => {
  return (
   <>
    <div className="flex items-start justify-center gap-1 flex-col lg:flex-row">
-    <div className="flex-3 bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200 w-full max-w-[1200px]">
+    <div className="flex-3  bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200  w-full max-w-[1200px]">
      <div className="container mx-auto">
       <h1 className="text-3xl font-bold mb-2 text-center text-gray-800 dark:text-white transition-colors duration-200">
        {blog.title}
@@ -248,19 +200,16 @@ const SingleBlog = () => {
          likingLoading={likingLoading}
         />
        )}
-       <div className="flex flex-wrap gap-1">
-        {blog?.tags[0] != "" &&
-         blog.tags.map((each, i) => (
-          <Link
-           to={`/blogs/${each}`}
-           key={i}
-           className="mr-2 bg-slate-300 dark:bg-slate-500 px-2 py-[0.2rem] text-[0.8rem] rounded"
-          >
-           {each}
-          </Link>
-         ))}
-       </div>
-
+       {blog?.tags[0] != "" &&
+        blog.tags.map((each, i) => (
+         <Link
+          to={`/blogs/${each}`}
+          key={i}
+          className="mr-2 bg-slate-300 dark:bg-slate-500 px-2 py-1 text-[0.8rem]"
+         >
+          {each}
+         </Link>
+        ))}
        {currentUser &&
         (currentUser?._id === blog?.author._id ||
          currentUser?.role !== "user") && (

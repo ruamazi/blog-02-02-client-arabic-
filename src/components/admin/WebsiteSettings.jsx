@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { apiUrl } from "../../pages/blog/Register";
 import axios from "axios";
 import Loader from "../blog/Loader";
+import WebsiteColor from "./WebsiteColor";
+import Line from "../Line";
 
 const WebsiteSettings = ({ token }) => {
  const [websiteData, setWebsiteData] = useState({
@@ -228,6 +230,8 @@ const WebsiteSettings = ({ token }) => {
    >
     {loading ? "جاري الاستعادة..." : "استعادة الوضع التلقائي"}
    </button>
+   <Line />
+   <WebsiteColor />
    <p className="text-end text-xs text-gray-700 dark:text-gray-400">
     قم باعادة تحميل الصفحة لرؤية التغييرات
    </p>

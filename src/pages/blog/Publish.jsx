@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./Register";
 import BackToHome from "../../components/BackToHome";
-import TextEditor from "../../components/blog/TextEditor";
 
 const Publish = () => {
  const [title, setTitle] = useState("");
@@ -11,10 +10,13 @@ const Publish = () => {
  const [tags, setTags] = useState("");
  const [isPrivate, setIsPrivate] = useState(false);
  const [error, setError] = useState("");
+ const [loading, setLoading] = useState(false);
  const navigate = useNavigate();
 
  const handleSubmit = async (e) => {
   e.preventDefault();
+  setLoading(true);
+  setError("");
   try {
    const token = localStorage.getItem("token");
    await axios.post(
@@ -24,13 +26,11 @@ const Publish = () => {
    );
    navigate("/");
   } catch (err) {
+   console.log(err);
    setError(err.response?.data?.error || " حدث خطأ ما");
+  } finally {
+   setLoading(false);
   }
- };
-
- const handleEditorChange = (editorState) => {
-  console.log(editorState);
-  setContent(editorState);
  };
 
  return (
@@ -60,7 +60,7 @@ const Publish = () => {
          required
         />
        </div>
-       {/* <div className="mb-4">
+       <div className="mb-4">
         <label
          htmlFor="content"
          className="block text-gray-700 dark:text-gray-300 mb-2"
@@ -76,16 +76,6 @@ const Publish = () => {
          rows="6"
          required
         />
-       </div> */}
-       {/* Editor lexical */}
-       <div className="mb-4">
-        <label
-         htmlFor="content"
-         className="block text-gray-700 dark:text-gray-300 mb-2"
-        >
-         المحتوى
-        </label>
-        <TextEditor onChange={handleEditorChange} />
        </div>
        <div className="mb-4">
         <label
@@ -134,9 +124,10 @@ const Publish = () => {
        </div>
        <button
         type="submit"
+        disabled={loading}
         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
        >
-        انشر
+        {loading ? "جاري النشر..." : "نشر"}
        </button>
       </form>
      </div>

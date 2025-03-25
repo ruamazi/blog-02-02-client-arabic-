@@ -17,6 +17,7 @@ import PageNotFound from "./components/blog/PageNotFound";
 import Dashboard from "./pages/admin/Dashboard";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import { getCurrentUser, getWebData } from "./functions/api";
+import { useTheme } from "./context/ThemeContext";
 
 function App() {
  const { currentUser, setCurrentUser } = useAuth();
@@ -31,6 +32,7 @@ function App() {
   showName: true,
  });
  const [loadingWebSettings, setLoadingWebSettings] = useState(false);
+ const { colors, darkMode } = useTheme();
 
  const getWebSettingsData = async () => {
   setLoadingWebSettings(true);
@@ -79,7 +81,12 @@ function App() {
  return (
   <div
    dir="rtl"
-   className={`min-h-screen bg-gray-200 dark:bg-gray-900 transition-colors duration-200`}
+   style={{
+    backgroundColor: darkMode
+     ? colors.dark.primaryBackground
+     : colors.light.primaryBackground,
+   }}
+   className={`min-h-screen  transition-colors duration-200`}
   >
    <Navbar />
    <main className="container mx-auto px-4 py-8">

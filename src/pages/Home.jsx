@@ -6,6 +6,7 @@ import { apiUrl } from "./blog/Register";
 import Loader from "../components/blog/Loader";
 import MostUsedTags from "../components/blog/MostUsedTags";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Home = () => {
  const [blogs, setBlogs] = useState([]);
@@ -14,6 +15,7 @@ const Home = () => {
  const [isLoading, setIsLoading] = useState(false);
  const { currentUser } = useAuth();
  const token = localStorage.getItem("token");
+ const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchBlogs();
@@ -53,12 +55,24 @@ const Home = () => {
  if (isLoading) return <Loader />;
 
  return (
-  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+  <div
+   style={{
+    backgroundColor: isDark
+     ? colors.dark.primaryBackground
+     : colors.light.primaryBackground,
+   }}
+   className="min-h-screen p-4"
+  >
    <div className="container mx-auto">
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
      {/* Main Content */}
      <div className="lg:col-span-3">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+      <h1
+       style={{
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="text-2xl font-bold mb-6"
+      >
        أحدث المنشورات
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -72,13 +86,22 @@ const Home = () => {
        <div className="flex justify-center mt-8">
         {Array.from({ length: totalPages }, (_, i) => (
          <button
+          style={
+           currentPage === i + 1
+            ? {
+               backgroundColor: isDark
+                ? colors.dark.primaryBtn
+                : colors.light.primaryBtn,
+              }
+            : {
+               backgroundColor: isDark
+                ? colors.dark.grayColor
+                : colors.light.grayColor,
+              }
+          }
           key={i + 1}
           onClick={() => setCurrentPage(i + 1)}
-          className={`mx-1 px-4 py-2 rounded ${
-           currentPage === i + 1
-            ? "bg-blue-500 text-white"
-            : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-          }`}
+          className={`mx-1 px-4 py-2 rounded text-white`}
          >
           {i + 1}
          </button>

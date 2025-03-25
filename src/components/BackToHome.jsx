@@ -1,11 +1,19 @@
 import { Link } from "react-router-dom";
 import { IoMdHome } from "react-icons/io";
+import { useTheme } from "../context/ThemeContext";
 
 const BackToHome = () => {
+ const { colors, darkMode: isDark } = useTheme();
+
  return (
   <Link to={"/"} className="md:hidden mx-auto float-end m-2">
    <button
-    className="bg-slate-600 text-white px-2 py-1 rounded-lg
+    style={{
+     backgroundColor: isDark
+      ? colors.dark.backToHomeBtn
+      : colors.light.backToHomeBtn,
+    }}
+    className=" text-white px-2 py-1 rounded-lg
     hover:bg-slate-700 transition duration-200 cursor-pointer flex
      items-center justify-center gap-1 text-sm"
    >

@@ -3,10 +3,12 @@ import axios from "axios";
 import Loader from "./Loader";
 import { apiUrl } from "../../pages/blog/Register";
 import { Link } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 
 const MostUsedTags = () => {
  const [tags, setTags] = useState([]);
  const [isLoading, setIsLoading] = useState(false);
+ const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchMostUsedTags();
@@ -27,16 +29,33 @@ const MostUsedTags = () => {
  if (isLoading) return <Loader />;
 
  return (
-  <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg h-fit py4">
-   <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+  <div
+   style={{
+    backgroundColor: isDark
+     ? colors.dark.secondaryBackground
+     : colors.light.secondaryBackground,
+   }}
+   className=" p-4 rounded-lg shadow-lg h-fit py4"
+  >
+   <h2
+    style={{
+     color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+    }}
+    className="text-xl font-bold mb-4"
+   >
     هاشتاجات متداولة
    </h2>
    <div className="flex flex-wrap gap-2">
     {tags.map((tag) => (
      <Link
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.primaryBtn
+        : colors.light.primaryBtn,
+      }}
       to={`/blogs/${tag._id}`}
       key={tag._id}
-      className="bg-blue-500/30 hover:bg-blue-500/50 px-3 py-1 rounded-full text-sm"
+      className="px-3 py-1 rounded text-sm text-white"
      >
       {tag._id} ({tag.count})
      </Link>

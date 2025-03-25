@@ -3,12 +3,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./Register";
 import { useAuth } from "../../context/AuthContext";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
 const Login = () => {
  const [email, setEmail] = useState("");
  const [password, setPassword] = useState("");
  const [error, setError] = useState("");
  const [loading, setLoading] = useState(false);
+ const [showPassword, setShowPassword] = useState(false);
  const navigate = useNavigate();
  const { setCurrentUser } = useAuth();
 
@@ -29,6 +31,10 @@ const Login = () => {
   } finally {
    setLoading(false);
   }
+ };
+
+ const handleShowPassword = () => {
+  setShowPassword(!showPassword);
  };
 
  return (
@@ -55,7 +61,7 @@ const Login = () => {
        required
       />
      </div>
-     <div className="mb-6">
+     <div className="mb-6 relative">
       <label
        htmlFor="password"
        className="block text-gray-700 dark:text-gray-300 mb-2"
@@ -63,18 +69,36 @@ const Login = () => {
        الرمز السري
       </label>
       <input
-       type="password"
        id="password"
        value={password}
+       type={showPassword ? "text" : "password"}
        onChange={(e) => setPassword(e.target.value)}
        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
        required
       />
+      {password.length > 0 && (
+       <span className="absolute top-11 left-2">
+        {showPassword ? (
+         <BiSolidHide
+          className="text-white text-2xl cursor-pointer"
+          size={20}
+          onClick={handleShowPassword}
+         />
+        ) : (
+         <BiSolidShow
+          className="text-white text-2xl cursor-pointer"
+          size={20}
+          onClick={handleShowPassword}
+         />
+        )}
+       </span>
+      )}
      </div>
      <button
       type="submit"
       disabled={loading}
-      className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+      className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600
+       transition duration-200 cursor-pointer"
      >
       {loading ? "جاري التحقق..." : "تسجيل الدخول"}
      </button>

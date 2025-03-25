@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
 export const apiUrl =
  import.meta.env.VITE_ENV === "development"
@@ -12,6 +13,7 @@ const Register = () => {
  const [password, setPassword] = useState("");
  const [error, setError] = useState("");
  const [loading, setLoading] = useState(false);
+ const [showPassword, setShowPassword] = useState(false);
 
  const handleSubmit = async (e) => {
   setLoading(true);
@@ -30,6 +32,10 @@ const Register = () => {
   } finally {
    setLoading(false);
   }
+ };
+
+ const handleShowPassword = () => {
+  setShowPassword(!showPassword);
  };
 
  return (
@@ -72,7 +78,7 @@ const Register = () => {
        required
       />
      </div>
-     <div className="mb-6">
+     <div className="mb-6 relative">
       <label
        htmlFor="password"
        className="block text-gray-700 dark:text-gray-300 mb-2"
@@ -80,13 +86,30 @@ const Register = () => {
        الرمز السري
       </label>
       <input
-       type="password"
+       type={showPassword ? "text" : "password"}
        id="password"
        value={password}
        onChange={(e) => setPassword(e.target.value)}
        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
        required
       />
+      {password.length > 0 && (
+       <span className="absolute top-11 left-2">
+        {showPassword ? (
+         <BiSolidHide
+          className="text-2xl cursor-pointer"
+          size={20}
+          onClick={handleShowPassword}
+         />
+        ) : (
+         <BiSolidShow
+          className=" text-2xl cursor-pointer"
+          size={20}
+          onClick={handleShowPassword}
+         />
+        )}
+       </span>
+      )}
      </div>
      <button
       type="submit"
