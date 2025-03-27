@@ -1,13 +1,28 @@
 import React from "react";
 import { FaUsers, FaBlog, FaComments } from "react-icons/fa";
+import { useTheme } from "../../context/ThemeContext";
 
 const DashboardStats = ({ stats }) => {
+ const { colors, darkMode: isDark } = useTheme();
+
  const StatCard = ({ title, value, icon, color }) => (
-  <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+  <div
+   style={{
+    backgroundColor: isDark
+     ? colors.dark.primaryBackground
+     : colors.light.primaryBackground,
+   }}
+   className=" p-4 sm:p-6 rounded-lg shadow-md"
+  >
    <div className="flex items-center gap-4">
     <div className={`p-3 rounded-full ${color[0]} text-white`}>{icon}</div>
     <div className="flex items-center  gap-2.5">
-     <h3 className="text-lg sm:text-xl font-semibold mb-1 dark:text-gray-200">
+     <h3
+      style={{
+       color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
+      }}
+      className="text-lg sm:text-xl font-semibold mb-1"
+     >
       {title}
      </h3>
      <p className={`${color[1]} text-2xl sm:text-3xl font-bold`}>{value}</p>

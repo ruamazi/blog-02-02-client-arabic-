@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./blog/Register";
+import { useTheme } from "../context/ThemeContext";
 
 const ConfirmEmail = () => {
  const [userEmail, setUserEmail] = useState("");
@@ -9,6 +10,7 @@ const ConfirmEmail = () => {
  const [sending, setSending] = useState(false);
  const [error, setError] = useState("");
  const navigate = useNavigate();
+ const { colors, darkMode: isDark } = useTheme();
 
  const handleOrderNewEmail = async (e) => {
   setError("");
@@ -29,22 +31,51 @@ const ConfirmEmail = () => {
  };
 
  return (
-  <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-   <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
-    <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white text-center">
+  <div className="flex items-center justify-center min-h-screen">
+   <div
+    style={{
+     backgroundColor: isDark
+      ? colors.dark.secondaryBackground
+      : colors.light.secondaryBackground,
+    }}
+    className="p-8 rounded-lg shadow-md w-full max-w-xl"
+   >
+    <h2
+     style={{
+      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+     }}
+     className="text-2xl font-bold mb-2 text-center"
+    >
      تم ارسال بريد التحقق الى حسابكم الالكتروني
     </h2>
-    <p className="text-center text-gray-700 dark:text-gray-300 mb-4">
+    <p
+     style={{
+      color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
+     }}
+     className="text-center mb-4"
+    >
      الرجاء التحقق من بريدك الالكتروني ثم تسجيل الدخول
     </p>
     {!successMessage && (
      <>
-      <label>اطلب بريد التحقق مجددا</label>
+      <label
+       style={{
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+      >
+       اطلب بريد التحقق مجددا
+      </label>
       <input
        type="email"
        value={userEmail}
        onChange={(e) => setUserEmail(e.target.value)}
-       className="w-full bg-gray-100 text-gray-700 border border-gray-300 rounded py-2 px-4 mb-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBackground
+         : colors.light.primaryBackground,
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="w-full rounded py-2 px-4 mb-4 mt-2 placeholder:opacity-80"
        placeholder="البريد الالكتروني"
       />
      </>
@@ -53,21 +84,36 @@ const ConfirmEmail = () => {
      <button
       disabled={!userEmail || successMessage || sending}
       onClick={handleOrderNewEmail}
-      className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.primaryBtn
+        : colors.light.primaryBtn,
+      }}
+      className="w-full opacity-90 hover:opacity-100 text-white py-2 px-4 rounded-lg transition duration-200"
      >
       {sending ? "جاري الارسال ..." : "ارسال"}
      </button>
     )}
-    {successMessage && <p className="mb-2 text-green-500">{successMessage}</p>}
-    {error && <p className="mb-2 text-red-500">{error}</p>}
-    <p className=" text-gray-700 dark:text-gray-300 mb-4 text-sm">
-       في حالة عدم وصول البريد، الرجاء التحقق من مجلد البريد العشوائي أو الاتصال
-     بنا.
+    {successMessage && <p className="my-2 text-green-500">{successMessage}</p>}
+    {error && <p className="my-2 text-red-500">{error}</p>}
+    <p
+     style={{
+      color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
+     }}
+     className="my-4 text-sm"
+    >
+       * في حالة عدم التوصول بالبريد، الرجاء التحقق من مجلد البريد العشوائي أو
+     الاتصال بنا.
     </p>
 
     <button
      onClick={() => navigate("/login")}
-     className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+     style={{
+      backgroundColor: isDark
+       ? colors.dark.primaryBtn
+       : colors.light.primaryBtn,
+     }}
+     className="w-full opacity-90 hover:opacity-100 text-white py-2 px-4 rounded-lg transition duration-200"
     >
      الدخول
     </button>

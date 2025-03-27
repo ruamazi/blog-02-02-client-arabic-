@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
-import ConfirmationModal from "../blog/ConfirmationModal";
 import Loader from "../blog/Loader";
+import { useTheme } from "../../context/ThemeContext";
 
 const UsersList = () => {
  const [users, setUsers] = useState([]);
@@ -11,6 +11,7 @@ const UsersList = () => {
  const [deletingUser, setDeletingUser] = useState(false);
  const [updatingUserRole, setUpdatingUserRole] = useState(false);
  const token = localStorage.getItem("token");
+ const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchUsers();
@@ -73,46 +74,80 @@ const UsersList = () => {
  return (
   <div className="overflow-x-auto">
    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-    <thead className="bg-gray-50 dark:bg-gray-800">
-     <tr>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
+    <thead
+     style={{
+      backgroundColor: isDark
+       ? colors.dark.secondaryBackground
+       : colors.light.secondaryBackground,
+     }}
+    >
+     <tr
+      style={{
+       color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+      }}
+     >
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium">
        المستخدم
       </th>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 hidden sm:table-cell">
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium hidden sm:table-cell">
        البريد الإلكتروني
       </th>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium">
        الدور
       </th>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium">
        الإجراءات
       </th>
      </tr>
     </thead>
-    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+    <tbody
+     style={{
+      backgroundColor: isDark
+       ? colors.dark.secondaryBackground
+       : colors.light.secondaryBackground,
+     }}
+     className="divide-y divide-gray-200 dark:divide-gray-700"
+    >
      {users.map((user) => (
-      <tr key={user._id}>
-       <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+      <tr
+       key={user._id}
+       style={{
+        color: isDark
+         ? colors.dark.secondaryColor
+         : colors.light.secondaryColor,
+       }}
+      >
+       <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
         {user.username}
        </td>
-       <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200 hidden sm:table-cell">
+       <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm hidden sm:table-cell">
         {user.email}
        </td>
-       <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+       <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
         {user.role}
        </td>
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
         <div className="flex flex-col sm:flex-row gap-2">
          <button
           onClick={() => handleRoleUpdate(user._id)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm  btndisabled"
+          style={{
+           backgroundColor: isDark
+            ? colors.dark.primaryBtn
+            : colors.light.primaryBtn,
+          }}
+          className="opacity-90 hover:opacity-100 transition-all duration-200 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm  btndisabled"
           disabled={user.role === "superAdmin" || updatingUserRole}
          >
           {updatingUserRole ? "جاري التحديث" : "تعديل الدور"}
          </button>
          <button
           onClick={() => handleDeleteUser(user._id)}
-          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm btndisabled"
+          style={{
+           backgroundColor: isDark
+            ? colors.dark.tertiaryBtn
+            : colors.light.tertiaryBtn,
+          }}
+          className="opacity-90 hover:opacity-100 transition-all duration-200 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm btndisabled"
           disabled={user.role === "superAdmin" || deletingUser}
          >
           {deletingUser ? "جاري الحذف" : "حذف"}

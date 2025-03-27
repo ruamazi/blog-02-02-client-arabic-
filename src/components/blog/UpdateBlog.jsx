@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../pages/blog/Register";
 import Loader from "./Loader";
+import { useTheme } from "../../context/ThemeContext";
 
 const UpdateBlog = () => {
  const { id } = useParams();
@@ -11,6 +12,7 @@ const UpdateBlog = () => {
  const [error, setError] = useState("");
  const [saving, setSaving] = useState(false);
  const navigate = useNavigate();
+ const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchBlog();
@@ -62,59 +64,116 @@ const UpdateBlog = () => {
  if (loading) return <Loader />;
 
  return (
-  <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+  <div className="min-h-screen p-4">
    <div className="container mx-auto">
-    <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
-     Update Blog
+    <h1
+     style={{
+      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+     }}
+     className="text-3xl font-bold mb-6"
+    >
+     تعديل المدونة
     </h1>
     <form
      onSubmit={handleSubmit}
-     className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+     style={{
+      backgroundColor: isDark
+       ? colors.dark.secondaryBackground
+       : colors.light.secondaryBackground,
+     }}
+     className="p-6 rounded-lg shadow-md"
     >
      <div className="mb-4">
-      <label className="block text-gray-700 dark:text-gray-300 mb-2">
-       Title
+      <label
+       style={{
+        color: isDark
+         ? colors.dark.secondaryColor
+         : colors.light.secondaryColor,
+       }}
+       className="block mb-2"
+      >
+       العنوان
       </label>
       <input
        type="text"
        name="title"
        value={blog.title}
        onChange={handleInputChange}
-       className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+       placeholder="اكتب عنوان المدونة ..."
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBackground
+         : colors.light.primaryBackground,
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="w-full px-4 py-2 rounded-lg placeholder:text-sm"
        required
       />
      </div>
      <div className="mb-4">
-      <label className="block text-gray-700 dark:text-gray-300 mb-2">
-       Content
+      <label
+       style={{
+        color: isDark
+         ? colors.dark.secondaryColor
+         : colors.light.secondaryColor,
+       }}
+       className="block mb-2"
+      >
+       المحتوى
       </label>
       <textarea
        name="content"
        value={blog.content}
        onChange={handleInputChange}
-       className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+       placeholder="اكتب محتوى المدونة ..."
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBackground
+         : colors.light.primaryBackground,
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="w-full px-4 py-2 rounded-lg placeholder:text-sm placeholder:py-1"
        rows="6"
        required
       />
      </div>
      <div className="mb-4">
-      <label className="block text-gray-700 dark:text-gray-300 mb-2">
-       Tags (comma separated)
+      <label
+       style={{
+        color: isDark
+         ? colors.dark.secondaryColor
+         : colors.light.secondaryColor,
+       }}
+       className="block mb-2"
+      >
+       هاشتاغ (فصل بواسطة الفاصلة)
       </label>
       <input
        type="text"
        value={blog.tags.join(", ")}
        onChange={handleTagsChange}
-       className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBackground
+         : colors.light.primaryBackground,
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       placeholder="اكتب هاشتاغ المدونة ..."
+       className="w-full px-4 py-2 rounded-lg placeholder:text-sm"
       />
      </div>
-     {error && <p className="text-red-500 mb-4">{error}</p>}
      <button
       type="submit"
-      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.primaryBtn
+        : colors.light.primaryBtn,
+      }}
+      className=" text-white px-4 py-2 rounded-lg transition duration-200"
      >
-      {saving ? "Saving..." : "Save"}
+       {saving ? "جاري الحفظ ..." : "حفظ"}
      </button>
+     {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </form>
    </div>
   </div>

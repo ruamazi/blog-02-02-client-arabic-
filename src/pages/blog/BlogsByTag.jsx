@@ -5,6 +5,7 @@ import BlogCard from "../../components/blog/BlogCard";
 import { apiUrl } from "./Register";
 import Loader from "../../components/blog/Loader";
 import BackToHome from "../../components/BackToHome";
+import { useTheme } from "../../context/ThemeContext";
 
 const BlogsByTag = () => {
  const { tag } = useParams(); // Get the tag from the URL
@@ -12,6 +13,7 @@ const BlogsByTag = () => {
  const [currentPage, setCurrentPage] = useState(1);
  const [totalPages, setTotalPages] = useState(1);
  const [isLoading, setIsLoading] = useState(false);
+ const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchBlogsByTag();
@@ -36,12 +38,24 @@ const BlogsByTag = () => {
 
  return (
   <>
-   <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+   <div className="min-h-screen p-4">
     <div className="container mx-auto">
      {blogs.length > 0 ? (
       <>
-       <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-        منشورات تتضمن هاشتاغ: <span className="text-blue-500">{tag}</span>
+       <h1
+        style={{
+         color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+        }}
+        className="text-2xl font-bold mb-6"
+       >
+        منشورات تتضمن هاشتاغ:{" "}
+        <span
+         style={{
+          color: isDark ? colors.dark.primaryBtn : colors.light.primaryBtn,
+         }}
+        >
+         {tag}
+        </span>
        </h1>
        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {blogs.map((blog) => (
@@ -56,11 +70,20 @@ const BlogsByTag = () => {
           <button
            key={i + 1}
            onClick={() => setCurrentPage(i + 1)}
-           className={`mx-1 px-4 py-2 rounded ${
+           style={
             currentPage === i + 1
-             ? "bg-blue-500 text-white"
-             : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white"
-           }`}
+             ? {
+                backgroundColor: isDark
+                 ? colors.dark.primaryBtn
+                 : colors.light.primaryBtn,
+               }
+             : {
+                backgroundColor: isDark
+                 ? colors.dark.grayColor
+                 : colors.light.grayColor,
+               }
+           }
+           className={`mx-1 px-4 py-2 rounded text-white`}
           >
            {i + 1}
           </button>
@@ -72,7 +95,13 @@ const BlogsByTag = () => {
       <div className="flex flex-col items-center">
        <h1 className="text-lg md:text-2xl font-bold mb-6 text-gray-800 dark:text-white  mt-12">
         لا يوجد منشورات تتضمن هاشتاغ:{" "}
-        <span className="text-blue-500">{tag}</span>
+        <span
+         style={{
+          color: isDark ? colors.dark.primaryBtn : colors.light.primaryBtn,
+         }}
+        >
+         {tag}
+        </span>
        </h1>
        <Link to="/" className="text-blue-500 hover:underline">
         العودة إلى الصفحة الرئيسية

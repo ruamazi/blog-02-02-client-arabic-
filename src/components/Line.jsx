@@ -1,6 +1,18 @@
+import { useTheme } from "../context/ThemeContext";
+
 const Line = () => {
+ const { colors, darkMode: isDark } = useTheme();
+
  return (
-  <hr className="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded-sm md:my-10 dark:bg-gray-700" />
+  <hr
+   style={{
+    backgroundColor: isDark
+     ? colors.dark.backToHomeBtn
+     : colors.light.backToHomeBtn,
+    opacity: 0.4,
+   }}
+   className="w-48 h-1 mx-auto my-4 border-0 rounded-sm md:my-10 "
+  />
  );
 };
 

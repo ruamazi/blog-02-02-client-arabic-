@@ -6,19 +6,18 @@ const BackToHome = () => {
  const { colors, darkMode: isDark } = useTheme();
 
  return (
-  <Link to={"/"} className="md:hidden mx-auto float-end m-2">
+  <Link to={"/"} className="md:hidden mx-auto float-end relative">
    <button
     style={{
      backgroundColor: isDark
       ? colors.dark.backToHomeBtn
       : colors.light.backToHomeBtn,
     }}
-    className=" text-white px-2 py-1 rounded-lg
-    hover:bg-slate-700 transition duration-200 cursor-pointer flex
-     items-center justify-center gap-1 text-sm"
+    className="opacity-80 hover:opacity-100 text-white px-2 py-1 rounded-lg transition duration-200 cursor-pointer flex
+     items-center justify-center gap-1 text-sm absolute -bottom-5 left-0"
    >
     الرئيسية
-    <IoMdHome size={18} className="mb-1.5" />
+    <IoMdHome size={17} className="mb-1.5" />
    </button>
   </Link>
  );

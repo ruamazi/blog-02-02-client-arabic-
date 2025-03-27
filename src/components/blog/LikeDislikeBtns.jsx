@@ -4,6 +4,7 @@ import {
  AiOutlineDislike,
  AiOutlineLike,
 } from "react-icons/ai";
+import { useTheme } from "../../context/ThemeContext";
 
 const LikeDislikeButtons = ({
  blog,

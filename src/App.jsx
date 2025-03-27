@@ -7,7 +7,6 @@ import Register, { apiUrl } from "./pages/blog/Register";
 import SingleBlog from "./pages/blog/SingleBlog";
 import Publish from "./pages/blog/Publish";
 import Profile from "./pages/blog/Profile";
-import axios from "axios";
 import Loader from "./components/blog/Loader";
 import { useAuth } from "./context/AuthContext";
 import UpdateBlog from "./components/blog/UpdateBlog";
@@ -109,6 +108,7 @@ function App() {
      <Route path="/update-blog/:id" element={<UpdateBlog />} />
      <Route path="/user/:username" element={<User />} />
      <Route path="/blogs/:tag" element={<BlogsByTag />} />
+
      <Route
       path="/confirm-email"
       element={currentUser ? <Navigate to="/" /> : <ConfirmEmail />}

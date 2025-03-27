@@ -89,7 +89,7 @@ const Navbar = () => {
       {darkMode ? (
        <BsSun className="text-yellow-500" size={20} />
       ) : (
-       <BsMoon className="text-gray-600 dark:text-gray-400" size={20} />
+       <BsMoon className="text-gray-600" size={20} />
       )}
      </button>
      {currentUser ? (
@@ -97,7 +97,7 @@ const Navbar = () => {
        <Link
         to="/publish"
         style={textColor}
-        className=" hover:text-blue-500 flex items-center justify-center gap-1 hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
+        className="opacity-80 hover:opacity-100 flex items-center justify-center gap-1 hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
        >
         انشر <MdOutlineCreate size={20} />
        </Link>
@@ -107,8 +107,7 @@ const Navbar = () => {
           ? colors.dark.primaryBackground
           : colors.light.primaryBackground,
         }}
-        className="flex items-center space-x-2 py-1 px-2 
-       rounded-2xl transition-colors duration-200"
+        className="flex items-center space-x-2 py-1 px-2 rounded-2xl transition-colors duration-200"
        >
         <img
          src={currentUser.profilePicture || profilePlaceHolder}
@@ -137,14 +136,14 @@ const Navbar = () => {
        <Link
         to="/login"
         style={textColor}
-        className=" flex items-center gap-1 justify-center transition-colors duration-200"
+        className="hover:underline hover:underline-offset-4 flex items-center gap-1 justify-center transition-colors duration-200"
        >
         <RiLoginBoxFill size={20} /> تسجيل الدخول
        </Link>
        <Link
         to="/register"
         style={textColor}
-        className=" transition-colors duration-200"
+        className=" hover:underline hover:underline-offset-4 hover:decoration-2 transition-all duration-200"
        >
         التسجيل
        </Link>

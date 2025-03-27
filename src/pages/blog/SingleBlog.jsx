@@ -21,6 +21,7 @@ import CommentForm from "../../components/blog/CommentForm";
 import BlogActionBtns from "../../components/blog/BlogActionBtns";
 import BackToHome from "../../components/BackToHome";
 import RelatedBlogs from "../../components/blog/RelatedBlogs";
+import { useTheme } from "../../context/ThemeContext";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -38,6 +39,7 @@ const SingleBlog = () => {
  const [likingLoading, setLikingLoading] = useState(false);
  const [loadingBlog, setLoadingBlog] = useState(false);
  const navigate = useNavigate();
+ const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchBlogData();
@@ -154,7 +156,7 @@ const SingleBlog = () => {
     return (
      <div key={index} className="my-2">
       <iframe
-       className="w-full  mx-auto iframeStyle max-w-[700px]"
+       className="w-full mx-auto iframeStyle max-w-[700px]"
        src={`https://www.youtube.com/embed/${videoId}`}
        title="YouTube video player"
        frameBorder="0"
@@ -178,16 +180,38 @@ const SingleBlog = () => {
  return (
   <>
    <div className="flex items-start justify-center gap-1 flex-col lg:flex-row">
-    <div className="flex-3  bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200  w-full max-w-[1200px]">
+    <div className="flex-3 p-4 w-full max-w-[1200px]">
      <div className="container mx-auto">
-      <h1 className="text-3xl font-bold mb-2 text-center text-gray-800 dark:text-white transition-colors duration-200">
+      <h1
+       style={{
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="text-3xl font-bold mb-2 text-center transition-colors duration-200"
+      >
        {blog.title}
       </h1>
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-200">
-       <div className="text-gray-700 dark:text-gray-300 text-xl mb-4 transition-colors duration-200">
+      <div
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.secondaryBackground
+         : colors.light.secondaryBackground,
+       }}
+       className="p-6 rounded-lg shadow-md transition-colors duration-200"
+      >
+       <div
+        style={{
+         color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+        }}
+        className="text-xl mb-4 transition-colors duration-200"
+       >
         {renderContentWithMedia(blog.content)}
        </div>
-       <p className="text-end text-gray-600 dark:text-gray-400 transition-colors duration-200">
+       <p
+        style={{
+         color: isDark ? colors.dark.grayColor : colors.light.grayColor,
+        }}
+        className="text-end opacity-80 transition-colors duration-200"
+       >
         {dateFormatter(blog.createdAt)}
        </p>
        <BlogAuthor author={blog.author} />
@@ -205,7 +229,13 @@ const SingleBlog = () => {
          <Link
           to={`/blogs/${each}`}
           key={i}
-          className="mr-2 bg-slate-300 dark:bg-slate-500 px-2 py-1 text-[0.8rem]"
+          style={{
+           backgroundColor: isDark
+            ? colors.dark.grayColor
+            : colors.light.grayColor,
+           color: isDark ? colors.dark.primaryColor : colors.dark.primaryColor,
+          }}
+          className="mr-2 opacity-80 dark:opacity-100 px-2 py-1 text-[0.8rem] transition-all duration-200 rounded"
          >
           {each}
          </Link>
@@ -224,7 +254,14 @@ const SingleBlog = () => {
         )}
 
        <Line />
-       <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-white mt-5">
+       <h2
+        style={{
+         color: isDark
+          ? colors.dark.secondaryColor
+          : colors.light.secondaryColor,
+        }}
+        className="text-xl font-bold mb-2 mt-5 transition-all duration-200 "
+       >
         التعليقات
        </h2>
        <CommentList

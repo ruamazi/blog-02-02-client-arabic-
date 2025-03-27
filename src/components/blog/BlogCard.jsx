@@ -59,7 +59,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
      style={{
       color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
      }}
-     className="mb-4"
+     className="mb-4 opacity-90"
     >
      {blog.content.substring(0, 100)}...
     </p>
@@ -75,6 +75,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
       style={{
        color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
       }}
+      className="opacity-70"
      >
       {blog.author.username}
      </span>
@@ -95,6 +96,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
     {!isAdmin && isPending && <p className="text-xs">في انتضارالموافقة</p>}
     {blog.private && (
      <MdPublicOff
+      className="opacity-70"
       style={{
        color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
       }}

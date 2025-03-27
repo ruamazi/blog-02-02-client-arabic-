@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
+import { useTheme } from "../../context/ThemeContext";
+import { Link } from "react-router-dom";
 
 export const apiUrl =
  import.meta.env.VITE_ENV === "development"
@@ -14,6 +16,7 @@ const Register = () => {
  const [error, setError] = useState("");
  const [loading, setLoading] = useState(false);
  const [showPassword, setShowPassword] = useState(false);
+ const { colors, darkMode: isDark } = useTheme();
 
  const handleSubmit = async (e) => {
   setLoading(true);
@@ -39,9 +42,21 @@ const Register = () => {
  };
 
  return (
-  <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-   <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md">
-    <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white text-center">
+  <div className="flex items-center justify-center min-h-screen">
+   <div
+    style={{
+     backgroundColor: isDark
+      ? colors.dark.secondaryBackground
+      : colors.light.secondaryBackground,
+    }}
+    className="p-8 rounded-lg shadow-md w-full max-w-md"
+   >
+    <h2
+     style={{
+      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+     }}
+     className="text-2xl font-bold mb-6 text-center"
+    >
      انضم الآن
     </h2>
     {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -49,7 +64,12 @@ const Register = () => {
      <div className="mb-4">
       <label
        htmlFor="username"
-       className="block text-gray-700 dark:text-gray-300 mb-2"
+       style={{
+        color: isDark
+         ? colors.dark.secondaryColor
+         : colors.light.secondaryColor,
+       }}
+       className="block mb-2"
       >
        الإسم المستعار
       </label>
@@ -58,14 +78,26 @@ const Register = () => {
        id="username"
        value={username}
        onChange={(e) => setUsername(e.target.value)}
-       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+       placeholder="اختر اسم مستعار"
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBackground
+         : colors.light.primaryBackground,
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="w-full px-4 py-2 placeholder:text-sm rounded-lg focus:outline-none focus:ring-2 placeholder:opacity-80"
        required
       />
      </div>
      <div className="mb-4">
       <label
        htmlFor="email"
-       className="block text-gray-700 dark:text-gray-300 mb-2"
+       style={{
+        color: isDark
+         ? colors.dark.secondaryColor
+         : colors.light.secondaryColor,
+       }}
+       className="block mb-2"
       >
        البريد الإلكتروني
       </label>
@@ -74,14 +106,26 @@ const Register = () => {
        id="email"
        value={email}
        onChange={(e) => setEmail(e.target.value)}
-       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+       placeholder="email@example.com"
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBackground
+         : colors.light.primaryBackground,
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder:opacity-80"
        required
       />
      </div>
      <div className="mb-6 relative">
       <label
        htmlFor="password"
-       className="block text-gray-700 dark:text-gray-300 mb-2"
+       style={{
+        color: isDark
+         ? colors.dark.secondaryColor
+         : colors.light.secondaryColor,
+       }}
+       className="block mb-2"
       >
        الرمز السري
       </label>
@@ -90,20 +134,27 @@ const Register = () => {
        id="password"
        value={password}
        onChange={(e) => setPassword(e.target.value)}
-       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+       placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBackground
+         : colors.light.primaryBackground,
+        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+       }}
+       className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 placeholder:opacity-80 placeholder:text-sm"
        required
       />
       {password.length > 0 && (
        <span className="absolute top-11 left-2">
         {showPassword ? (
          <BiSolidHide
-          className="text-2xl cursor-pointer"
+          className="text-2xl cursor-pointer opacity-80"
           size={20}
           onClick={handleShowPassword}
          />
         ) : (
          <BiSolidShow
-          className=" text-2xl cursor-pointer"
+          className=" text-2xl cursor-pointer opacity-80"
           size={20}
           onClick={handleShowPassword}
          />
@@ -114,16 +165,32 @@ const Register = () => {
      <button
       type="submit"
       disabled={loading}
-      className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.primaryBtn
+        : colors.light.primaryBtn,
+      }}
+      className="w-full opacity-90 hover:opacity-100 text-white py-2 px-4 rounded-lg  transition duration-200"
      >
        {loading ? "جاري التسجيل ..." : "التسجيل"}
      </button>
     </form>
-    <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
+    <p
+     style={{
+      color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
+     }}
+     className="mt-4 text-center"
+    >
      لديك عضوية ؟ &nbsp;
-     <a href="/login" className="text-blue-500 hover:underline">
+     <Link
+      to="/login"
+      style={{
+       color: isDark ? colors.dark.primaryBtn : colors.light.primaryBtn,
+      }}
+      className="hover:underline"
+     >
       قم بتسجيل الدخول
-     </a>
+     </Link>
     </p>
    </div>
   </div>

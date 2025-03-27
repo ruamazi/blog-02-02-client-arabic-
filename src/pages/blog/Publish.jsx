@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./Register";
 import BackToHome from "../../components/BackToHome";
+import { useTheme } from "../../context/ThemeContext";
 
 const Publish = () => {
  const [title, setTitle] = useState("");
@@ -12,6 +13,7 @@ const Publish = () => {
  const [error, setError] = useState("");
  const [loading, setLoading] = useState(false);
  const navigate = useNavigate();
+ const { colors, darkMode: isDark } = useTheme();
 
  const handleSubmit = async (e) => {
   e.preventDefault();
@@ -35,18 +37,35 @@ const Publish = () => {
 
  return (
   <>
-   <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+   <div className="min-h-screen p-4">
     <div className="container mx-auto">
-     <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+     <h1
+      style={{
+       color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+      }}
+      className="text-3xl font-bold mb-6"
+     >
       قم بنشر موضوع جديد
      </h1>
-     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+     <div
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.secondaryBackground
+        : colors.light.secondaryBackground,
+      }}
+      className="p-6 rounded-lg shadow-md"
+     >
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit}>
        <div className="mb-4 ">
         <label
          htmlFor="title"
-         className="block text-gray-700 dark:text-gray-300 mb-2"
+         style={{
+          color: isDark
+           ? colors.dark.secondaryColor
+           : colors.light.secondaryColor,
+         }}
+         className="block mb-2"
         >
          العنوان
         </label>
@@ -56,14 +75,25 @@ const Publish = () => {
          placeholder="اكتب عنوان المدونة ..."
          value={title}
          onChange={(e) => setTitle(e.target.value)}
-         className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white placeholder:text-gray-400"
+         style={{
+          backgroundColor: isDark
+           ? colors.dark.primaryBackground
+           : colors.light.primaryBackground,
+          color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+         }}
+         className="w-full px-4 py-2 rounded-lg placeholder:text-sm"
          required
         />
        </div>
        <div className="mb-4">
         <label
          htmlFor="content"
-         className="block text-gray-700 dark:text-gray-300 mb-2"
+         style={{
+          color: isDark
+           ? colors.dark.secondaryColor
+           : colors.light.secondaryColor,
+         }}
+         className="block mb-2"
         >
          المحتوى
         </label>
@@ -72,7 +102,13 @@ const Publish = () => {
          placeholder="اكتب محتوى المدونة ..."
          value={content}
          onChange={(e) => setContent(e.target.value)}
-         className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white placeholder:text-gray-400"
+         style={{
+          backgroundColor: isDark
+           ? colors.dark.primaryBackground
+           : colors.light.primaryBackground,
+          color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+         }}
+         className="w-full px-4 py-2 rounded-lg"
          rows="6"
          required
         />
@@ -80,7 +116,12 @@ const Publish = () => {
        <div className="mb-4">
         <label
          htmlFor="tags"
-         className="block text-gray-700 dark:text-gray-300 mb-2"
+         style={{
+          color: isDark
+           ? colors.dark.secondaryColor
+           : colors.light.secondaryColor,
+         }}
+         className="block mb-2"
         >
          هاشتاغ (فصل بواسطة الفاصلة)
         </label>
@@ -90,11 +131,26 @@ const Publish = () => {
          placeholder="اكتب هاشتاغ المدونة ..."
          value={tags}
          onChange={(e) => setTags(e.target.value)}
-         className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white placeholder:text-gray-400"
+         style={{
+          backgroundColor: isDark
+           ? colors.dark.primaryBackground
+           : colors.light.primaryBackground,
+          color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+         }}
+         className="w-full px-4 py-2 rounded-lg placeholder:text-sm"
         />
        </div>
        <div className="mb-4 flex gap-1">
-        <label className="block text-gray-700 dark:text-gray-300">النشر:</label>
+        <label
+         style={{
+          color: isDark
+           ? colors.dark.secondaryColor
+           : colors.light.secondaryColor,
+         }}
+         className="block "
+        >
+         النشر:
+        </label>
         <div className="flex items-center gap-[2px]">
          <input
           type="radio"
@@ -105,7 +161,14 @@ const Publish = () => {
           onChange={() => setIsPrivate(false)}
           className="mr-2"
          />
-         <label htmlFor="public" className=" text-gray-700 dark:text-gray-300">
+         <label
+          style={{
+           color: isDark
+            ? colors.dark.secondaryColor
+            : colors.light.secondaryColor,
+          }}
+          htmlFor="public"
+         >
           عام
          </label>
          <input
@@ -117,7 +180,14 @@ const Publish = () => {
           onChange={() => setIsPrivate(true)}
           className="mr-2"
          />
-         <label htmlFor="private" className="text-gray-700 dark:text-gray-300">
+         <label
+          style={{
+           color: isDark
+            ? colors.dark.secondaryColor
+            : colors.light.secondaryColor,
+          }}
+          htmlFor="private"
+         >
           خاص
          </label>
         </div>
@@ -125,7 +195,12 @@ const Publish = () => {
        <button
         type="submit"
         disabled={loading}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+        style={{
+         backgroundColor: isDark
+          ? colors.dark.primaryBtn
+          : colors.light.primaryBtn,
+        }}
+        className="opacity-90 hover:opacity-100 text-white px-8 py-1 rounded-lg transition duration-200"
        >
         {loading ? "جاري النشر..." : "نشر"}
        </button>

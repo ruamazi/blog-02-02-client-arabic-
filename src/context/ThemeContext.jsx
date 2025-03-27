@@ -1,37 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
-
-const websiteThemeSchema = {
- dark: {
-  primaryBackground: "#101828",
-  secondaryBackground: "#1e2938",
-  tertiaryBackground: "#141d27", // comment bg
-  primaryColor: "#ffffff",
-  secondaryColor: "#d1d5dc",
-  primaryBtn: "#2c7fff", //blue btn
-  secondaryBtn: "#00c951", // green btn
-  tertiaryBtn: "#e8000b", // red btn
-  quaternaryBtn: "#e17100", //gold btn
-  backToHomeBtn: "#45556c",
-  grayColor: "#6a7282", // gray for btn and text
- },
- light: {
-  primaryBackground: "#e6e7eb",
-  secondaryBackground: "#ffffff",
-  tertiaryBackground: "#dceaff", // comment bg
-  primaryColor: "#1e2938",
-  secondaryColor: "#364154",
-  primaryBtn: "#2c7fff", //blue btn
-  secondaryBtn: "#00c951", //green btn
-  tertiaryBtn: "#e8000b", //red btn
-  quaternaryBtn: "#e17100", //gold btn
-  backToHomeBtn: "#45556c",
-  grayColor: "#6a7282", // gray for btn and text
- },
-};
+import { apiUrl } from "../pages/blog/Register";
+import axios from "axios";
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
+ const [colors, setColors] = useState({ dark: {}, light: {} });
  const [darkMode, setDarkMode] = useState(() => {
   const savedTheme = localStorage.getItem("theme");
   return (
@@ -40,7 +14,62 @@ export const ThemeProvider = ({ children }) => {
   );
  });
 
- const [colors, setColors] = useState(websiteThemeSchema);
+ const token = localStorage.getItem("token");
+
+ const getColors = async () => {
+  try {
+   const resp = await axios.get(`${apiUrl}/api/blogs/get-colors`);
+   setColors(resp.data);
+   localStorage.setItem("colors", JSON.stringify(resp.data));
+  } catch (error) {
+   console.log(error);
+  }
+ };
+
+ const updateColors = (theme, property, value) => {
+  const updatedColors = {
+   ...colors,
+   [theme]: {
+    ...colors[theme],
+    [property]: value,
+   },
+  };
+  setColors(updatedColors);
+  localStorage.setItem("colors", JSON.stringify(updatedColors));
+ };
+
+ const saveColorsToDB = async () => {
+  try {
+   await axios.post(`${apiUrl}/api/admin/update-colors`, colors, {
+    headers: { Authorization: `Bearer ${token}` },
+   });
+   alert("تم حفظ الألوان بنجاح");
+  } catch (error) {
+   console.error("Failed to save colors:", error);
+   alert("حدث خطأ أثناء حفظ الألوان");
+  }
+ };
+
+ const resetColors = async () => {
+  try {
+   const resp = await axios.get(`${apiUrl}/api/admin/reset-colors`, {
+    headers: { Authorization: `Bearer ${token}` },
+   });
+   setColors(resp.data);
+   localStorage.setItem("colors", JSON.stringify(resp.data));
+  } catch (error) {
+   console.log(error);
+  }
+ };
+
+ useEffect(() => {
+  const storedColors = localStorage.getItem("colors");
+  if (storedColors) {
+   setColors(JSON.parse(storedColors));
+  } else {
+   getColors();
+  }
+ }, []);
 
  useEffect(() => {
   if (darkMode) {
@@ -56,22 +85,8 @@ export const ThemeProvider = ({ children }) => {
   setDarkMode(!darkMode);
  };
 
- const updateColors = (theme, property, value) => {
-  setColors((prev) => ({
-   ...prev,
-   [theme]: {
-    ...prev[theme],
-    [property]: value,
-   },
-  }));
- };
-
- const resetColors = () => {
-  setColors(websiteThemeSchema);
- };
-
  const getCurrentThemeColors = () => {
-  return darkMode ? colors.dark : colors.light;
+  return darkMode ? colors?.dark : colors?.light;
  };
 
  return (
@@ -83,6 +98,7 @@ export const ThemeProvider = ({ children }) => {
     currentColors: getCurrentThemeColors(),
     updateColors,
     resetColors,
+    saveColorsToDB,
    }}
   >
    {children}

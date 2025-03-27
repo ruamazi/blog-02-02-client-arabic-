@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { profilePlaceHolder } from "../../components/blog/BlogCard";
 import PageNotFound from "../../components/blog/PageNotFound";
 import BackToHome from "../../components/BackToHome";
+import { useTheme } from "../../context/ThemeContext";
 
 const User = () => {
  const { username } = useParams();
@@ -16,6 +17,7 @@ const User = () => {
  const { currentUser } = useAuth();
  const token = localStorage.getItem("token");
  const navigate = useNavigate();
+ const { colors, darkMode: isDark } = useTheme();
 
  const getUser = async () => {
   setLoadingUser(true);
@@ -72,9 +74,15 @@ const User = () => {
 
  return (
   <>
-   {" "}
-   <div className="bg-white  dark:bg-gray-800/50 m-3 p-6 rounded-lg shadow-md mt-10 max-w-200 mx-auto">
-    <div className="flex flex-col items-center space-y-3">
+   <div
+    style={{
+     backgroundColor: isDark
+      ? colors.dark.secondaryBackground
+      : colors.light.secondaryBackground,
+    }}
+    className=" m-3 p-6 rounded-lg shadow-md mt-10 max-w-200 mx-auto"
+   >
+    <div className="flex flex-col items-center gap-2 ">
      {/* Profile Picture */}
      <img
       src={profileUser.profilePicture || profilePlaceHolder}
@@ -85,16 +93,27 @@ const User = () => {
      />
 
      {/* Username */}
-     <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+     <h2
+      style={{
+       color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+      }}
+      className="text-2xl font-bold"
+     >
       {profileUser.username}
      </h2>
-     <h3>{profileUser.email}</h3>
+     <h3
+      style={{
+       color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+      }}
+     >
+      {profileUser.email}
+     </h3>
 
      {/* Role */}
-     <div className="mt-5 flex flex-col w-40 gap-2 text-center">
+     <div className="mt-5 flex flex-col w-40 gap-2 text-center min-w-[170px]">
       <h2
        className={`${
-        profileUser?.role === "superAdmin" ? "text-amber-400" : ""
+        profileUser?.role === "superAdmin" ? "text-amber-500" : ""
        } text-xl`}
       >
        {profileUser?.role}
@@ -104,21 +123,32 @@ const User = () => {
         onClick={() => {
          handleAdmin(profileUser._id);
         }}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+        style={{
+         backgroundColor: isDark
+          ? colors.dark.primaryBtn
+          : colors.light.primaryBtn,
+        }}
+        className="opacity-85 hover:opacity-100 text-white px-4 py-2 rounded-lg transition duration-200"
        >
         {profileUser.role === "user" ? "اجعل العضو أدمن" : "حذف صلاحية الأدمن"}
        </button>
       )}
-      {profileUser.role !== "superAdmin" &&
+      {/* needs to be fixed: add modal confirmation and make sure deleting user wont break website*/}
+      {/* {profileUser.role !== "superAdmin" &&
        currentUser?.role === "superAdmin" && (
         <button
          onClick={() => handleDeleteUser(profileUser._id)}
          disabled={deletingUser}
-         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
+         style={{
+          backgroundColor: isDark
+           ? colors.dark.primaryBtn
+           : colors.light.primaryBtn,
+         }}
+         className="opacity-85 hover:opacity-100 text-white px-4 py-2 rounded-lg  transition duration-200"
         >
          حذف العضو
         </button>
-       )}
+       )} */}
      </div>
     </div>
    </div>

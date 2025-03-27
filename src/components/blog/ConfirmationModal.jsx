@@ -1,24 +1,52 @@
+import { useTheme } from "../../context/ThemeContext";
+
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, message }) => {
+ const { colors, darkMode: isDark } = useTheme();
+
  if (!isOpen) return null;
 
  return (
   <div className="fixed inset-0 flex items-center justify-center z-50">
    <div
-    className="fixed inset-0 bg-black/20 backdrop-blur-sm"
+    className="fixed inset-0 bg-black/30 backdrop-blur-sm"
     onClick={onClose}
    ></div>
-   <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg z-50">
-    <p className="text-gray-700 dark:text-gray-300 mb-4">{message}</p>
+   <div
+    style={{
+     backgroundColor: isDark
+      ? colors.dark.secondaryBackground
+      : colors.light.secondaryBackground,
+    }}
+    className="p-6 rounded-lg shadow-lg z-50"
+   >
+    <p
+     style={{
+      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+     }}
+     className="mb-4"
+    >
+     {message}
+    </p>
     <div className="flex justify-end gap-4">
      <button
       onClick={onClose}
-      className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-200 cursor-pointer"
+      style={{
+       backgroundColor: isDark ? colors.dark.grayColor : colors.light.grayColor,
+      }}
+      className="px-4 py-2  text-white rounded-lg transition duration-200 cursor-pointer 
+      opacity-90 hover:opacity-100"
      >
       الغاء
      </button>
      <button
       onClick={onConfirm}
-      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200 cursor-pointer"
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.tertiaryBtn
+        : colors.light.tertiaryBtn,
+      }}
+      className="px-4 py-2 text-white rounded-lg transition duration-200 cursor-pointer 
+      opacity-90 hover:opacity-100"
      >
       نعم, قم بالحذف
      </button>

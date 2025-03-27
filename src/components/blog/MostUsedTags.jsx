@@ -55,7 +55,7 @@ const MostUsedTags = () => {
       }}
       to={`/blogs/${tag._id}`}
       key={tag._id}
-      className="px-3 py-1 rounded text-sm text-white"
+      className="px-3 py-1 rounded text-sm text-white opacity-80"
      >
       {tag._id} ({tag.count})
      </Link>

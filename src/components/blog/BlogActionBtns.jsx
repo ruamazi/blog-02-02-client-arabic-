@@ -26,7 +26,7 @@ const BlogActionBtns = ({
       ? colors.dark.tertiaryBtn
       : colors.light.tertiaryBtn,
     }}
-    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded"
+    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded opacity-90 hover:opacity-100"
    >
     {deletingBlog ? "جاري الحذف" : "حذف"} <MdDelete size={20} />
    </button>
@@ -35,7 +35,7 @@ const BlogActionBtns = ({
     style={{
      backgroundColor: isDark ? colors.dark.primaryBtn : colors.light.primaryBtn,
     }}
-    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded"
+    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded opacity-90 hover:opacity-100"
    >
     تعديل <CiEdit size={20} />
    </button>
@@ -44,7 +44,7 @@ const BlogActionBtns = ({
     style={{
      backgroundColor: isDark ? colors.dark.grayColor : colors.light.grayColor,
     }}
-    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded"
+    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded opacity-90 hover:opacity-100"
    >
     {blog.commentsEnabled ? "غلق التعليقات" : "فتح التعليقات"}
     {blog.commentsEnabled ? <FaLockOpen size={18} /> : <FaLock size={18} />}
@@ -57,7 +57,7 @@ const BlogActionBtns = ({
       : colors.light.primaryBackground,
      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
     }}
-    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded"
+    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded opacity-90 hover:opacity-100"
    >
     {blog.private ? <MdPublicOff /> : <MdPublic />}
     {blog.private ? "منشور خاص" : "منشور عام"}

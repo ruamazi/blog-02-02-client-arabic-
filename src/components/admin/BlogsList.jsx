@@ -3,6 +3,7 @@ import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
 import { Link } from "react-router-dom";
 import Loader from "../blog/Loader";
+import { useTheme } from "../../context/ThemeContext";
 
 const BlogsList = () => {
  const [blogs, setBlogs] = useState([]);
@@ -12,6 +13,7 @@ const BlogsList = () => {
  const [updatingStatus, setUpdatingStatus] = useState(false);
  const [loadingApprove, setLoadingApprove] = useState(false);
  const token = localStorage.getItem("token");
+ const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchBlogs();
@@ -89,24 +91,48 @@ const BlogsList = () => {
 
  return (
   <div className="overflow-x-auto">
-   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-    <thead className="bg-gray-50 dark:bg-gray-800">
-     <tr>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
+   <table
+    style={{
+     backgroundColor: isDark
+      ? colors.dark.secondaryBackground
+      : colors.light.secondaryBackground,
+    }}
+    className="min-w-full divide-y overflow-y-scroll"
+   >
+    <thead
+     style={{
+      backgroundColor: isDark
+       ? colors.dark.secondaryBackground
+       : colors.light.secondaryBackground,
+     }}
+    >
+     <tr
+      style={{
+       color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+      }}
+     >
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium">
        العنوان
       </th>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300 hidden sm:table-cell">
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium hidden sm:table-cell">
        الكاتب
       </th>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium">
        الخصوصية
       </th>
-      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
+      <th className="px-3 py-2 sm:px-6 sm:py-3 text-right text-xs sm:text-sm font-medium">
        الإجراءات
       </th>
      </tr>
     </thead>
-    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+    <tbody
+     style={{
+      backgroundColor: isDark
+       ? colors.dark.secondaryBackground
+       : colors.light.secondaryBackground,
+     }}
+     className="divide-y divide-gray-200 dark:divide-gray-700"
+    >
      {blogs.map((blog) => (
       <tr
        key={blog._id}
@@ -117,17 +143,34 @@ const BlogsList = () => {
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
         <Link
          to={`/blog/${blog._id}`}
-         className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+         style={{
+          color: isDark ? colors.dark.primaryBtn : colors.light.primaryBtn,
+         }}
+         className="hover:underline"
         >
          {blog.title.length > 30
           ? blog.title.substring(0, 30) + "..."
           : blog.title}
         </Link>
-        <p className="text-xs text-gray-500 dark:text-gray-400 block sm:hidden">
+        <p
+         style={{
+          color: isDark
+           ? colors.dark.secondaryColor
+           : colors.light.secondaryColor,
+         }}
+         className="text-xs block sm:hidden"
+        >
          الكاتب: {blog.author.username}
         </p>
        </td>
-       <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200 hidden sm:table-cell">
+       <td
+        style={{
+         color: isDark
+          ? colors.dark.secondaryColor
+          : colors.light.secondaryColor,
+        }}
+        className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm hidden sm:table-cell"
+       >
         {blog.author.username}
        </td>
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
@@ -144,16 +187,26 @@ const BlogsList = () => {
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
         <div className="flex flex-col sm:flex-row gap-2">
          <button
+          style={{
+           backgroundColor: isDark
+            ? colors.dark.primaryBtn
+            : colors.light.primaryBtn,
+          }}
           onClick={() => handleToggleStatus(blog._id)}
           disabled={updatingStatus}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
+          className="opacity-90 hover:opacity-100 transition-opacity duration-300 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
          >
           {updatingStatus ? "جاري التحديث" : !blog.private ? "اخفاء" : "عام"}
          </button>
          <button
           onClick={() => handleDeleteBlog(blog._id)}
           disabled={deletingBlog}
-          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
+          style={{
+           backgroundColor: isDark
+            ? colors.dark.tertiaryBtn
+            : colors.light.tertiaryBtn,
+          }}
+          className="opacity-90 hover:opacity-100 transition-opacity duration-300 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
          >
           {deletingBlog ? "جاري الحذف" : "حذف"}
          </button>
@@ -161,7 +214,12 @@ const BlogsList = () => {
           <button
            onClick={() => handleApproveBlog(blog._id)}
            disabled={loadingApprove}
-           className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
+           style={{
+            backgroundColor: isDark
+             ? colors.dark.secondaryBtn
+             : colors.light.secondaryBtn,
+           }}
+           className="opacity-90 hover:opacity-100 transition-opacity duration-300 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
           >
            {loadingApprove ? "جاري الموافقة" : "موافقة"}
           </button>
