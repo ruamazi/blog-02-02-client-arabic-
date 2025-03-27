@@ -7,6 +7,7 @@ import Loader from "../components/blog/Loader";
 import MostUsedTags from "../components/blog/MostUsedTags";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import Pagination from "../components/Pagination";
 
 const Home = () => {
  const [blogs, setBlogs] = useState([]);
@@ -82,32 +83,11 @@ const Home = () => {
         </Link>
        ))}
       </div>
-      {totalPages > 1 && (
-       <div className="flex justify-center mt-8">
-        {Array.from({ length: totalPages }, (_, i) => (
-         <button
-          style={
-           currentPage === i + 1
-            ? {
-               backgroundColor: isDark
-                ? colors.dark.primaryBtn
-                : colors.light.primaryBtn,
-              }
-            : {
-               backgroundColor: isDark
-                ? colors.dark.grayColor
-                : colors.light.grayColor,
-              }
-          }
-          key={i + 1}
-          onClick={() => setCurrentPage(i + 1)}
-          className={`mx-1 px-4 py-2 rounded text-white`}
-         >
-          {i + 1}
-         </button>
-        ))}
-       </div>
-      )}
+      <Pagination
+       currentPage={currentPage}
+       setCurrentPage={setCurrentPage}
+       totalPages={totalPages}
+      />
      </div>
 
      {/* Sidebar for Most Used Tags */}

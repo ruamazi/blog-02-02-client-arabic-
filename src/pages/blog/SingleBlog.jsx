@@ -38,6 +38,7 @@ const SingleBlog = () => {
  const [commentToDelete, setCommentToDelete] = useState(null);
  const [likingLoading, setLikingLoading] = useState(false);
  const [loadingBlog, setLoadingBlog] = useState(false);
+ const [privateLoading, setPrivateLoading] = useState(false);
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
 
@@ -127,11 +128,14 @@ const SingleBlog = () => {
  };
 
  const handlePrivate = async (blogId) => {
+  setPrivateLoading(true);
   try {
    const updateBlog = await makeBlogPrivate(blogId);
    setBlog(updateBlog);
   } catch (error) {
    console.log(error);
+  } finally {
+   setPrivateLoading(false);
   }
  };
 
@@ -250,6 +254,7 @@ const SingleBlog = () => {
           handleBlockComments={handleBlockComments}
           showDeleteCommentModal={showDeleteBlogModal}
           handlePrivate={handlePrivate}
+          privateLoading={privateLoading}
          />
         )}
 

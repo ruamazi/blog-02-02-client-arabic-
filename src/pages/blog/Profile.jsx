@@ -9,6 +9,7 @@ import BackToHome from "../../components/BackToHome";
 import { MdDashboardCustomize } from "react-icons/md";
 import { useTheme } from "../../context/ThemeContext";
 import { isValidImageUrl } from "../../functions/helpers";
+import Pagination from "../../components/Pagination";
 
 const Profile = ({ setCurrentUser }) => {
  const { currentUser } = useAuth();
@@ -236,32 +237,11 @@ const Profile = ({ setCurrentUser }) => {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-       <div className="flex justify-center mt-8">
-        {Array.from({ length: totalPages }, (_, i) => (
-         <button
-          key={i + 1}
-          onClick={() => setCurrentPage(i + 1)}
-          style={
-           currentPage === i + 1
-            ? {
-               backgroundColor: isDark
-                ? colors.dark.primaryBtn
-                : colors.light.primaryBtn,
-              }
-            : {
-               backgroundColor: isDark
-                ? colors.dark.grayColor
-                : colors.light.grayColor,
-              }
-          }
-          className={`mx-1 px-4 py-2 rounded text-white`}
-         >
-          {i + 1}
-         </button>
-        ))}
-       </div>
-      )}
+      <Pagination
+       totalPages={totalPages}
+       currentPage={currentPage}
+       setCurrentPage={setCurrentPage}
+      />
      </div>
     )}
    </div>

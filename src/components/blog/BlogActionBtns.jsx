@@ -12,6 +12,7 @@ const BlogActionBtns = ({
  deletingBlog,
  handleBlockComments,
  handlePrivate,
+ privateLoading,
 }) => {
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
@@ -51,13 +52,14 @@ const BlogActionBtns = ({
    </button>
    <button
     onClick={() => handlePrivate(blog._id)}
+    disabled={privateLoading}
     style={{
      backgroundColor: isDark
       ? colors.dark.primaryBackground
       : colors.light.primaryBackground,
      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
     }}
-    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded opacity-90 hover:opacity-100"
+    className="flex items-center gap-1 text-white py-1 px-2 md:px-4 text-xs md:text-sm md:py-2 rounded opacity-90 hover:opacity-100 btndisabled"
    >
     {blog.private ? <MdPublicOff /> : <MdPublic />}
     {blog.private ? "منشور خاص" : "منشور عام"}

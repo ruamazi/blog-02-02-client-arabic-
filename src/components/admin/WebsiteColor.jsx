@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
 
 const WebsiteColor = () => {
@@ -8,6 +9,8 @@ const WebsiteColor = () => {
   darkMode: isDark,
   saveColorsToDB,
  } = useTheme();
+ const [saving, setSaving] = useState(false);
+ const [savingMsg, setSavingMsg] = useState("");
 
  const renderColorInput = (theme, property, label) => (
   <div className="flex items-center gap-4 py-2 border-b border-gray-200">
@@ -32,12 +35,16 @@ const WebsiteColor = () => {
  );
 
  const handleSave = async () => {
+  setSaving(true);
+  setSavingMsg("");
   try {
    await saveColorsToDB();
-   alert("تم حفظ الألوان بنجاح");
+   setSavingMsg("تم حفظ الألوان بنجاح");
   } catch (error) {
    console.error("Failed to save colors:", error);
-   alert("حدث خطأ أثناء حفظ الألوان");
+   setSavingMsg("حدث خطأ أثناء حفظ الألوان");
+  } finally {
+   setSaving(false);
   }
  };
 
@@ -105,18 +112,26 @@ const WebsiteColor = () => {
      {renderColorInput("light", "grayColor", "لون الرمادي")}
     </div>
    </div>
-
-   <div className="flex gap-3 flex-wrap mt-8 text-center">
+   <p
+    style={{
+     color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+    }}
+    className="text-center mt-2 text-xs"
+   >
+    لن يتم حفظ التغييرات في قاعدة البيانات إلا بعد الضغط على زر حفظ التغييرات
+   </p>
+   <div className="flex gap-3 flex-wrap mt-6 text-center">
     <button
      onClick={handleSave}
+     disabled={saving}
      style={{
       backgroundColor: isDark
        ? colors.dark.primaryBtn
        : colors.light.primaryBtn,
      }}
-     className="opacity-85 hover:opacity-100 text-white py-2 px-6 rounded-lg transition-all duration-200"
+     className="opacity-85 hover:opacity-100 text-white py-2 px-6 rounded-lg transition-all duration-200 btndisabled"
     >
-     حفظ التغييرات
+     {saving ? "جاري حفظ التغييرات..." : "حفظ التغييرات"}
     </button>
     <button
      onClick={handleReset}
@@ -128,6 +143,7 @@ const WebsiteColor = () => {
      إعادة تعيين
     </button>
    </div>
+   <p className="text-center mt-2 text-sm text-green-500">{savingMsg}</p>
   </div>
  );
 };

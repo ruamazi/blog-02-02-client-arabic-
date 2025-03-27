@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { apiUrl } from "./Register";
@@ -27,7 +27,8 @@ const Login = () => {
    });
    localStorage.setItem("token", response.data.token);
    setCurrentUser(response.data.user);
-   navigate("/"); // Redirect to home page after login
+   navigate("/");
+   window.location.reload();
   } catch (err) {
    setError(err.response?.data?.message || "Login failed");
   } finally {
@@ -103,7 +104,7 @@ const Login = () => {
        value={password}
        type={showPassword ? "text" : "password"}
        onChange={(e) => setPassword(e.target.value)}
-       placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
+       placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
        style={{
         backgroundColor: isDark
          ? colors.dark.primaryBackground

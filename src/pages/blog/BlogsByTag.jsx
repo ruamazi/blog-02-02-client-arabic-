@@ -6,6 +6,7 @@ import { apiUrl } from "./Register";
 import Loader from "../../components/blog/Loader";
 import BackToHome from "../../components/BackToHome";
 import { useTheme } from "../../context/ThemeContext";
+import Pagination from "../../components/Pagination";
 
 const BlogsByTag = () => {
  const { tag } = useParams(); // Get the tag from the URL
@@ -64,32 +65,11 @@ const BlogsByTag = () => {
          </Link>
         ))}
        </div>
-       {totalPages > 1 && (
-        <div className="flex justify-center mt-8">
-         {Array.from({ length: totalPages }, (_, i) => (
-          <button
-           key={i + 1}
-           onClick={() => setCurrentPage(i + 1)}
-           style={
-            currentPage === i + 1
-             ? {
-                backgroundColor: isDark
-                 ? colors.dark.primaryBtn
-                 : colors.light.primaryBtn,
-               }
-             : {
-                backgroundColor: isDark
-                 ? colors.dark.grayColor
-                 : colors.light.grayColor,
-               }
-           }
-           className={`mx-1 px-4 py-2 rounded text-white`}
-          >
-           {i + 1}
-          </button>
-         ))}
-        </div>
-       )}
+       <Pagination
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+       />
       </>
      ) : (
       <div className="flex flex-col items-center">

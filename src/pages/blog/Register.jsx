@@ -134,7 +134,7 @@ const Register = () => {
        id="password"
        value={password}
        onChange={(e) => setPassword(e.target.value)}
-       placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
+       placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
        style={{
         backgroundColor: isDark
          ? colors.dark.primaryBackground

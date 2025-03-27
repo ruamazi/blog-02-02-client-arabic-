@@ -43,7 +43,6 @@ export const ThemeProvider = ({ children }) => {
    await axios.post(`${apiUrl}/api/admin/update-colors`, colors, {
     headers: { Authorization: `Bearer ${token}` },
    });
-   alert("تم حفظ الألوان بنجاح");
   } catch (error) {
    console.error("Failed to save colors:", error);
    alert("حدث خطأ أثناء حفظ الألوان");
