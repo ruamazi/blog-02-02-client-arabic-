@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { apiUrl } from "./Register";
 import BackToHome from "../../components/BackToHome";
 import { useTheme } from "../../context/ThemeContext";
+import TextEditor from "../../components/blog/TextEditor";
 
 const Publish = () => {
  const [title, setTitle] = useState("");
- const [content, setContent] = useState("");
+ const [content, setContent] = useState(""); // Track content from TextEditor
  const [tags, setTags] = useState("");
  const [isPrivate, setIsPrivate] = useState(false);
  const [error, setError] = useState("");
@@ -23,13 +24,24 @@ const Publish = () => {
    const token = localStorage.getItem("token");
    await axios.post(
     `${apiUrl}/api/blogs`,
-    { title, content, tags: tags.split(","), isPrivate },
+    {
+     title,
+     content,
+     tags: tags
+      .split(/[,،.\s]+/)
+      .map((tag) => tag.trim())
+      .filter(
+       (tag) => tag.length > 0 && !tag.includes(" ") && tag.length <= 20
+      ),
+     isPrivate,
+    },
     { headers: { Authorization: `Bearer ${token}` } }
    );
+
    navigate("/");
   } catch (err) {
    console.log(err);
-   setError(err.response?.data?.error || " حدث خطأ ما");
+   setError(err.response?.data?.error || "حدث خطأ ما");
   } finally {
    setLoading(false);
   }
@@ -56,8 +68,15 @@ const Publish = () => {
       className="p-6 rounded-lg shadow-md"
      >
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSubmit}>
-       <div className="mb-4 ">
+      <form
+       onSubmit={handleSubmit}
+       onKeyDown={(e) => {
+        if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+         e.preventDefault();
+        }
+       }}
+      >
+       <div className="mb-4">
         <label
          htmlFor="title"
          style={{
@@ -85,9 +104,10 @@ const Publish = () => {
          required
         />
        </div>
+
+       {/* Use TextEditor instead of textarea */}
        <div className="mb-4">
         <label
-         htmlFor="content"
          style={{
           color: isDark
            ? colors.dark.secondaryColor
@@ -97,22 +117,9 @@ const Publish = () => {
         >
          المحتوى
         </label>
-        <textarea
-         id="content"
-         placeholder="اكتب محتوى المدونة ..."
-         value={content}
-         onChange={(e) => setContent(e.target.value)}
-         style={{
-          backgroundColor: isDark
-           ? colors.dark.primaryBackground
-           : colors.light.primaryBackground,
-          color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
-         }}
-         className="w-full px-4 py-2 rounded-lg"
-         rows="6"
-         required
-        />
+        <TextEditor content={content} setContent={setContent} />
        </div>
+
        <div className="mb-4">
         <label
          htmlFor="tags"
@@ -140,6 +147,7 @@ const Publish = () => {
          className="w-full px-4 py-2 rounded-lg placeholder:text-sm"
         />
        </div>
+
        <div className="mb-4 flex gap-1">
         <label
          style={{
@@ -192,6 +200,7 @@ const Publish = () => {
          </label>
         </div>
        </div>
+
        <button
         type="submit"
         disabled={loading}

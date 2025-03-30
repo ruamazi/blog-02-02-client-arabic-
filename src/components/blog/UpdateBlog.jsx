@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../pages/blog/Register";
 import Loader from "./Loader";
 import { useTheme } from "../../context/ThemeContext";
+import TextEditor from "./TextEditor";
 
 const UpdateBlog = () => {
  const { id } = useParams();
@@ -35,8 +36,15 @@ const UpdateBlog = () => {
  };
 
  const handleTagsChange = (e) => {
-  const tags = e.target.value.split(",").map((tag) => tag.trim());
+  const tags = e.target.value
+   .split(/[,،.\s]+/) // Split by comma, Arabic comma, period, or whitespace
+   .map((tag) => tag.trim())
+   .filter((tag) => tag.length > 0); // Remove empty tags
   setBlog({ ...blog, tags });
+ };
+
+ const handleContentChange = (content) => {
+  setBlog({ ...blog, content });
  };
 
  const handleSubmit = async (e) => {
@@ -50,8 +58,10 @@ const UpdateBlog = () => {
    });
    navigate(`/blog/${id}`);
   } catch (err) {
-   if (err.response && err.response.data && err.response.data.message) {
-    setError(err.response.data.message);
+   console.log(error);
+
+   if (err.response && err.response.data && err.response.data.error) {
+    setError(err.response.data.error);
    } else {
     setError("حدث خطأ اثناء تعديل المدونة");
    }
@@ -121,21 +131,7 @@ const UpdateBlog = () => {
       >
        المحتوى
       </label>
-      <textarea
-       name="content"
-       value={blog.content}
-       onChange={handleInputChange}
-       placeholder="اكتب محتوى المدونة ..."
-       style={{
-        backgroundColor: isDark
-         ? colors.dark.primaryBackground
-         : colors.light.primaryBackground,
-        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
-       }}
-       className="w-full px-4 py-2 rounded-lg placeholder:text-sm placeholder:py-1"
-       rows="6"
-       required
-      />
+      <TextEditor content={blog.content} setContent={handleContentChange} />
      </div>
      <div className="mb-4">
       <label

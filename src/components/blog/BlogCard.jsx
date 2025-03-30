@@ -32,8 +32,13 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
    setLoading(false);
   }
  };
+ const stripHtmlTags = (html) => {
+  if (typeof html !== "string") return "";
+  return html.replace(/<[^>]*>?/gm, "");
+ };
 
  if (loading) return <Loader />;
+ const plainTextContent = stripHtmlTags(blog.content);
 
  return (
   <div
@@ -53,7 +58,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
      }}
      className="text-xl font-bold mb-2"
     >
-     {blog.title}
+     {blog.title.substring(0, 50)}
     </h2>
     <p
      style={{
@@ -61,7 +66,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
      }}
      className="mb-4 opacity-90"
     >
-     {blog.content.substring(0, 100)}...
+     {plainTextContent.substring(0, 100)}...
     </p>
    </div>
    <div className="flex items-center justify-between flex-wrap">

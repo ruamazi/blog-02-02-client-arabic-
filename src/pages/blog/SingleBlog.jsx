@@ -140,39 +140,29 @@ const SingleBlog = () => {
  };
 
  const renderContentWithMedia = (content) => {
-  const imageRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/i;
-  const youtubeRegex =
-   /(https?:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+))/i;
+  // Regex for plain image URLs (common image extensions)
+  const plainImageRegex =
+   /(https?:\/\/[^\s"']+\.(?:png|jpg|jpeg|gif|webp|svg|bmp)(?:\?[^\s"']*)?)(?![^<]*>)/gi;
+  // Regex for plain YouTube URLs (both watch and youtu.be formats)
+  const plainYoutubeRegex =
+   /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)(?:\S*)?(?![^<]*>)/gi;
+  // First process plain YouTube URLs
+  let formattedContent = content.replace(
+   plainYoutubeRegex,
+   `<div class="my-2"><iframe class="w-full h-[400px] mx-auto max-w-[700px]" src="https://www.youtube.com/embed/$1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+  );
+  // Then process plain image URLs
+  formattedContent = formattedContent.replace(
+   plainImageRegex,
+   `<img class="my-2 w-full h-auto mx-auto max-w-[700px]" src="$1" alt="Blog content"/>`
+  );
+  // Finally ensure all img tags (existing or newly created) have proper classes
+  formattedContent = formattedContent.replace(
+   /<img([^>]*)>/g,
+   `<img$1 class="my-2 w-full h-auto mx-auto max-w-[700px]" alt="Blog content">`
+  );
 
-  return content.split(/\s+/).map((word, index) => {
-   if (imageRegex.test(word)) {
-    return (
-     <img
-      key={index}
-      src={word}
-      alt="Blog content"
-      className="my-2 w-full h-auto mx-auto  max-w-[700px]"
-     />
-    );
-   } else if (youtubeRegex.test(word)) {
-    const match = word.match(youtubeRegex);
-    const videoId = match[2];
-    return (
-     <div key={index} className="my-2">
-      <iframe
-       className="w-full mx-auto iframeStyle max-w-[700px]"
-       src={`https://www.youtube.com/embed/${videoId}`}
-       title="YouTube video player"
-       frameBorder="0"
-       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-       allowFullScreen
-      ></iframe>
-     </div>
-    );
-   } else {
-    return <span key={index}>{word} </span>;
-   }
-  });
+  return { __html: formattedContent };
  };
 
  if (loadingBlog) return <Loader />;
@@ -206,10 +196,9 @@ const SingleBlog = () => {
         style={{
          color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
         }}
-        className="text-xl mb-4 transition-colors duration-200"
-       >
-        {renderContentWithMedia(blog.content)}
-       </div>
+        className="editor-content text-xl mb-4 tiptap"
+        dangerouslySetInnerHTML={renderContentWithMedia(blog.content)}
+       />
        <p
         style={{
          color: isDark ? colors.dark.grayColor : colors.light.grayColor,
@@ -228,22 +217,24 @@ const SingleBlog = () => {
          likingLoading={likingLoading}
         />
        )}
-       {blog?.tags[0] != "" &&
-        blog.tags.map((each, i) => (
-         <Link
-          to={`/blogs/${each}`}
-          key={i}
-          style={{
-           backgroundColor: isDark
-            ? colors.dark.grayColor
-            : colors.light.grayColor,
-           color: isDark ? colors.dark.primaryColor : colors.dark.primaryColor,
-          }}
-          className="mr-2 opacity-80 dark:opacity-100 px-2 py-1 text-[0.8rem] transition-all duration-200 rounded"
-         >
-          {each}
-         </Link>
-        ))}
+       <div className="flex flex-wrap gap-2">
+        {blog?.tags[0] !== "" &&
+         blog.tags.map((each, i) => (
+          <Link
+           key={i}
+           to={`/blogs/${each}`}
+           style={{
+            backgroundColor: isDark
+             ? colors.dark.grayColor
+             : colors.light.grayColor,
+            color: isDark ? colors.dark.primaryColor : colors.dark.primaryColor,
+           }}
+           className={`opacity-70 px-2 py-1 text-[0.8rem] transition-all duration-200 rounded hover:opacity-100`}
+          >
+           {each}
+          </Link>
+         ))}
+       </div>
        {currentUser &&
         (currentUser?._id === blog?.author._id ||
          currentUser?.role !== "user") && (
