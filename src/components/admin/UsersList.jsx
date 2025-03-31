@@ -55,7 +55,7 @@ const UsersList = () => {
   if (!window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
   setDeletingUser(true);
   try {
-   await axios.delete(`${apiUrl}/api/admin/users/${userId}`, {
+   await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
    });
    fetchUsers();

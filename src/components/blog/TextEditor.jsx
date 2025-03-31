@@ -7,13 +7,6 @@ import Color from "@tiptap/extension-color";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image"; // For image insertion
 import Youtube from "@tiptap/extension-youtube"; // For YouTube insertion
-
-import Italic from "@tiptap/extension-italic";
-import Bold from "@tiptap/extension-bold";
-import BulletList from "@tiptap/extension-bullet-list"; // For unordered list
-import OrderedList from "@tiptap/extension-ordered-list"; // For ordered list
-import Heading from "@tiptap/extension-heading";
-
 import TextStyle from "@tiptap/extension-text-style";
 import Highlight from "@tiptap/extension-highlight";
 import { FaImage, FaYoutube } from "react-icons/fa";
@@ -33,9 +26,6 @@ const TextEditor = ({ content, setContent }) => {
        () => commands.splitBlock(),
       ]),
     },
-    Italic,
-    Bold,
-    BulletList,
    }),
    Underline,
    Color,
@@ -45,10 +35,6 @@ const TextEditor = ({ content, setContent }) => {
    }),
    Image,
    Youtube,
-
-   Heading.configure({
-    levels: [1, 2, 3, 4],
-   }),
    Highlight.configure({ multicolor: true }),
   ],
   content,

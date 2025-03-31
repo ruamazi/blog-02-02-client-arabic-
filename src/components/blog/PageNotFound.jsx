@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 
 const PageNotFound = () => {
@@ -14,6 +15,9 @@ const PageNotFound = () => {
    >
     الصفحة غير متوفرة
    </p>
+   <Link to="/" className="hover:underline">
+    العودة الى الرئيسية
+   </Link>
   </div>
  );
 };

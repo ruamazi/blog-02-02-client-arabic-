@@ -58,7 +58,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
      }}
      className="text-xl font-bold mb-2"
     >
-     {blog.title.substring(0, 50)}
+     {blog.title.length > 50 ? `${blog.title.substring(0, 50)}...` : blog.title}
     </h2>
     <p
      style={{
@@ -66,7 +66,9 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
      }}
      className="mb-4 opacity-90"
     >
-     {plainTextContent.substring(0, 100)}...
+     {plainTextContent.length > 100
+      ? `${plainTextContent.substring(0, 100)}...`
+      : plainTextContent}
     </p>
    </div>
    <div className="flex items-center justify-between flex-wrap">
