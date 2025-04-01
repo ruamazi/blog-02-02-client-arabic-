@@ -35,11 +35,16 @@ const Login = () => {
 
    setCurrentUser(data.user);
    navigate("/");
-   window.location.reload();
+   // window.location.reload();
   } catch (err) {
    console.log(err);
 
-   setError(err.response?.data?.message || "Login failed");
+   setError(
+    err.response?.data?.message ||
+     err.response?.data?.error ||
+     err.response?.data ||
+     "Login failed"
+   );
   } finally {
    setLoading(false);
   }
