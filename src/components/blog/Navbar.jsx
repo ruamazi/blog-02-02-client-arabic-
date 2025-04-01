@@ -9,6 +9,8 @@ import { useTheme } from "../../context/ThemeContext";
 import { useEffect, useState } from "react";
 import { getWebData } from "../../functions/api";
 import Loader from "./Loader";
+import axios from "axios";
+import { apiUrl } from "../../pages/blog/Register";
 
 const Navbar = () => {
  const { currentUser, setCurrentUser } = useAuth();
@@ -27,10 +29,16 @@ const Navbar = () => {
 
  const navigate = useNavigate();
 
- const handleLogout = () => {
-  localStorage.removeItem("token");
-  setCurrentUser(null);
-  navigate("/login");
+ const handleLogout = async () => {
+  try {
+   await axios.get(`${apiUrl}/api/auth/logout`, {
+    withCredentials: true,
+   });
+   setCurrentUser(null);
+   navigate("/login");
+  } catch (error) {
+   console.log(error);
+  }
  };
 
  const setWebSettings = async () => {

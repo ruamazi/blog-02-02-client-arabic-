@@ -21,15 +21,24 @@ const Login = () => {
   setLoading(true);
   e.preventDefault();
   try {
-   const response = await axios.post(`${apiUrl}/api/auth/login`, {
-    email,
-    password,
+   await axios.post(
+    `${apiUrl}/api/auth/login`,
+    {
+     email,
+     password,
+    },
+    { withCredentials: true }
+   );
+   const { data } = await axios.get(`${apiUrl}/api/auth/me`, {
+    withCredentials: true,
    });
-   localStorage.setItem("token", response.data.token);
-   setCurrentUser(response.data.user);
+
+   setCurrentUser(data.user);
    navigate("/");
    window.location.reload();
   } catch (err) {
+   console.log(err);
+
    setError(err.response?.data?.message || "Login failed");
   } finally {
    setLoading(false);

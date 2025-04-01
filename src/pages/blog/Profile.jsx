@@ -23,7 +23,6 @@ const Profile = ({ setCurrentUser }) => {
  const [currentPage, setCurrentPage] = useState(1);
  const [isLoading, setIsLoading] = useState(false);
  const [updatingProfile, setUpdatingProfile] = useState(false);
- const token = localStorage.getItem("token");
  const { colors, darkMode: isDark } = useTheme();
 
  const handleProfileUpdate = async (e) => {
@@ -43,7 +42,9 @@ const Profile = ({ setCurrentUser }) => {
    const resp = await axios.put(
     `${apiUrl}/api/users/profile`,
     { profilePicture },
-    { headers: { Authorization: `Bearer ${token}` } }
+    {
+     withCredentials: true,
+    }
    );
    setCurrentUser(resp.data);
    setMessage("تم تحديث الملف الشخصي بنجاح");
@@ -65,7 +66,9 @@ const Profile = ({ setCurrentUser }) => {
    await axios.put(
     `${apiUrl}/api/users/change-password`,
     { oldPassword, newPassword },
-    { headers: { Authorization: `Bearer ${token}` } }
+    {
+     withCredentials: true,
+    }
    );
    setMessage("تغيير الرمز السري بنجاح");
   } catch (err) {
@@ -85,7 +88,7 @@ const Profile = ({ setCurrentUser }) => {
    const response = await axios.get(
     `${apiUrl}/api/blogs/user?page=${currentPage}&limit=10`,
     {
-     headers: { Authorization: `Bearer ${token}` },
+     withCredentials: true,
     }
    );
    setBlogs(response.data.blogs);

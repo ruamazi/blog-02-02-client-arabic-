@@ -52,9 +52,8 @@ const UpdateBlog = () => {
   setSaving(true);
   setError(null);
   try {
-   const token = localStorage.getItem("token");
    await axios.put(`${apiUrl}/api/blogs/${id}`, blog, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    navigate(`/blog/${id}`);
   } catch (err) {

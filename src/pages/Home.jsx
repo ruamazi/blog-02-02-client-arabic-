@@ -15,7 +15,6 @@ const Home = () => {
  const [totalPages, setTotalPages] = useState(1);
  const [isLoading, setIsLoading] = useState(false);
  const { currentUser } = useAuth();
- const token = localStorage.getItem("token");
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
@@ -31,11 +30,7 @@ const Home = () => {
    if (isAdmin) {
     const resp = await axios.get(
      `${apiUrl}/api/admin/all-blogs?page=${currentPage}&limit=10`,
-     {
-      headers: {
-       Authorization: `Bearer ${token}`,
-      },
-     }
+     { withCredentials: true }
     );
     setBlogs(resp.data.blogs);
     setTotalPages(resp.data.totalPages);

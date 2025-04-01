@@ -12,7 +12,6 @@ const BlogsList = () => {
  const [deletingBlog, setDeletingBlog] = useState(false);
  const [updatingStatus, setUpdatingStatus] = useState(false);
  const [loadingApprove, setLoadingApprove] = useState(false);
- const token = localStorage.getItem("token");
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
@@ -24,7 +23,7 @@ const BlogsList = () => {
   setError(null);
   try {
    const response = await axios.get(`${apiUrl}/api/admin/blogs`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    setBlogs(response.data);
   } catch (error) {
@@ -41,9 +40,7 @@ const BlogsList = () => {
    await axios.put(
     `${apiUrl}/api/admin/blogs/${blogId}/status`,
     {},
-    {
-     headers: { Authorization: `Bearer ${token}` },
-    }
+    { withCredentials: true }
    );
    fetchBlogs();
   } catch (error) {
@@ -58,7 +55,7 @@ const BlogsList = () => {
   setDeletingBlog(true);
   try {
    await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    fetchBlogs();
   } catch (error) {
@@ -72,7 +69,7 @@ const BlogsList = () => {
   setLoadingApprove(true);
   try {
    const resp = await axios.get(`${apiUrl}/api/admin/approve-blog/${blogId}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    setBlogs((prevBlogs) =>
     prevBlogs.map((blog) =>

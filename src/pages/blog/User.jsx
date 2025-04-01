@@ -18,7 +18,6 @@ const User = () => {
  const [loadingUser, setLoadingUser] = useState(true);
  const [deletingUser, setDeletingUser] = useState(false);
  const { currentUser } = useAuth();
- const token = localStorage.getItem("token");
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
 
@@ -44,7 +43,7 @@ const User = () => {
     `${apiUrl}/api/users/change-role/${userId}`,
     {},
     {
-     headers: { Authorization: `Bearer ${token}` },
+     withCredentials: true,
     }
    );
    setProfileUser(resp.data); // Update profileUser state with new role
@@ -64,7 +63,7 @@ const User = () => {
    setDeletingUser(true);
    try {
     await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
-     headers: { Authorization: `Bearer ${token}` },
+     withCredentials: true,
     });
     console.log("User deleted successfully");
     navigate("/"); // Navigate away after deletion

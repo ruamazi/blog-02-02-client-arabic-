@@ -6,7 +6,6 @@ import UsersList from "../../components/admin/UsersList";
 import BlogsList from "../../components/admin/BlogsList";
 import Loader from "../../components/blog/Loader";
 import BackToHome from "../../components/BackToHome";
-import { useNavigate } from "react-router-dom";
 import WebsiteSettings from "../../components/admin/WebsiteSettings";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -14,8 +13,6 @@ const Dashboard = () => {
  const [stats, setStats] = useState(null);
  const [activeTab, setActiveTab] = useState("stats");
  const [loading, setLoading] = useState(true);
- const token = localStorage.getItem("token");
- const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
@@ -23,13 +20,9 @@ const Dashboard = () => {
  }, []);
 
  const fetchDashboardStats = async () => {
-  if (!token) {
-   navigate("/login");
-   return;
-  }
   try {
    const response = await axios.get(`${apiUrl}/api/admin/stats`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    setStats(response.data);
   } catch (error) {
@@ -126,7 +119,7 @@ const Dashboard = () => {
      {activeTab === "stats" && <DashboardStats stats={stats} />}
      {activeTab === "users" && <UsersList />}
      {activeTab === "blogs" && <BlogsList />}
-     {activeTab === "settings" && <WebsiteSettings token={token} />}
+     {activeTab === "settings" && <WebsiteSettings />}
     </div>
    </div>
    <BackToHome />

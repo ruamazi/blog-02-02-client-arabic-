@@ -11,7 +11,6 @@ export const profilePlaceHolder =
 const BlogCard = ({ blog, setBlogs, isAdmin }) => {
  const isPending = blog?.status === "pending";
  const [loading, setLoading] = useState(false);
- const token = localStorage.getItem("token");
  const { colors, darkMode: isDark } = useTheme();
 
  const handleApprove = async () => {
@@ -19,11 +18,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
   try {
    const resp = await axios.get(
     `${apiUrl}/api/admin/approve-blog/${blog._id}`,
-    {
-     headers: {
-      Authorization: `Bearer ${token}`,
-     },
-    }
+    { withCredentials: true }
    );
    setBlogs((prev) => prev.map((b) => (b._id === blog._id ? resp.data : b)));
   } catch (error) {

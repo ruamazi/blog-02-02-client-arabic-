@@ -21,7 +21,6 @@ const Publish = () => {
   setLoading(true);
   setError("");
   try {
-   const token = localStorage.getItem("token");
    await axios.post(
     `${apiUrl}/api/blogs`,
     {
@@ -35,7 +34,9 @@ const Publish = () => {
       ),
      isPrivate,
     },
-    { headers: { Authorization: `Bearer ${token}` } }
+    {
+     withCredentials: true,
+    }
    );
 
    navigate("/");

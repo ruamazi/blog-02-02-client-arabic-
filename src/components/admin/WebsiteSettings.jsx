@@ -7,7 +7,7 @@ import Line from "../Line";
 import { useTheme } from "../../context/ThemeContext";
 import { IoReloadOutline } from "react-icons/io5";
 
-const WebsiteSettings = ({ token }) => {
+const WebsiteSettings = () => {
  const [websiteData, setWebsiteData] = useState({
   websiteName: "",
   websiteTitle: "",
@@ -26,7 +26,7 @@ const WebsiteSettings = ({ token }) => {
   setLoading(true);
   try {
    const resp = await axios.get(`${apiUrl}/api/admin/webiste-settings`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    setWebsiteData(resp.data);
   } catch (error) {
@@ -40,7 +40,7 @@ const WebsiteSettings = ({ token }) => {
   setLoading(true);
   try {
    const resp = await axios.get(`${apiUrl}/api/admin/reset-webiste-settings`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    setWebsiteData(resp.data);
   } catch (error) {
@@ -59,9 +59,7 @@ const WebsiteSettings = ({ token }) => {
    const resp = await axios.post(
     `${apiUrl}/api/admin/webiste-settings`,
     websiteData,
-    {
-     headers: { Authorization: `Bearer ${token}` },
-    }
+    { withCredentials: true }
    );
    setWebsiteData(resp.data);
    setSavedSuccessfully(true);

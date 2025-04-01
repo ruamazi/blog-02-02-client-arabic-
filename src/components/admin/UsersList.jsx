@@ -10,7 +10,6 @@ const UsersList = () => {
  const [error, setError] = useState(null);
  const [deletingUser, setDeletingUser] = useState(false);
  const [updatingUserRole, setUpdatingUserRole] = useState(false);
- const token = localStorage.getItem("token");
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
@@ -22,7 +21,7 @@ const UsersList = () => {
   setLoodingUsers(true);
   try {
    const response = await axios.get(`${apiUrl}/api/admin/users`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    setUsers(response.data);
   } catch (error) {
@@ -39,9 +38,7 @@ const UsersList = () => {
    await axios.put(
     `${apiUrl}/api/admin/users/${userId}/role`,
     {},
-    {
-     headers: { Authorization: `Bearer ${token}` },
-    }
+    { withCredentials: true }
    );
    fetchUsers();
   } catch (error) {
@@ -56,7 +53,7 @@ const UsersList = () => {
   setDeletingUser(true);
   try {
    await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    fetchUsers();
   } catch (error) {

@@ -14,8 +14,6 @@ export const ThemeProvider = ({ children }) => {
   );
  });
 
- const token = localStorage.getItem("token");
-
  const getColors = async () => {
   try {
    const resp = await axios.get(`${apiUrl}/api/blogs/get-colors`);
@@ -41,7 +39,7 @@ export const ThemeProvider = ({ children }) => {
  const saveColorsToDB = async () => {
   try {
    await axios.post(`${apiUrl}/api/admin/update-colors`, colors, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
   } catch (error) {
    console.error("Failed to save colors:", error);
@@ -52,7 +50,7 @@ export const ThemeProvider = ({ children }) => {
  const resetColors = async () => {
   try {
    const resp = await axios.get(`${apiUrl}/api/admin/reset-colors`, {
-    headers: { Authorization: `Bearer ${token}` },
+    withCredentials: true,
    });
    setColors(resp.data);
    localStorage.setItem("colors", JSON.stringify(resp.data));
