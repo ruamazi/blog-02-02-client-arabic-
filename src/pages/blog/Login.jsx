@@ -35,7 +35,7 @@ const Login = () => {
 
    setCurrentUser(data.user);
    navigate("/");
-   // window.location.reload();
+   window.location.reload();
   } catch (err) {
    console.log(err);
 
