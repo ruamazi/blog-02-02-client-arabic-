@@ -21,9 +21,17 @@ const Login = () => {
   setLoading(true);
   e.preventDefault();
   try {
-   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
-    withCredentials: true,
-   });
+   const csrfToken = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("XSRF-TOKEN="))
+    ?.split("=")[1];
+   if (!csrfToken) {
+    throw new Error("CSRF token not found");
+   }
+
+   //  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+   //   withCredentials: true,
+   //  });
 
    await axios.post(
     `${apiUrl}/api/auth/login`,
@@ -34,7 +42,7 @@ const Login = () => {
     {
      withCredentials: true,
      headers: {
-      "X-CSRF-Token": csrfResponse.data.csrfToken, // Also send as header
+      "X-CSRF-Token": csrfToken, // Also send as header
      },
     }
    );
@@ -44,7 +52,7 @@ const Login = () => {
 
    setCurrentUser(data.user);
    navigate("/");
-   window.location.reload();
+   //window.location.reload();
   } catch (err) {
    console.log(err);
 
