@@ -28,7 +28,7 @@ const Login = () => {
    if (!csrfToken) {
     throw new Error("CSRF token not found");
    }
-
+   console.log(csrfToken);
    //  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
    //   withCredentials: true,
    //  });
@@ -52,7 +52,7 @@ const Login = () => {
 
    setCurrentUser(data.user);
    navigate("/");
-   //window.location.reload();
+   window.location.reload();
   } catch (err) {
    console.log(err);
 
