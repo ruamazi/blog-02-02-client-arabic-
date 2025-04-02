@@ -38,14 +38,8 @@ export const ThemeProvider = ({ children }) => {
 
  const saveColorsToDB = async () => {
   try {
-   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
-    withCredentials: true,
-   });
    await axios.post(`${apiUrl}/api/admin/update-colors`, colors, {
     withCredentials: true,
-    headers: {
-     "X-CSRF-Token": csrfResponse.data.csrfToken,
-    },
    });
   } catch (error) {
    console.error("Failed to save colors:", error);

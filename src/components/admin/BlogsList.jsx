@@ -37,17 +37,11 @@ const BlogsList = () => {
  const handleToggleStatus = async (blogId) => {
   setUpdatingStatus(true);
   try {
-   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
-    withCredentials: true,
-   });
    await axios.put(
     `${apiUrl}/api/admin/blogs/${blogId}/status`,
     {},
     {
      withCredentials: true,
-     headers: {
-      "X-CSRF-Token": csrfResponse.data.csrfToken,
-     },
     }
    );
    fetchBlogs();
@@ -62,14 +56,8 @@ const BlogsList = () => {
   if (!window.confirm("هل أنت متأكد؟")) return;
   setDeletingBlog(true);
   try {
-   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
-    withCredentials: true,
-   });
    await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
     withCredentials: true,
-    headers: {
-     "X-CSRF-Token": csrfResponse.data.csrfToken,
-    },
    });
    fetchBlogs();
   } catch (error) {

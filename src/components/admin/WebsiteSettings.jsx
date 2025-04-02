@@ -56,17 +56,11 @@ const WebsiteSettings = () => {
   setLoading(true);
   setError(null);
   try {
-   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
-    withCredentials: true,
-   });
    const resp = await axios.post(
     `${apiUrl}/api/admin/webiste-settings`,
     websiteData,
     {
      withCredentials: true,
-     headers: {
-      "X-CSRF-Token": csrfResponse.data.csrfToken,
-     },
     }
    );
    setWebsiteData(resp.data);
