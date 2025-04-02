@@ -35,10 +35,18 @@ const UsersList = () => {
  const handleRoleUpdate = async (userId) => {
   setUpdatingUserRole(true);
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    await axios.put(
     `${apiUrl}/api/admin/users/${userId}/role`,
     {},
-    { withCredentials: true }
+    {
+     withCredentials: true,
+     headers: {
+      "X-CSRF-Token": csrfResponse.data.csrfToken,
+     },
+    }
    );
    fetchUsers();
   } catch (error) {
@@ -52,8 +60,14 @@ const UsersList = () => {
   if (!window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
   setDeletingUser(true);
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
     withCredentials: true,
+    headers: {
+     "X-CSRF-Token": csrfResponse.data.csrfToken,
+    },
    });
    fetchUsers();
   } catch (error) {

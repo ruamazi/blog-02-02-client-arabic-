@@ -39,11 +39,17 @@ const User = () => {
  // Handle making user admin/removing admin role
  const handleAdmin = async (userId) => {
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    const resp = await axios.put(
     `${apiUrl}/api/users/change-role/${userId}`,
     {},
     {
      withCredentials: true,
+     headers: {
+      "X-CSRF-Token": csrfResponse.data.csrfToken,
+     },
     }
    );
    setProfileUser(resp.data); // Update profileUser state with new role
@@ -62,10 +68,15 @@ const User = () => {
   ) {
    setDeletingUser(true);
    try {
-    await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
+    const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
      withCredentials: true,
     });
-    console.log("User deleted successfully");
+    await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
+     withCredentials: true,
+     headers: {
+      "X-CSRF-Token": csrfResponse.data.csrfToken,
+     },
+    });
     navigate("/"); // Navigate away after deletion
    } catch (error) {
     console.error("Error deleting user:", error);

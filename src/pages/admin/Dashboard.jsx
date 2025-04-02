@@ -42,7 +42,7 @@ const Dashboard = () => {
       ? colors.dark.primaryBackground
       : colors.light.primaryBackground,
     }}
-    className=" md:p-4 sm:p-6 min-h-screen"
+    className=" md:p-4 sm:p-6 min-h-screen mb-5"
    >
     <h1
      style={{

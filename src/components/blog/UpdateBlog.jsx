@@ -52,8 +52,14 @@ const UpdateBlog = () => {
   setSaving(true);
   setError(null);
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    await axios.put(`${apiUrl}/api/blogs/${id}`, blog, {
     withCredentials: true,
+    headers: {
+     "X-CSRF-Token": csrfResponse.data.csrfToken,
+    },
    });
    navigate(`/blog/${id}`);
   } catch (err) {

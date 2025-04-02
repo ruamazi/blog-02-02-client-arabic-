@@ -17,6 +17,8 @@ import Dashboard from "./pages/admin/Dashboard";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import { getCurrentUser, getWebData } from "./functions/api";
 import { useTheme } from "./context/ThemeContext";
+import ForgetPassword from "./pages/ForgetPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
  const { currentUser, setCurrentUser } = useAuth();
@@ -112,6 +114,14 @@ function App() {
      <Route
       path="/confirm-email"
       element={currentUser ? <Navigate to="/" /> : <ConfirmEmail />}
+     />
+     <Route
+      path="/forget-password"
+      element={currentUser ? <Navigate to="/" /> : <ForgetPassword />}
+     />
+     <Route
+      path="/reset-password"
+      element={currentUser ? <Navigate to="/" /> : <ResetPassword />}
      />
      <Route
       path="/admin"

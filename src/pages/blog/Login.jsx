@@ -21,13 +21,22 @@ const Login = () => {
   setLoading(true);
   e.preventDefault();
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
+
    await axios.post(
     `${apiUrl}/api/auth/login`,
     {
      email,
      password,
     },
-    { withCredentials: true }
+    {
+     withCredentials: true,
+     headers: {
+      "X-CSRF-Token": csrfResponse.data.csrfToken, // Also send as header
+     },
+    }
    );
    const { data } = await axios.get(`${apiUrl}/api/auth/me`, {
     withCredentials: true,
@@ -171,7 +180,7 @@ const Login = () => {
      style={{
       color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
      }}
-     className="mt-4 text-center"
+     className="mt-4 text-center mb-4"
     >
      ليس لديك عضوية ؟ &nbsp;
      <Link
@@ -184,6 +193,15 @@ const Login = () => {
       قم بالتسجيل الآن
      </Link>
     </p>
+    <Link
+     to="/forget-password"
+     style={{
+      color: isDark ? colors.dark.primaryBtn : colors.light.primaryBtn,
+     }}
+     className="hover:underline text-sm"
+    >
+     &#9679; نسيت كلمة المرور
+    </Link>
    </div>
   </div>
  );

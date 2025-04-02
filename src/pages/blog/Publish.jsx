@@ -21,6 +21,9 @@ const Publish = () => {
   setLoading(true);
   setError("");
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    await axios.post(
     `${apiUrl}/api/blogs`,
     {
@@ -36,6 +39,9 @@ const Publish = () => {
     },
     {
      withCredentials: true,
+     headers: {
+      "X-CSRF-Token": csrfResponse.data.csrfToken,
+     },
     }
    );
 

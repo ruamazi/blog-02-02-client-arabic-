@@ -39,11 +39,17 @@ const Profile = ({ setCurrentUser }) => {
     setError("الرابط المدخل ليس رابط صورة صالح");
     return;
    }
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    const resp = await axios.put(
     `${apiUrl}/api/users/profile`,
     { profilePicture },
     {
      withCredentials: true,
+     headers: {
+      "X-CSRF-Token": csrfResponse.data.csrfToken,
+     },
     }
    );
    setCurrentUser(resp.data);
@@ -63,11 +69,17 @@ const Profile = ({ setCurrentUser }) => {
   setMessage("");
   setError("");
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    await axios.put(
     `${apiUrl}/api/users/change-password`,
     { oldPassword, newPassword },
     {
      withCredentials: true,
+     headers: {
+      "X-CSRF-Token": csrfResponse.data.csrfToken,
+     },
     }
    );
    setMessage("تغيير الرمز السري بنجاح");

@@ -12,10 +12,18 @@ export const fetchBlog = async (id) => {
 
 export const postComment = async (comment, blogId) => {
  try {
+  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+   withCredentials: true,
+  });
   await axios.post(
    `${apiUrl}/api/comments`,
    { content: comment, blogId },
-   { withCredentials: true }
+   {
+    withCredentials: true,
+    headers: {
+     "X-CSRF-Token": csrfResponse.data.csrfToken,
+    },
+   }
   );
  } catch (err) {
   throw new Error("Failed to post comment");
@@ -24,8 +32,14 @@ export const postComment = async (comment, blogId) => {
 
 export const deleteBlog = async (blogId) => {
  try {
+  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+   withCredentials: true,
+  });
   await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
    withCredentials: true,
+   headers: {
+    "X-CSRF-Token": csrfResponse.data.csrfToken,
+   },
   });
  } catch (err) {
   throw new Error("Failed to delete blog");
@@ -34,8 +48,14 @@ export const deleteBlog = async (blogId) => {
 
 export const deleteComment = async (commentId) => {
  try {
+  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+   withCredentials: true,
+  });
   await axios.delete(`${apiUrl}/api/comments/${commentId}`, {
    withCredentials: true,
+   headers: {
+    "X-CSRF-Token": csrfResponse.data.csrfToken,
+   },
   });
  } catch (err) {
   throw new Error("Failed to delete comment");
@@ -44,10 +64,18 @@ export const deleteComment = async (commentId) => {
 
 export const toggleComments = async (blogId) => {
  try {
+  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+   withCredentials: true,
+  });
   const resp = await axios.patch(
    `${apiUrl}/api/blogs/${blogId}/toggle-comments`,
    {},
-   { withCredentials: true }
+   {
+    withCredentials: true,
+    headers: {
+     "X-CSRF-Token": csrfResponse.data.csrfToken,
+    },
+   }
   );
   return resp.data.blog;
  } catch (err) {
@@ -57,10 +85,18 @@ export const toggleComments = async (blogId) => {
 
 export const likeDislike = async (action, blogId) => {
  try {
+  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+   withCredentials: true,
+  });
   const resp = await axios.put(
    `${apiUrl}/api/blogs/${action}/${blogId}`,
    {},
-   { withCredentials: true }
+   {
+    withCredentials: true,
+    headers: {
+     "X-CSRF-Token": csrfResponse.data.csrfToken,
+    },
+   }
   );
   return resp.data;
  } catch (err) {
@@ -70,10 +106,18 @@ export const likeDislike = async (action, blogId) => {
 
 export const makeBlogPrivate = async (blogId) => {
  try {
+  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+   withCredentials: true,
+  });
   const resp = await axios.put(
    `${apiUrl}/api/blogs/private/${blogId}`,
    {},
-   { withCredentials: true }
+   {
+    withCredentials: true,
+    headers: {
+     "X-CSRF-Token": csrfResponse.data.csrfToken,
+    },
+   }
   );
   return resp.data;
  } catch (error) {
