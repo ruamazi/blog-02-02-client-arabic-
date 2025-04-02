@@ -21,6 +21,9 @@ const Login = () => {
   setLoading(true);
   e.preventDefault();
   try {
+   const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
+    withCredentials: true,
+   });
    const csrfToken = document.cookie
     .split("; ")
     .find((row) => row.startsWith("XSRF-TOKEN="))
@@ -28,11 +31,7 @@ const Login = () => {
    if (!csrfToken) {
     throw new Error("CSRF token not found");
    }
-   console.log(csrfToken);
-   //  const csrfResponse = await axios.get(`${apiUrl}/api/auth/csrf-token`, {
-   //   withCredentials: true,
-   //  });
-
+   console.log({ csrfToken });
    await axios.post(
     `${apiUrl}/api/auth/login`,
     {
