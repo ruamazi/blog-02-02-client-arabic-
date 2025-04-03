@@ -8,6 +8,7 @@ import MostUsedTags from "../components/blog/MostUsedTags";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import Pagination from "../components/Pagination";
+import PopularBlogs from "../components/blog/PopularBlogs";
 
 const Home = () => {
  const [blogs, setBlogs] = useState([]);
@@ -85,8 +86,11 @@ const Home = () => {
       />
      </div>
 
-     {/* Sidebar for Most Used Tags */}
-     {blogs?.length > 0 && <MostUsedTags />}
+     <div className="flex flex-col gap-4">
+      {/* Sidebar for Most Used Tags */}
+      {blogs?.length > 0 && <MostUsedTags />}
+      <PopularBlogs />
+     </div>
     </div>
    </div>
   </div>

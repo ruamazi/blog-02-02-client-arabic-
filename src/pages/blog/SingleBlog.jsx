@@ -196,7 +196,7 @@ const SingleBlog = () => {
         style={{
          color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
         }}
-        className="editor-content text-xl mb-4 tiptap"
+        className="editor-content text-xl mb-4 tiptap overflow-clip"
         dangerouslySetInnerHTML={renderContentWithMedia(blog.content)}
        />
        <p

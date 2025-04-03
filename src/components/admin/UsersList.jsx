@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
 import Loader from "../blog/Loader";
 import { useTheme } from "../../context/ThemeContext";
+import ConfirmationModal from "../blog/ConfirmationModal";
 
 const UsersList = () => {
  const [users, setUsers] = useState([]);
@@ -10,6 +11,10 @@ const UsersList = () => {
  const [error, setError] = useState(null);
  const [deletingUser, setDeletingUser] = useState(false);
  const [updatingUserRole, setUpdatingUserRole] = useState(false);
+ const [showModal, setShowModal] = useState({
+  status: false,
+  userId: null,
+ });
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
@@ -51,7 +56,6 @@ const UsersList = () => {
  };
 
  const handleDeleteUser = async (userId) => {
-  if (!window.confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
   setDeletingUser(true);
   try {
    await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
@@ -62,6 +66,7 @@ const UsersList = () => {
    console.error(error);
   } finally {
    setDeletingUser(false);
+   setShowModal({ status: false, userId: null });
   }
  };
 
@@ -140,7 +145,7 @@ const UsersList = () => {
           {updatingUserRole ? "جاري التحديث" : "تعديل الدور"}
          </button>
          <button
-          onClick={() => handleDeleteUser(user._id)}
+          onClick={() => setShowModal({ status: true, userId: user._id })}
           style={{
            backgroundColor: isDark
             ? colors.dark.tertiaryBtn
@@ -157,6 +162,12 @@ const UsersList = () => {
      ))}
     </tbody>
    </table>
+   <ConfirmationModal
+    isOpen={showModal.status}
+    onClose={() => setShowModal(false)}
+    onConfirm={() => handleDeleteUser(showModal.userId)}
+    message="هل أنت متأكد من حذف هذا المستخدم؟"
+   />
   </div>
  );
 };

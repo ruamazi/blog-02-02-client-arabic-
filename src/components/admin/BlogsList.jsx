@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
 import { Link } from "react-router-dom";
 import Loader from "../blog/Loader";
 import { useTheme } from "../../context/ThemeContext";
+import ConfirmationModal from "../blog/ConfirmationModal";
 
 const BlogsList = () => {
  const [blogs, setBlogs] = useState([]);
@@ -12,6 +13,7 @@ const BlogsList = () => {
  const [deletingBlog, setDeletingBlog] = useState(false);
  const [updatingStatus, setUpdatingStatus] = useState(false);
  const [loadingApprove, setLoadingApprove] = useState(false);
+ const [showModal, setShowModal] = useState({ status: false, blogId: null });
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
@@ -53,7 +55,6 @@ const BlogsList = () => {
  };
 
  const handleDeleteBlog = async (blogId) => {
-  if (!window.confirm("هل أنت متأكد؟")) return;
   setDeletingBlog(true);
   try {
    await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
@@ -64,6 +65,7 @@ const BlogsList = () => {
    console.error(error);
   } finally {
    setDeletingBlog(false);
+   setShowModal({ status: false, blogId: null });
   }
  };
 
@@ -198,7 +200,7 @@ const BlogsList = () => {
           {updatingStatus ? "جاري التحديث" : !blog.private ? "اخفاء" : "عام"}
          </button>
          <button
-          onClick={() => handleDeleteBlog(blog._id)}
+          onClick={() => setShowModal({ status: true, blogId: blog._id })}
           disabled={deletingBlog}
           style={{
            backgroundColor: isDark
@@ -229,6 +231,12 @@ const BlogsList = () => {
      ))}
     </tbody>
    </table>
+   <ConfirmationModal
+    isOpen={showModal.status}
+    onClose={() => setShowModal({ status: false, blogId: null })}
+    onConfirm={() => handleDeleteBlog(showModal.blogId)}
+    message="هل أنت متأكد من حذف هذا المستخدم؟"
+   />
   </div>
  );
 };

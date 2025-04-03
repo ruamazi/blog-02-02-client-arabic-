@@ -33,7 +33,7 @@ function App() {
   showName: true,
  });
  const [loadingWebSettings, setLoadingWebSettings] = useState(false);
- const { colors, darkMode } = useTheme();
+ const { colors, darkMode, getColors } = useTheme();
 
  const getWebSettingsData = async () => {
   setLoadingWebSettings(true);
@@ -56,6 +56,7 @@ function App() {
 
  useEffect(() => {
   getWebSettingsData();
+  getColors();
  }, []);
 
  useEffect(() => {

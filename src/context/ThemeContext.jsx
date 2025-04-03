@@ -96,6 +96,7 @@ export const ThemeProvider = ({ children }) => {
     updateColors,
     resetColors,
     saveColorsToDB,
+    getColors,
    }}
   >
    {children}
