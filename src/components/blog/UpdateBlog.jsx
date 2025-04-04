@@ -9,6 +9,7 @@ import TextEditor from "./TextEditor";
 const UpdateBlog = () => {
  const { id } = useParams();
  const [blog, setBlog] = useState({ title: "", content: "", tags: [] });
+ const [content, setContent] = useState("");
  const [loading, setLoading] = useState(true);
  const [error, setError] = useState("");
  const [saving, setSaving] = useState(false);
@@ -43,18 +44,18 @@ const UpdateBlog = () => {
   setBlog({ ...blog, tags });
  };
 
- const handleContentChange = (content) => {
-  setBlog({ ...blog, content });
- };
-
  const handleSubmit = async (e) => {
   e.preventDefault();
   setSaving(true);
   setError(null);
   try {
-   await axios.put(`${apiUrl}/api/blogs/${id}`, blog, {
-    withCredentials: true,
-   });
+   await axios.put(
+    `${apiUrl}/api/blogs/${id}`,
+    { ...blog, content },
+    {
+     withCredentials: true,
+    }
+   );
    navigate(`/blog/${id}`);
   } catch (err) {
    console.log(error);
@@ -130,7 +131,7 @@ const UpdateBlog = () => {
       >
        المحتوى
       </label>
-      <TextEditor content={blog.content} setContent={handleContentChange} />
+      <TextEditor content={blog.content} setContent={setContent} />
      </div>
      <div className="mb-4">
       <label

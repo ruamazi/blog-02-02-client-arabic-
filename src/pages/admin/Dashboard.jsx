@@ -8,6 +8,7 @@ import Loader from "../../components/blog/Loader";
 import BackToHome from "../../components/BackToHome";
 import WebsiteSettings from "../../components/admin/WebsiteSettings";
 import { useTheme } from "../../context/ThemeContext";
+import ManageAdmins from "../../components/admin/ManageAdmins";
 
 const Dashboard = () => {
  const [stats, setStats] = useState(null);
@@ -105,6 +106,20 @@ const Dashboard = () => {
       >
        اعدادات الموقع
       </button>
+      <button
+       onClick={() => setActiveTab("manageAdmins")}
+       style={{
+        backgroundColor:
+         activeTab === "manageAdmins"
+          ? colors.dark.primaryBtn
+          : colors.dark.grayColor,
+       }}
+       className={`${
+        activeTab !== "manageAdmins" && "opacity-80"
+       } hover:opacity-100 px-3 text-white py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base`}
+      >
+       المشرفين
+      </button>
      </div>
     </div>
 
@@ -120,6 +135,7 @@ const Dashboard = () => {
      {activeTab === "users" && <UsersList />}
      {activeTab === "blogs" && <BlogsList />}
      {activeTab === "settings" && <WebsiteSettings />}
+     {activeTab === "manageAdmins" && <ManageAdmins />}
     </div>
    </div>
    <BackToHome />
