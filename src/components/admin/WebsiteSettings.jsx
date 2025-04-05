@@ -8,35 +8,12 @@ import { useTheme } from "../../context/ThemeContext";
 import { IoReloadOutline } from "react-icons/io5";
 import { useAuth } from "../../context/AuthContext";
 
-const WebsiteSettings = () => {
- const [websiteData, setWebsiteData] = useState({
-  websiteName: "",
-  websiteTitle: "",
-  favicon: "",
-  websiteLogo: "",
-  canPublish: true,
-  showLogo: false,
-  showName: true,
- });
+const WebsiteSettings = ({ setWebsiteData, websiteData }) => {
  const [loading, setLoading] = useState(false);
  const [error, setError] = useState(null);
  const [savedSuccessfully, setSavedSuccessfully] = useState(false);
  const { colors, darkMode: isDark } = useTheme();
  const { currentUser } = useAuth();
-
- const fetchCurrentSettings = async () => {
-  setLoading(true);
-  try {
-   const resp = await axios.get(`${apiUrl}/api/admin/webiste-settings`, {
-    withCredentials: true,
-   });
-   setWebsiteData(resp.data);
-  } catch (error) {
-   console.error(error);
-  } finally {
-   setLoading(false);
-  }
- };
 
  const handleResetSettings = async () => {
   setLoading(true);
@@ -74,10 +51,6 @@ const WebsiteSettings = () => {
    setLoading(false);
   }
  };
-
- useEffect(() => {
-  fetchCurrentSettings();
- }, []);
 
  if (loading) return <Loader />;
 

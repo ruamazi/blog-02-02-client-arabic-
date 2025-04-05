@@ -10,7 +10,7 @@ const WebsiteColor = () => {
   saveColorsToDB,
  } = useTheme();
  const [saving, setSaving] = useState(false);
- const [savingMsg, setSavingMsg] = useState("");
+ const [savingMsg, setSavingMsg] = useState({ error: "", message: "" });
 
  const renderColorInput = (theme, property, label) => (
   <div className="flex items-center gap-4 py-2 border-b border-gray-200">
@@ -36,20 +36,35 @@ const WebsiteColor = () => {
 
  const handleSave = async () => {
   setSaving(true);
-  setSavingMsg("");
+  setSavingMsg({ error: "", message: "" });
   try {
-   await saveColorsToDB();
-   setSavingMsg("تم حفظ الألوان بنجاح");
+   const resp = await saveColorsToDB();
+   if (resp.error) {
+    setSavingMsg((prev) => ({ ...prev, error: resp.error }));
+   }
+   setSavingMsg((prev) => ({ ...prev, message: resp.message }));
   } catch (error) {
    console.error("Failed to save colors:", error);
-   setSavingMsg("حدث خطأ أثناء حفظ الألوان");
+   setSavingMsg((prev) => ({ ...prev, error: "حدث خطأ أثناء حفظ الألوان" }));
   } finally {
    setSaving(false);
   }
  };
 
- const handleReset = () => {
-  resetColors();
+ const handleReset = async () => {
+  setSavingMsg({ error: "", message: "" });
+  try {
+   const resp = await resetColors();
+   if (resp.error) {
+    setSavingMsg((prev) => ({ ...prev, error: resp.error }));
+   }
+   setSavingMsg((prev) => ({ ...prev, message: resp.message }));
+  } catch (error) {
+   setSavingMsg((prev) => ({
+    ...prev,
+    error: "حدث خطأ أثناء اعادة تعيين الألوان",
+   }));
+  }
  };
 
  return (
@@ -143,7 +158,14 @@ const WebsiteColor = () => {
      إعادة تعيين
     </button>
    </div>
-   <p className="text-center mt-2 text-sm text-green-500">{savingMsg}</p>
+   {savingMsg.error && (
+    <p className="text-center pt-4 text-sm text-red-500">{savingMsg.error}</p>
+   )}
+   {savingMsg.message && (
+    <p className="text-center pt-4 text-sm text-green-500">
+     {savingMsg.message}
+    </p>
+   )}
   </div>
  );
 };

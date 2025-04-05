@@ -11,13 +11,16 @@ import { useTheme } from "../../context/ThemeContext";
 import UserBlogs from "../../components/blog/UserBlogs";
 import UserStats from "../../components/blog/UserStats";
 import { VscVerifiedFilled, VscUnverified } from "react-icons/vsc";
+import UserBan from "../../components/blog/UserBan";
 
-const User = () => {
+const User = ({ canAdminDeleteUser }) => {
  const { username } = useParams();
  const [profileUser, setProfileUser] = useState(null);
  const [loadingUser, setLoadingUser] = useState(true);
  const [deletingUser, setDeletingUser] = useState(false);
+ const [banUpdated, setBanUpdated] = useState(false);
  const { currentUser } = useAuth();
+
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
 
@@ -77,8 +80,16 @@ const User = () => {
 
  // Effect to fetch user profile when username changes
  useEffect(() => {
+  document.title = `@${username}`;
   getUser();
  }, [username]);
+
+ useEffect(() => {
+  if (banUpdated) {
+   getUser();
+   setBanUpdated(false);
+  }
+ }, [banUpdated]);
 
  if (loadingUser) return <Loader />;
  // If loading finished but no profileUser found (e.g., 404 error)
@@ -93,11 +104,11 @@ const User = () => {
       : colors.light.secondaryBackground,
      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
     }}
-    className="m-3 p-4 md:p-6 rounded-lg shadow-md mt-10 max-w-4xl mx-auto"
+    className="p-4 md:p-6 rounded-lg shadow-md mt-5 max-w-4xl mx-auto"
    >
-    <div className="flex flex-col md:flex-row gap-6 ">
+    <div className="flex flex-col md:flex-row gap-6">
      {/* Left Side: Profile Info & Actions */}
-     <div className="flex flex-col items-center justify-center md:items-start md:w-1/3 ">
+     <div className="flex flex-col items-center justify-center md:items-start md:w-1/3">
       {/* Profile Picture */}
       <img
        src={profileUser.profilePicture || profilePlaceHolder}
@@ -110,7 +121,6 @@ const User = () => {
          : "border-gray-300" // Consistent border
        }`}
       />
-
       {/* Username */}
       <h2 className="text-2xl font-bold mt-2 text-center md:text-left">
        {profileUser.username}
@@ -140,61 +150,69 @@ const User = () => {
         />
        )}
       </h3>
-
-      {/* Role & Admin Actions */}
-      <div className="mt-2 flex flex-col w-full max-w-[200px] items-center md:items-start gap-2 text-center md:text-left">
-       <span
-        className={`text-lg font-semibold px-3 py-1 rounded ${
-         profileUser?.role === "superAdmin"
-          ? "text-amber-500 bg-amber-100 dark:bg-amber-900/50"
-          : profileUser?.role === "admin"
-          ? "text-blue-500 bg-blue-100 dark:bg-blue-900/50"
-          : "text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-700"
-        }`}
-       >
-        {profileUser?.role}
-       </span>
-       {/* Change Role Button */}
-       {profileUser.role !== "superAdmin" &&
-        currentUser?.role === "superAdmin" && ( // Only SuperAdmin can change roles
-         <button
-          onClick={() => handleAdmin(profileUser._id)}
-          style={{
-           backgroundColor: isDark
-            ? colors.dark.primaryBtn
-            : colors.light.primaryBtn,
-          }}
-          className="opacity-90 hover:opacity-100 w-full px-4 py-2 mt-2 rounded-lg transition duration-200 text-sm"
-         >
-          {profileUser.role === "user"
-           ? "اجعل العضو أدمن"
-           : "حذف صلاحية الأدمن"}
-         </button>
-        )}
-       {/* Delete User Button */}
-       {profileUser.role !== "superAdmin" &&
-        currentUser?.role === "superAdmin" && (
-         <button
-          onClick={() => handleDeleteUser(profileUser._id)}
-          disabled={deletingUser}
-          style={{
-           backgroundColor: isDark
-            ? colors.dark.tertiaryBtn
-            : colors.light.tertiaryBtn,
-          }}
-          className="opacity-90 hover:opacity-100 disabled:opacity-50 w-full text-white px-4 py-2 rounded-lg transition duration-200 text-sm"
-         >
-          {deletingUser ? "جاري الحذف..." : "حذف العضو"}
-         </button>
-        )}
-      </div>
+      <span
+       className={`text-lg font-semibold px-3 py-1 rounded ${
+        profileUser?.role === "superAdmin"
+         ? "text-amber-500 bg-amber-100 dark:bg-amber-900/50"
+         : profileUser?.role === "admin"
+         ? "text-blue-500 bg-blue-100 dark:bg-blue-900/50"
+         : "text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-700"
+       }`}
+      >
+       {profileUser?.role}
+      </span>
      </div>
 
      {/* Right Side: User Stats */}
      <UserStats profileUser={profileUser} userId={profileUser._id} />
     </div>
    </div>
-
+   {/* Admin Actions */}
+   <div
+    className="flex flex-col max-w-md mx-auto w-full px-4 items-center md:items-start 
+   gap-2 text-center py-5"
+   >
+    {/* user ban */}
+    {currentUser?.role !== "user" && profileUser?.role === "user" && (
+     <UserBan
+      profileUser={profileUser}
+      currentUser={currentUser}
+      onBanUpdate={() => setBanUpdated(true)}
+     />
+    )}
+    {/* Change Role Button */}
+    {profileUser.role !== "superAdmin" &&
+     currentUser?.role !== "user" && ( // SuperAdmin and Admins can change roles
+      <button
+       onClick={() => handleAdmin(profileUser._id)}
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.primaryBtn
+         : colors.light.primaryBtn,
+       }}
+       className="text-white opacity-90 hover:opacity-100 w-full px-4 py-2 mt-2 rounded-lg transition duration-200 text-sm"
+      >
+       {profileUser.role === "user" ? "اجعل العضو أدمن" : "حذف صلاحية الأدمن"}
+      </button>
+     )}
+    {/* Delete User Button */}
+    {profileUser.role !== "superAdmin" && // SuperAdmin cannot be deleted
+     (currentUser?.role === "superAdmin" ||
+      (currentUser?.role === "admin" && canAdminDeleteUser)) && (
+      <button
+       onClick={() => handleDeleteUser(profileUser._id)}
+       disabled={deletingUser}
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.tertiaryBtn
+         : colors.light.tertiaryBtn,
+       }}
+       className="opacity-90 hover:opacity-100 disabled:opacity-50 w-full text-white px-4 py-2 rounded-lg transition duration-200 text-sm"
+      >
+       {deletingUser ? "جاري الحذف..." : "حذف العضو"}
+      </button>
+     )}
+   </div>
    {/* User Blogs Section (Unchanged) */}
    {profileUser?._id && (
     <UserBlogs userId={profileUser._id} username={profileUser.username} />

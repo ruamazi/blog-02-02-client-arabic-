@@ -4,8 +4,9 @@ import { apiUrl } from "../../pages/blog/Register";
 import Loader from "../blog/Loader";
 import { useTheme } from "../../context/ThemeContext";
 import ConfirmationModal from "../blog/ConfirmationModal";
+import { useAuth } from "../../context/AuthContext";
 
-const UsersList = () => {
+const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
  const [users, setUsers] = useState([]);
  const [loodingUsers, setLoodingUsers] = useState(true);
  const [error, setError] = useState(null);
@@ -144,18 +145,20 @@ const UsersList = () => {
          >
           {updatingUserRole ? "جاري التحديث" : "تعديل الدور"}
          </button>
-         <button
-          onClick={() => setShowModal({ status: true, userId: user._id })}
-          style={{
-           backgroundColor: isDark
-            ? colors.dark.tertiaryBtn
-            : colors.light.tertiaryBtn,
-          }}
-          className="opacity-90 hover:opacity-100 transition-all duration-200 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm btndisabled"
-          disabled={user.role === "superAdmin" || deletingUser}
-         >
-          {deletingUser ? "جاري الحذف" : "حذف"}
-         </button>
+         {currentUserRole === "admin" && !canAdminDeleteUser ? null : (
+          <button
+           onClick={() => setShowModal({ status: true, userId: user._id })}
+           style={{
+            backgroundColor: isDark
+             ? colors.dark.tertiaryBtn
+             : colors.light.tertiaryBtn,
+           }}
+           className="opacity-90 hover:opacity-100 transition-all duration-200 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm btndisabled"
+           disabled={user.role === "superAdmin" || deletingUser}
+          >
+           {deletingUser ? "جاري الحذف" : "حذف"}
+          </button>
+         )}
         </div>
        </td>
       </tr>

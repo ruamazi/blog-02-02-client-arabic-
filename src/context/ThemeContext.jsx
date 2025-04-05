@@ -41,9 +41,10 @@ export const ThemeProvider = ({ children }) => {
    await axios.post(`${apiUrl}/api/admin/update-colors`, colors, {
     withCredentials: true,
    });
+   return { message: "تم حفظ الأوان بنجاح" };
   } catch (error) {
    console.error("Failed to save colors:", error);
-   alert("حدث خطأ أثناء حفظ الألوان");
+   return { error: error.response.data.error || "حدث خطأ أثناء حفظ الأوان" };
   }
  };
 
@@ -54,8 +55,12 @@ export const ThemeProvider = ({ children }) => {
    });
    setColors(resp.data);
    localStorage.setItem("colors", JSON.stringify(resp.data));
+   return { message: "تم إعادة تعيين الأوان بنجاح" };
   } catch (error) {
    console.log(error);
+   return {
+    error: error.response.data.error || "حدث خطأ أثناء إعادة تعيين الأوان",
+   };
   }
  };
 

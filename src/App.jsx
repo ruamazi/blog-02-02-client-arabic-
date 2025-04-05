@@ -60,9 +60,6 @@ function App() {
  }, []);
 
  useEffect(() => {
-  if (webSettings.websiteTitle && document.title !== webSettings.websiteTitle) {
-   document.title = webSettings.websiteTitle; // Set the title dynamically
-  }
   if (webSettings.favicon) {
    let link = document.querySelector("link[rel*='icon']");
    if (!link) {
@@ -93,7 +90,7 @@ function App() {
    <Navbar />
    <main className="container mx-auto px-4 py-8">
     <Routes>
-     <Route path="/" element={<Home />} />
+     <Route path="/" element={<Home webSettings={webSettings} />} />
      <Route
       path="/register"
       element={currentUser ? <Navigate to="/" /> : <Register />}
@@ -109,7 +106,10 @@ function App() {
      <Route path="/blog/:id" element={<SingleBlog />} />
      <Route path="/publish" element={<Publish />} />
      <Route path="/update-blog/:id" element={<UpdateBlog />} />
-     <Route path="/user/:username" element={<User />} />
+     <Route
+      path="/user/:username"
+      element={<User canAdminDeleteUser={webSettings.canAdminRemoveUsers} />}
+     />
      <Route path="/blogs/:tag" element={<BlogsByTag />} />
 
      <Route

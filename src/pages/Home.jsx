@@ -10,7 +10,7 @@ import { useTheme } from "../context/ThemeContext";
 import Pagination from "../components/Pagination";
 import PopularBlogs from "../components/blog/PopularBlogs";
 
-const Home = () => {
+const Home = ({ webSettings }) => {
  const [blogs, setBlogs] = useState([]);
  const [currentPage, setCurrentPage] = useState(1);
  const [totalPages, setTotalPages] = useState(1);
@@ -21,6 +21,12 @@ const Home = () => {
  useEffect(() => {
   fetchBlogs();
  }, [currentPage]);
+
+ useEffect(() => {
+  if (webSettings.websiteTitle && document.title !== webSettings.websiteTitle) {
+   document.title = webSettings.websiteTitle; // Set the title dynamically
+  }
+ }, [webSettings]);
 
  const isAdmin =
   currentUser?.role === "admin" || currentUser?.role === "superAdmin";

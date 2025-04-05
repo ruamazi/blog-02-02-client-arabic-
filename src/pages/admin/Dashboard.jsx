@@ -9,18 +9,41 @@ import BackToHome from "../../components/BackToHome";
 import WebsiteSettings from "../../components/admin/WebsiteSettings";
 import { useTheme } from "../../context/ThemeContext";
 import ManageAdmins from "../../components/admin/ManageAdmins";
+import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
  const [stats, setStats] = useState(null);
  const [activeTab, setActiveTab] = useState("stats");
- const [loading, setLoading] = useState(true);
+ const [loading, setLoading] = useState(false);
+ const [loadingSettings, setLoadingSettings] = useState(false);
+ const [websiteData, setWebsiteData] = useState({
+  websiteName: "",
+  websiteTitle: "",
+  favicon: "",
+  websiteLogo: "",
+  canPublish: true,
+  showLogo: false,
+  showName: true,
+ });
  const { colors, darkMode: isDark } = useTheme();
+ const { currentUser } = useAuth();
 
- useEffect(() => {
-  fetchDashboardStats();
- }, []);
+ const fetchCurrentSettings = async () => {
+  setLoadingSettings(true);
+  try {
+   const resp = await axios.get(`${apiUrl}/api/admin/webiste-settings`, {
+    withCredentials: true,
+   });
+   setWebsiteData(resp.data);
+  } catch (error) {
+   console.error(error);
+  } finally {
+   setLoadingSettings(false);
+  }
+ };
 
  const fetchDashboardStats = async () => {
+  setLoading(true);
   try {
    const response = await axios.get(`${apiUrl}/api/admin/stats`, {
     withCredentials: true,
@@ -33,7 +56,13 @@ const Dashboard = () => {
   }
  };
 
- if (loading) return <Loader />;
+ useEffect(() => {
+  document.title = "لوحة التحكم";
+  fetchDashboardStats();
+  fetchCurrentSettings();
+ }, []);
+
+ if (loading || loadingSettings) return <Loader />;
 
  return (
   <>
@@ -106,20 +135,22 @@ const Dashboard = () => {
       >
        اعدادات الموقع
       </button>
-      <button
-       onClick={() => setActiveTab("manageAdmins")}
-       style={{
-        backgroundColor:
-         activeTab === "manageAdmins"
-          ? colors.dark.primaryBtn
-          : colors.dark.grayColor,
-       }}
-       className={`${
-        activeTab !== "manageAdmins" && "opacity-80"
-       } hover:opacity-100 px-3 text-white py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base`}
-      >
-       المشرفين
-      </button>
+      {currentUser?.role === "superAdmin" && (
+       <button
+        onClick={() => setActiveTab("manageAdmins")}
+        style={{
+         backgroundColor:
+          activeTab === "manageAdmins"
+           ? colors.dark.primaryBtn
+           : colors.dark.grayColor,
+        }}
+        className={`${
+         activeTab !== "manageAdmins" && "opacity-80"
+        } hover:opacity-100 px-3 text-white py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base`}
+       >
+        المشرفين
+       </button>
+      )}
      </div>
     </div>
 
@@ -132,10 +163,22 @@ const Dashboard = () => {
      className="rounded-lg shadow-md p-4 sm:p-6"
     >
      {activeTab === "stats" && <DashboardStats stats={stats} />}
-     {activeTab === "users" && <UsersList />}
+     {activeTab === "users" && (
+      <UsersList
+       currentUserRole={currentUser?.role}
+       canAdminDeleteUser={websiteData.canAdminRemoveUsers}
+      />
+     )}
      {activeTab === "blogs" && <BlogsList />}
-     {activeTab === "settings" && <WebsiteSettings />}
-     {activeTab === "manageAdmins" && <ManageAdmins />}
+     {activeTab === "settings" && (
+      <WebsiteSettings
+       websiteData={websiteData}
+       setWebsiteData={setWebsiteData}
+      />
+     )}
+     {currentUser?.role === "superAdmin" && activeTab === "manageAdmins" && (
+      <ManageAdmins />
+     )}
     </div>
    </div>
    <BackToHome />

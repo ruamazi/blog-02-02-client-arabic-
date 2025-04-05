@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import { useTheme } from "../../context/ThemeContext";
@@ -40,6 +40,10 @@ const Register = () => {
  const handleShowPassword = () => {
   setShowPassword(!showPassword);
  };
+
+ useEffect(() => {
+  document.title = "الإنضمام";
+ }, []);
 
  return (
   <div className="flex items-center justify-center min-h-screen">

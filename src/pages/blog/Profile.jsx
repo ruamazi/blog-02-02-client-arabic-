@@ -80,6 +80,7 @@ const Profile = ({ setCurrentUser }) => {
  };
 
  useEffect(() => {
+  document.title = "الصفحة الشخصية";
   fetchBlogs();
  }, [currentPage]);
 

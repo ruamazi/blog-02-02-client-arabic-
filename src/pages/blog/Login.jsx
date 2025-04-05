@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { apiUrl } from "./Register";
@@ -55,6 +55,9 @@ const Login = () => {
  const handleShowPassword = () => {
   setShowPassword(!showPassword);
  };
+ useEffect(() => {
+  document.title = "تسجيل الدخول";
+ }, []);
 
  return (
   <div className="flex items-center justify-center min-h-screen ">

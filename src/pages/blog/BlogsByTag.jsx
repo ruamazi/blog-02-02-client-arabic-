@@ -17,6 +17,7 @@ const BlogsByTag = () => {
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
+  document.title = `#${tag}`;
   fetchBlogsByTag();
  }, [currentPage, tag]); // Re-fetch blogs when the page or tag changes
 

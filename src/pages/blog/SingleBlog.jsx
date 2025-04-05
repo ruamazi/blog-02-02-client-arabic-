@@ -165,6 +165,12 @@ const SingleBlog = () => {
   return { __html: formattedContent };
  };
 
+ useEffect(() => {
+  if (blog && document.title !== blog.title) {
+   document.title = blog.title; // Set the title dynamically
+  }
+ }, [blog]);
+
  if (loadingBlog) return <Loader />;
  if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
  if (!blog) return null;
