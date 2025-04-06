@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { profilePlaceHolder } from "./BlogCard";
 import { useTheme } from "../../context/ThemeContext";
 
 const CommentList = ({
@@ -33,7 +32,7 @@ const CommentList = ({
       className="flex items-center mb-3 w-fit px-2 py-[2px] rounded-xl gap-2 opacity-70 hover:opacity-90 transition-all duration-200"
      >
       <img
-       src={comment.author?.profilePicture || profilePlaceHolder}
+       src={comment.author?.profilePicture}
        alt="Author"
        className="w-8 h-8 rounded-full mr-2 object-cover"
       />

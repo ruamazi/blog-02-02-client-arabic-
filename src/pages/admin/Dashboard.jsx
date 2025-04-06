@@ -10,6 +10,7 @@ import WebsiteSettings from "../../components/admin/WebsiteSettings";
 import { useTheme } from "../../context/ThemeContext";
 import ManageAdmins from "../../components/admin/ManageAdmins";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
  const [stats, setStats] = useState(null);
@@ -27,6 +28,13 @@ const Dashboard = () => {
  });
  const { colors, darkMode: isDark } = useTheme();
  const { currentUser } = useAuth();
+ const navigate = useNavigate();
+
+ useEffect(() => {
+  if (!currentUser || currentUser?.role === "user") {
+   navigate("/");
+  }
+ }, []);
 
  const fetchCurrentSettings = async () => {
   setLoadingSettings(true);

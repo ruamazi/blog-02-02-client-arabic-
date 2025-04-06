@@ -13,6 +13,7 @@ const Publish = () => {
  const [isPrivate, setIsPrivate] = useState(false);
  const [error, setError] = useState("");
  const [loading, setLoading] = useState(false);
+ const [banPeriod, setBanPeriod] = useState("");
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
 
@@ -20,6 +21,7 @@ const Publish = () => {
   e.preventDefault();
   setLoading(true);
   setError("");
+  setBanPeriod("");
   try {
    await axios.post(
     `${apiUrl}/api/blogs`,
@@ -38,11 +40,13 @@ const Publish = () => {
      withCredentials: true,
     }
    );
-
    navigate("/");
   } catch (err) {
    console.log(err);
    setError(err.response?.data?.error || "حدث خطأ ما");
+   if (err.response?.data?.remainingTime) {
+    setBanPeriod(err.response.data.remainingTime);
+   }
   } finally {
    setLoading(false);
   }
@@ -72,7 +76,12 @@ const Publish = () => {
       }}
       className="p-6 rounded-lg shadow-md"
      >
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && <p className="text-red-500 text-center">{error}</p>}
+      {banPeriod && (
+       <p className="mt-4 text-red-500 text-center mb-2">
+        مهلة حظرك المتبقي: {banPeriod}
+       </p>
+      )}
       <form
        onSubmit={handleSubmit}
        onKeyDown={(e) => {

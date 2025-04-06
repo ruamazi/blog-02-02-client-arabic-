@@ -4,7 +4,8 @@ import { apiUrl } from "../../pages/blog/Register";
 import Loader from "../blog/Loader";
 import { useTheme } from "../../context/ThemeContext";
 import ConfirmationModal from "../blog/ConfirmationModal";
-import { useAuth } from "../../context/AuthContext";
+import Pagination from "../Pagination";
+import { Link } from "react-router-dom";
 
 const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
  const [users, setUsers] = useState([]);
@@ -16,20 +17,26 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
   status: false,
   userId: null,
  });
+ const [currentPage, setCurrentPage] = useState(1);
+ const [totalPages, setTotalPages] = useState(1);
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchUsers();
- }, []);
+ }, [currentPage]);
 
  const fetchUsers = async () => {
   setError(null);
   setLoodingUsers(true);
   try {
-   const response = await axios.get(`${apiUrl}/api/admin/users`, {
-    withCredentials: true,
-   });
-   setUsers(response.data);
+   const response = await axios.get(
+    `${apiUrl}/api/admin/users?page=${currentPage}`,
+    {
+     withCredentials: true,
+    }
+   );
+   setUsers(response.data.users);
+   setTotalPages(response.data.totalPages);
   } catch (error) {
    console.error(error);
    setError("حدث خطأ أثناء جلب المستخدمين");
@@ -77,7 +84,7 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
   return <p className="text-center py-6">لا يوجد مستخدمين</p>;
 
  return (
-  <div className="overflow-x-auto">
+  <div className="overflow-x-scroll">
    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
     <thead
      style={{
@@ -123,7 +130,9 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
        }}
       >
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm">
-        {user.username}
+        <Link className="hover:underline" to={`/user/${user.username}`}>
+         {user.username}
+        </Link>
        </td>
        <td className="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-sm hidden sm:table-cell">
         {user.email}
@@ -165,9 +174,14 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
      ))}
     </tbody>
    </table>
+   <Pagination
+    currentPage={currentPage}
+    setCurrentPage={setCurrentPage}
+    totalPages={totalPages}
+   />
    <ConfirmationModal
     isOpen={showModal.status}
-    onClose={() => setShowModal(false)}
+    onClose={() => setShowModal(() => ({ status: false, userId: null }))}
     onConfirm={() => handleDeleteUser(showModal.userId)}
     message="هل أنت متأكد من حذف هذا المستخدم؟"
    />

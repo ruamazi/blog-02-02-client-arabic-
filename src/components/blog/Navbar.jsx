@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { profilePlaceHolder } from "./BlogCard";
 import { useAuth } from "../../context/AuthContext";
 import { BiLogOut } from "react-icons/bi";
 import { RiLoginBoxFill } from "react-icons/ri";
@@ -118,7 +117,7 @@ const Navbar = () => {
         className="flex items-center space-x-2 py-1 px-2 rounded-2xl transition-colors duration-200"
        >
         <img
-         src={currentUser.profilePicture || profilePlaceHolder}
+         src={currentUser.profilePicture}
          alt="Profile"
          className="w-8 h-8 rounded-full object-cover"
         />

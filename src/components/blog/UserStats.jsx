@@ -87,9 +87,6 @@ const UserStats = ({ profileUser, userId }) => {
       label="إجمالي المقالات المعجب بها"
       value={userStats.totalBlogsLiked ?? 0}
      />
-     {/* Removed totalBlogsDisliked as it might be less relevant */}
-     {/* <StatItem label="إجمالي المقالات غير المعجب بها" value={userStats.totalBlogsDisliked ?? 0} /> */}
-
      {/* Conditional Rendering for specific blog links */}
      {userStats.mostLikedBlog ? (
       <StatItem

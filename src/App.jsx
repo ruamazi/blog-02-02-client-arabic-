@@ -101,7 +101,13 @@ function App() {
      />
      <Route
       path="/profile"
-      element={<Profile setCurrentUser={setCurrentUser} />}
+      element={
+       !currentUser ? (
+        <Navigate to="/" />
+       ) : (
+        <Profile setCurrentUser={setCurrentUser} />
+       )
+      }
      />
      <Route path="/blog/:id" element={<SingleBlog />} />
      <Route path="/publish" element={<Publish />} />

@@ -11,7 +11,6 @@ import {
  fetchBlog,
  likeDislike,
  makeBlogPrivate,
- postComment,
  toggleComments,
 } from "../../functions/api";
 import BlogAuthor from "../../components/blog/BlogAuthor";
@@ -22,6 +21,8 @@ import BlogActionBtns from "../../components/blog/BlogActionBtns";
 import BackToHome from "../../components/BackToHome";
 import RelatedBlogs from "../../components/blog/RelatedBlogs";
 import { useTheme } from "../../context/ThemeContext";
+import { apiUrl } from "./Register";
+import axios from "axios";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -39,6 +40,7 @@ const SingleBlog = () => {
  const [likingLoading, setLikingLoading] = useState(false);
  const [loadingBlog, setLoadingBlog] = useState(false);
  const [privateLoading, setPrivateLoading] = useState(false);
+ const [banPeriod, setBanPeriod] = useState("");
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
 
@@ -63,18 +65,28 @@ const SingleBlog = () => {
  const handleCommentSubmit = async (e) => {
   e.preventDefault();
   setCommentingError("");
+  setBanPeriod("");
+  setCommenting(true);
   if (comment === "" || comment.trim() === "") {
    setCommentingError("التعليق لا يمكن ان يكون فارغا");
    return;
   }
-  setCommenting(true);
   try {
-   await postComment(comment, id);
+   await axios.post(
+    `${apiUrl}/api/comments`,
+    { content: comment, blogId: id },
+    {
+     withCredentials: true,
+    }
+   );
    setComment("");
    fetchBlogData();
   } catch (err) {
    console.log(err);
-   setCommentingError("فشل في إضافة تعليق");
+   setCommentingError(err.response.data.error || "فشل في إضافة تعليق");
+   if (err.response.data.remainingTime) {
+    setBanPeriod(err.response.data.remainingTime);
+   }
   } finally {
    setCommenting(false);
   }
@@ -283,7 +295,12 @@ const SingleBlog = () => {
         />
        )}
        {commentingError && (
-        <p className="text-red-500 mt-2">{commentingError}</p>
+        <p className="text-red-500 mt-2 text-center">{commentingError}</p>
+       )}
+       {banPeriod && (
+        <p className="mt-4 text-red-500 text-center">
+         مهلة حظرك المتبقي: {banPeriod}
+        </p>
        )}
       </div>
      </div>

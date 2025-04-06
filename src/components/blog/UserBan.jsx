@@ -17,24 +17,75 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
   canComment: profileUser.canComment.reason,
   canChangePicture: profileUser.canChangePicture.reason,
  });
+ const [banPeriods, setBanPeriods] = useState({
+  canPublish: profileUser.canPublish.period,
+  canComment: profileUser.canComment.period,
+  canChangePicture: profileUser.canChangePicture.period,
+ });
  const [isUpdating, setIsUpdating] = useState(false);
+ const [showBanConfirmation, setShowBanConfirmation] = useState(null);
+ const [tempBanReason, setTempBanReason] = useState("");
+ const [tempBanPeriod, setTempBanPeriod] = useState("day");
 
- // Check if current user has permission to modify bans
+ const periodOptions = [
+  { value: "day", label: "يوم" },
+  { value: "week", label: "أسبوع" },
+  { value: "month", label: "شهر" },
+  { value: "year", label: "سنة" },
+ ];
+
  const canModifyBans =
   currentUser?.role === "superAdmin" ||
   (currentUser?.role === "admin" && profileUser.role === "user");
 
  const handleBanToggle = async (banType) => {
-  console.log(banType);
   if (!canModifyBans) return;
+
+  if (profileUser[banType].status === false) {
+   // Unban - no reason needed
+   setIsUpdating(true);
+   try {
+    const updateData = {
+     [banType]: {
+      status: true,
+      reason: "",
+      date: null,
+      period: "day",
+     },
+    };
+    const resp = await axios.put(
+     `${apiUrl}/api/users/update-ban/${profileUser._id}`,
+     updateData,
+     { withCredentials: true }
+    );
+    onBanUpdate(resp.data);
+   } catch (error) {
+    console.error(`Error updating ${banType} ban:`, error);
+   } finally {
+    setIsUpdating(false);
+   }
+  } else {
+   // Show ban confirmation with reason and period
+   setShowBanConfirmation(banType);
+   setTempBanReason(banReasons[banType] || "");
+   setTempBanPeriod(banPeriods[banType] || "day");
+  }
+ };
+
+ const confirmBan = async (banType) => {
+  if (!tempBanReason.trim()) {
+   alert("الرجاء إدخال سبب الحظر");
+   return;
+  }
+
   setIsUpdating(true);
   try {
-   const newStatus = !profileUser[banType].status;
    const updateData = {
     [banType]: {
-     status: newStatus,
-     reason: banReasons[banType] || "",
-     date: newStatus ? null : new Date(), // Set ban date only when restricting
+     status: false,
+     reason: tempBanReason,
+     date: new Date(),
+     period: tempBanPeriod,
     },
    };
    const resp = await axios.put(
@@ -42,8 +93,10 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
     updateData,
     { withCredentials: true }
    );
-   onBanUpdate(resp.data); // Update parent component with new user data
-   setEditing({ ...editing, [banType]: false }); // Exit edit mode
+   onBanUpdate(resp.data);
+   setBanReasons({ ...banReasons, [banType]: tempBanReason });
+   setBanPeriods({ ...banPeriods, [banType]: tempBanPeriod });
+   setShowBanConfirmation(null);
   } catch (error) {
    console.error(`Error updating ${banType} ban:`, error);
   } finally {
@@ -55,6 +108,10 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
   setBanReasons({ ...banReasons, [banType]: value });
  };
 
+ const handlePeriodChange = (banType, value) => {
+  setBanPeriods({ ...banPeriods, [banType]: value });
+ };
+
  const toggleEdit = (banType) => {
   setEditing({ ...editing, [banType]: !editing[banType] });
  };
@@ -64,6 +121,40 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
   const banDate = profileUser[banType].date
    ? new Date(profileUser[banType].date).toLocaleDateString()
    : null;
+
+  const saveBanChanges = async (banType) => {
+   setIsUpdating(true);
+   try {
+    const updateData = {
+     [banType]: {
+      status: profileUser[banType].status, // Keep current status
+      reason: banReasons[banType] || "",
+      date: profileUser[banType].date, // Keep current date
+      period: banPeriods[banType] || "day",
+     },
+    };
+    const resp = await axios.put(
+     `${apiUrl}/api/users/update-ban/${profileUser._id}`,
+     updateData,
+     { withCredentials: true }
+    );
+    onBanUpdate(resp.data);
+    setEditing({ ...editing, [banType]: false });
+   } catch (error) {
+    console.error(`Error updating ${banType} ban:`, error);
+   } finally {
+    setIsUpdating(false);
+   }
+  };
+  const toggleEdit = (banType) => {
+   if (editing[banType]) {
+    // When saving, send the update
+    saveBanChanges(banType);
+   } else {
+    // When starting to edit, just toggle the state
+    setEditing({ ...editing, [banType]: true });
+   }
+  };
 
   return (
    <div
@@ -83,6 +174,59 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
       : colors.light.primaryBackground,
     }}
    >
+    {showBanConfirmation === banType && (
+     <div className="mb-3 p-3 rounded bg-red-100 dark:bg-red-900/30">
+      <h4 className="font-medium mb-2 text-red-700 dark:text-red-300">
+       إعدادات حظر {label}
+      </h4>
+      <div className="mb-2">
+       <label className="block text-sm mb-1">سبب الحظر:</label>
+       <input
+        type="text"
+        value={tempBanReason}
+        onChange={(e) => setTempBanReason(e.target.value)}
+        placeholder="أدخل سبب الحظر"
+        className={`w-full p-2 rounded text-sm ${
+         isDark ? "bg-gray-700 text-white" : "bg-white text-gray-800"
+        }`}
+       />
+      </div>
+      <div className="mb-3">
+       <label className="block text-sm mb-1">مدة الحظر:</label>
+       <select
+        value={tempBanPeriod}
+        onChange={(e) => setTempBanPeriod(e.target.value)}
+        className={`w-full p-2 rounded text-sm ${
+         isDark ? "bg-gray-700 text-white" : "bg-white text-gray-800"
+        }`}
+       >
+        {periodOptions.map((option) => (
+         <option key={option.value} value={option.value}>
+          {option.label}
+         </option>
+        ))}
+       </select>
+      </div>
+      <div className="flex gap-2">
+       <button
+        onClick={() => confirmBan(banType)}
+        disabled={isUpdating}
+        className={`px-3 py-1 rounded text-sm flex-1 ${
+         isDark ? "bg-red-700 hover:bg-red-600" : "bg-red-600 hover:bg-red-500"
+        } text-white`}
+       >
+        {isUpdating ? "جاري التطبيق..." : "تأكيد الحظر"}
+       </button>
+       <button
+        onClick={() => setShowBanConfirmation(null)}
+        className="px-3 py-1 rounded text-sm flex-1 bg-gray-500 text-white"
+       >
+        إلغاء
+       </button>
+      </div>
+     </div>
+    )}
+
     <div className="flex justify-between items-center w-full gap-1">
      <div className="flex items-center gap-2">
       {isBanned ? (
@@ -102,7 +246,7 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
      {canModifyBans && (
       <button
        onClick={() => handleBanToggle(banType)}
-       disabled={isUpdating}
+       disabled={isUpdating || showBanConfirmation === banType}
        className={`px-3 py-1 rounded text-sm ${
         isBanned
          ? `${
@@ -125,47 +269,71 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
     {(isBanned || editing[banType]) && (
      <div className="mt-2">
       {editing[banType] ? (
-       <div className="flex gap-2">
-        <input
-         type="text"
-         value={banReasons[banType]}
-         onChange={(e) => handleReasonChange(banType, e.target.value)}
-         placeholder="سبب الحظر (اختياري)"
-         className={`flex-1 p-2 rounded text-sm ${
-          isDark ? "bg-gray-700 text-white" : "bg-white text-gray-800"
-         }`}
-        />
-        <button
-         onClick={() => toggleEdit(banType)}
-         className="px-2 py-1 bg-gray-500 text-white rounded text-sm"
-        >
-         حفظ
-        </button>
-       </div>
-      ) : (
-       <div className="flex justify-between items-center text-sm mt-1">
-        <div>
-         <span className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
-          {profileUser[banType].reason || "لا يوجد سبب محدد"}
-         </span>
-         {banDate && (
-          <span
-           className={`block text-xs ${
-            isDark ? "text-gray-500" : "text-gray-400"
-           }`}
-          >
-           منذ: {banDate}
-          </span>
-         )}
-        </div>
-        {canModifyBans && (
+       <div className="space-y-2">
+        <div className="flex gap-2">
+         <input
+          type="text"
+          value={banReasons[banType]}
+          onChange={(e) => handleReasonChange(banType, e.target.value)}
+          placeholder="سبب الحظر"
+          className={`flex-1 p-2 rounded text-sm ${
+           isDark ? "bg-gray-700 text-white" : "bg-white text-gray-800"
+          }`}
+         />
          <button
           onClick={() => toggleEdit(banType)}
-          className="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          className="px-2 py-1 bg-gray-500 text-white rounded text-sm"
          >
-          <FaRegEdit size={14} />
+          {isUpdating ? "جاري الحفظ..." : "حفظ"}
          </button>
-        )}
+        </div>
+        <select
+         value={banPeriods[banType]}
+         onChange={(e) => handlePeriodChange(banType, e.target.value)}
+         className={`w-full p-2 rounded text-sm ${
+          isDark ? "bg-gray-700 text-white" : "bg-white text-gray-800"
+         }`}
+        >
+         {periodOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+           {option.label}
+          </option>
+         ))}
+        </select>
+       </div>
+      ) : (
+       <div className="space-y-1">
+        <div className="flex justify-between items-center text-sm">
+         <div>
+          <span className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
+           {profileUser[banType].reason || "لا يوجد سبب محدد"}
+          </span>
+          {banDate && (
+           <span
+            className={`block text-xs ${
+             isDark ? "text-gray-500" : "text-gray-400"
+            }`}
+           >
+            منذ: {banDate}
+           </span>
+          )}
+         </div>
+         {canModifyBans && (
+          <button
+           onClick={() => toggleEdit(banType)}
+           className="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          >
+           <FaRegEdit size={14} />
+          </button>
+         )}
+        </div>
+        <div className="text-xs">
+         <span className={`${isDark ? "text-gray-400" : "text-gray-500"}`}>
+          المدة:{" "}
+          {periodOptions.find((o) => o.value === profileUser[banType].period)
+           ?.label || "يوم"}
+         </span>
+        </div>
        </div>
       )}
      </div>
@@ -180,7 +348,7 @@ const UserBan = ({ profileUser, currentUser, onBanUpdate }) => {
   profileUser.canComment.status &&
   profileUser.canChangePicture.status
  ) {
-  return null; // Don't show if no restrictions and no permission to modify
+  return null;
  }
 
  return (

@@ -23,6 +23,7 @@ const Profile = ({ setCurrentUser }) => {
  const [currentPage, setCurrentPage] = useState(1);
  const [isLoading, setIsLoading] = useState(false);
  const [updatingProfile, setUpdatingProfile] = useState(false);
+ const [banPeriod, setBanPeriod] = useState("");
  const { colors, darkMode: isDark } = useTheme();
 
  const handleProfileUpdate = async (e) => {
@@ -30,6 +31,7 @@ const Profile = ({ setCurrentUser }) => {
   setUpdatingProfile(true);
   setMessage("");
   setError("");
+  setBanPeriod("");
   try {
    if (!profilePicture || profilePicture.trim() === "") {
     setError("يرجى إدخال رابط الصورة");
@@ -39,7 +41,6 @@ const Profile = ({ setCurrentUser }) => {
     setError("الرابط المدخل ليس رابط صورة صالح");
     return;
    }
-
    const resp = await axios.put(
     `${apiUrl}/api/users/profile`,
     { profilePicture },
@@ -52,6 +53,9 @@ const Profile = ({ setCurrentUser }) => {
   } catch (err) {
    console.log(err);
    setError(err.response?.data?.error || "فشل في تحديث الملف الشخصي");
+   if (err.response.data.remainingTime) {
+    setBanPeriod(err.response.data.remainingTime);
+   }
   } finally {
    setUpdatingProfile(false);
   }
@@ -112,7 +116,7 @@ const Profile = ({ setCurrentUser }) => {
       style={{
        color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
       }}
-      className="text-3xl font-bold mb-6"
+      className="text-2xl font-bold mb-6"
      >
       الصفحة الشخصية
      </h1>
@@ -220,19 +224,24 @@ const Profile = ({ setCurrentUser }) => {
       </form>
       {message && <p className="mt-4 text-green-500 text-center">{message}</p>}
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
+      {banPeriod && (
+       <p className="mt-4 text-red-500 text-center">
+        مهلة حظرك المتبقي: {banPeriod}
+       </p>
+      )}
      </div>
     </div>
 
     {blogs.length > 0 && (
      <div>
-      <h1
+      <h3
        style={{
         color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
        }}
-       className="text-3xl font-bold mb-6"
+       className="text-2xl font-bold mb-2"
       >
        منشوراتي
-      </h1>
+      </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
        {blogs?.map((blog) => (
         <Link to={`/blog/${blog._id}`} key={blog._id}>

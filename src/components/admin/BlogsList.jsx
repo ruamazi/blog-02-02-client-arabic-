@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Loader from "../blog/Loader";
 import { useTheme } from "../../context/ThemeContext";
 import ConfirmationModal from "../blog/ConfirmationModal";
+import Pagination from "../Pagination";
 
 const BlogsList = () => {
  const [blogs, setBlogs] = useState([]);
@@ -14,20 +15,26 @@ const BlogsList = () => {
  const [updatingStatus, setUpdatingStatus] = useState(false);
  const [loadingApprove, setLoadingApprove] = useState(false);
  const [showModal, setShowModal] = useState({ status: false, blogId: null });
+ const [currentPage, setCurrentPage] = useState(1);
+ const [totalPages, setTotalPages] = useState(1);
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchBlogs();
- }, []);
+ }, [currentPage]);
 
  const fetchBlogs = async () => {
   setLoadingBlogs(true);
   setError(null);
   try {
-   const response = await axios.get(`${apiUrl}/api/admin/blogs`, {
-    withCredentials: true,
-   });
-   setBlogs(response.data);
+   const response = await axios.get(
+    `${apiUrl}/api/admin/blogs?page=${currentPage}`,
+    {
+     withCredentials: true,
+    }
+   );
+   setBlogs(response.data.blogs);
+   setTotalPages(response.data.totalPages);
   } catch (error) {
    console.error(error);
    setError(" حدث خطأ ما، يرجى المحاولة مرة أخرى.");
@@ -231,6 +238,11 @@ const BlogsList = () => {
      ))}
     </tbody>
    </table>
+   <Pagination
+    currentPage={currentPage}
+    setCurrentPage={setCurrentPage}
+    totalPages={totalPages}
+   />
    <ConfirmationModal
     isOpen={showModal.status}
     onClose={() => setShowModal({ status: false, blogId: null })}

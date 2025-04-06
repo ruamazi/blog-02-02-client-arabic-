@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom"; // Import Link
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"; // Import Link
 import Loader from "../../components/blog/Loader";
 import axios from "axios";
 import { apiUrl } from "./Register";
 import { useAuth } from "../../context/AuthContext";
-import { profilePlaceHolder } from "../../components/blog/BlogCard";
 import PageNotFound from "../../components/blog/PageNotFound";
 import BackToHome from "../../components/BackToHome";
 import { useTheme } from "../../context/ThemeContext";
@@ -12,6 +11,7 @@ import UserBlogs from "../../components/blog/UserBlogs";
 import UserStats from "../../components/blog/UserStats";
 import { VscVerifiedFilled, VscUnverified } from "react-icons/vsc";
 import UserBan from "../../components/blog/UserBan";
+import ConfirmationModal from "../../components/blog/ConfirmationModal";
 
 const User = ({ canAdminDeleteUser }) => {
  const { username } = useParams();
@@ -19,6 +19,10 @@ const User = ({ canAdminDeleteUser }) => {
  const [loadingUser, setLoadingUser] = useState(true);
  const [deletingUser, setDeletingUser] = useState(false);
  const [banUpdated, setBanUpdated] = useState(false);
+ const [showModal, setShowModal] = useState({
+  status: false,
+  userId: null,
+ });
  const { currentUser } = useAuth();
 
  const navigate = useNavigate();
@@ -57,24 +61,18 @@ const User = ({ canAdminDeleteUser }) => {
 
  // Handle deleting a user
  const handleDeleteUser = async (userId) => {
-  // Implement confirmation modal here before proceeding
-  if (
-   window.confirm(
-    `هل أنت متأكد أنك تريد حذف المستخدم ${profileUser?.username}؟ لا يمكن التراجع عن هذا الإجراء.`
-   )
-  ) {
-   setDeletingUser(true);
-   try {
-    await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
-     withCredentials: true,
-    });
-    navigate("/"); // Navigate away after deletion
-   } catch (error) {
-    console.error("Error deleting user:", error);
-    // Add user feedback here (e.g., toast notification)
-   } finally {
-    setDeletingUser(false);
-   }
+  setDeletingUser(true);
+  try {
+   await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
+    withCredentials: true,
+   });
+   navigate("/"); // Navigate away after deletion
+  } catch (error) {
+   console.error("Error deleting user:", error);
+   // Add user feedback here (e.g., toast notification)
+  } finally {
+   setDeletingUser(false);
+   setShowModal(() => ({ status: false, userId: null }));
   }
  };
 
@@ -111,7 +109,7 @@ const User = ({ canAdminDeleteUser }) => {
      <div className="flex flex-col items-center justify-center md:items-start md:w-1/3">
       {/* Profile Picture */}
       <img
-       src={profileUser.profilePicture || profilePlaceHolder}
+       src={profileUser.profilePicture}
        alt={`${profileUser.username}'s Profile`}
        className={`w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 mb-3 ${
         profileUser?.role === "superAdmin"
@@ -181,7 +179,9 @@ const User = ({ canAdminDeleteUser }) => {
      />
     )}
     {/* Change Role Button */}
-    {profileUser.role !== "superAdmin" &&
+    {currentUser &&
+     profileUser._id !== currentUser._id && // Don't show for self
+     profileUser.role !== "superAdmin" &&
      currentUser?.role !== "user" && ( // SuperAdmin and Admins can change roles
       <button
        onClick={() => handleAdmin(profileUser._id)}
@@ -200,7 +200,9 @@ const User = ({ canAdminDeleteUser }) => {
      (currentUser?.role === "superAdmin" ||
       (currentUser?.role === "admin" && canAdminDeleteUser)) && (
       <button
-       onClick={() => handleDeleteUser(profileUser._id)}
+       onClick={() =>
+        setShowModal(() => ({ status: true, userId: profileUser._id }))
+       }
        disabled={deletingUser}
        style={{
         backgroundColor: isDark
@@ -218,6 +220,12 @@ const User = ({ canAdminDeleteUser }) => {
     <UserBlogs userId={profileUser._id} username={profileUser.username} />
    )}
    <BackToHome />
+   <ConfirmationModal
+    isOpen={showModal.status}
+    onClose={() => setShowModal(() => ({ status: false, userId: null }))}
+    onConfirm={() => handleDeleteUser(showModal.userId)}
+    message="هل أنت متأكد من حذف هذا المستخدم؟"
+   />
   </>
  );
 };

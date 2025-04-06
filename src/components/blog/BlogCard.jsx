@@ -5,9 +5,6 @@ import axios from "axios";
 import { apiUrl } from "../../pages/blog/Register";
 import { useTheme } from "../../context/ThemeContext";
 
-export const profilePlaceHolder =
- "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
-
 const BlogCard = ({ blog, setBlogs, isAdmin }) => {
  const isPending = blog?.status === "pending";
  const [loading, setLoading] = useState(false);
@@ -69,7 +66,7 @@ const BlogCard = ({ blog, setBlogs, isAdmin }) => {
    <div className="flex items-center justify-between flex-wrap">
     <div className="flex items-center gap-2">
      <img
-      src={blog.author.profilePicture || profilePlaceHolder}
+      src={blog.author.profilePicture}
       alt="Author"
       className="w-10 h-10 rounded-full mr-2 object-cover"
      />

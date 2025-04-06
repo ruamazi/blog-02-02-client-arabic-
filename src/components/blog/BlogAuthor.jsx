@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { profilePlaceHolder } from "./BlogCard";
 import { useTheme } from "../../context/ThemeContext";
 
 const BlogAuthor = ({ author }) => {
@@ -16,7 +15,7 @@ const BlogAuthor = ({ author }) => {
    transition-all duration-200"
   >
    <img
-    src={author.profilePicture || profilePlaceHolder}
+    src={author.profilePicture}
     alt="Author"
     className="w-10 h-10 rounded-full mr-2 object-cover border-white border-2"
    />

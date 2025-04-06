@@ -10,20 +10,6 @@ export const fetchBlog = async (id) => {
  }
 };
 
-export const postComment = async (comment, blogId) => {
- try {
-  await axios.post(
-   `${apiUrl}/api/comments`,
-   { content: comment, blogId },
-   {
-    withCredentials: true,
-   }
-  );
- } catch (err) {
-  throw new Error("Failed to post comment");
- }
-};
-
 export const deleteBlog = async (blogId) => {
  try {
   await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
