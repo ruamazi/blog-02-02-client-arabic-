@@ -12,6 +12,7 @@ import UserStats from "../../components/blog/UserStats";
 import { VscVerifiedFilled, VscUnverified } from "react-icons/vsc";
 import UserBan from "../../components/blog/UserBan";
 import ConfirmationModal from "../../components/blog/ConfirmationModal";
+import FollowUnfollow from "../../components/blog/FollowUnfollow";
 
 const User = ({ canAdminDeleteUser }) => {
  const { username } = useParams();
@@ -24,9 +25,18 @@ const User = ({ canAdminDeleteUser }) => {
   userId: null,
  });
  const { currentUser } = useAuth();
-
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
+
+ const bgMain = isDark
+  ? colors.dark.secondaryBackground
+  : colors.light.secondaryBackground;
+ const textMain = isDark ? colors.dark.primaryColor : colors.light.primaryColor;
+
+ const blueColor = isDark ? colors.dark.primaryBtn : colors.light.primaryBtn;
+ const greenColor = isDark
+  ? colors.dark.secondaryBtn
+  : colors.light.secondaryBtn;
 
  // Fetch user profile data
  const getUser = async () => {
@@ -97,10 +107,8 @@ const User = ({ canAdminDeleteUser }) => {
   <>
    <div
     style={{
-     backgroundColor: isDark
-      ? colors.dark.secondaryBackground
-      : colors.light.secondaryBackground,
-     color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+     backgroundColor: bgMain,
+     color: textMain,
     }}
     className="p-4 md:p-6 rounded-lg shadow-md mt-5 max-w-4xl mx-auto"
    >
@@ -154,11 +162,39 @@ const User = ({ canAdminDeleteUser }) => {
          ? "text-amber-500 bg-amber-100 dark:bg-amber-900/50"
          : profileUser?.role === "admin"
          ? "text-blue-500 bg-blue-100 dark:bg-blue-900/50"
-         : "text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-700"
+         : ""
        }`}
       >
-       {profileUser?.role}
+       {profileUser?.role === "superAdmin"
+        ? "سوبر أدمن"
+        : profileUser?.role === "admin"
+        ? "أدمن"
+        : null}
       </span>
+      {/* Followers / Following Stats */}
+      <div className="flex gap-2 mt-4 text-sm text-center md:text-left">
+       <p
+        style={{
+         borderColor: greenColor,
+        }}
+        className="flex gap-1 items-center border-t border-b px-2 py-1 rounded"
+       >
+        <span className="">{profileUser.followers?.length || 0}</span>
+        متابع
+       </p>
+       <p
+        style={{
+         borderColor: blueColor,
+        }}
+        className="flex gap-1 items-center border-t border-b px-2 py-1 rounded"
+       >
+        يتابع <span>{profileUser.following?.length || 0}</span>
+       </p>
+      </div>
+      <FollowUnfollow
+       userId={profileUser?._id}
+       setProfileUser={setProfileUser}
+      />
      </div>
 
      {/* Right Side: User Stats */}

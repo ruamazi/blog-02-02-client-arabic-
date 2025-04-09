@@ -90,7 +90,7 @@ const Navbar = () => {
         ? colors.dark.primaryBackground
         : colors.light.primaryBackground,
       }}
-      className="p-2 rounded-full"
+      className="p-2 rounded-full opacity-90 hover:opacity-100 transition-all duration-200"
       aria-label="Toggle dark mode"
      >
       {darkMode ? (
@@ -114,7 +114,7 @@ const Navbar = () => {
           ? colors.dark.primaryBackground
           : colors.light.primaryBackground,
         }}
-        className="flex items-center space-x-2 py-1 px-2 rounded-2xl transition-colors duration-200"
+        className="flex items-center space-x-2 py-1 px-2 rounded-2xl opacity-90 hover:opacity-100 transition-all duration-200"
        >
         <img
          src={currentUser.profilePicture}

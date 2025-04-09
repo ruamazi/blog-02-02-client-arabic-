@@ -11,6 +11,7 @@ import { useTheme } from "../../context/ThemeContext";
 import ManageAdmins from "../../components/admin/ManageAdmins";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import AdminMsgs from "../../components/admin/AdminMsgs";
 
 const Dashboard = () => {
  const [stats, setStats] = useState(null);
@@ -159,6 +160,18 @@ const Dashboard = () => {
         المشرفين
        </button>
       )}
+      <button
+       onClick={() => setActiveTab("msgs")}
+       style={{
+        backgroundColor:
+         activeTab === "msgs" ? colors.dark.primaryBtn : colors.dark.grayColor,
+       }}
+       className={`${
+        activeTab !== "msgs" && "opacity-80"
+       } hover:opacity-100 px-3 text-white py-1.5 sm:px-4 sm:py-2 rounded text-sm sm:text-base`}
+      >
+       الرسائل
+      </button>
      </div>
     </div>
 
@@ -187,6 +200,7 @@ const Dashboard = () => {
      {currentUser?.role === "superAdmin" && activeTab === "manageAdmins" && (
       <ManageAdmins />
      )}
+     {activeTab === "msgs" && <AdminMsgs />}
     </div>
    </div>
    <BackToHome />

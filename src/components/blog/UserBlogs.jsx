@@ -47,51 +47,48 @@ const UserBlogs = ({ username, userId }) => {
     style={{
      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
     }}
-    className="text-xl flex gap-1 items-center font-semibold border-b border-gray-300 dark:border-gray-600 mb-2"
+    className="text-xl flex gap-1 items-center font-semibold mb-2"
    >
     منشورات {username}
    </h1>
    {blogs.length > 0 ? (
     blogs.map((blog) => (
-     <div key={blog._id}>
-      <div
-       style={{
-        backgroundColor: isDark
-         ? colors.dark.primaryBackground
-         : colors.light.primaryBackground,
-        color: isDark
-         ? colors.dark.secondaryColor
-         : colors.light.secondaryColor,
-       }}
-       className="flex justify-between flex-col md:flex-row mb-1 shadow-md p-2 rounded-lg"
-      >
-       <Link to={`/blog/${blog._id}`}>
-        {blog.title.length > 50
-         ? `${blog.title.substring(0, 50)}...`
-         : blog.title}
-       </Link>
-       <div dir="ltr" className="flex gap-1 flex-wrap">
-        {blog.tags.length > 0 &&
-         blog.tags.map((tag) => (
-          <Link
-           to={`/blogs/${tag}`}
-           key={tag}
-           style={{
-            backgroundColor: isDark
-             ? colors.dark.secondaryBackground
-             : colors.light.secondaryBackground,
-           }}
-           className="text-xs px-2 py-1 rounded-lg"
-          >
-           {tag}
-          </Link>
-         ))}
-       </div>
+     <div
+      key={blog._id}
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.primaryBackground
+        : colors.light.primaryBackground,
+       color: isDark ? colors.dark.secondaryColor : colors.light.secondaryColor,
+      }}
+      className="flex mb-2 justify-between flex-col md:flex-row shadow-md p-2 rounded-lg hover:scale-101 transition-all duration-200"
+     >
+      <Link to={`/blog/${blog._id}`}>
+       {blog.title.length > 50
+        ? `${blog.title.substring(0, 50)}...`
+        : blog.title}
+      </Link>
+      <div dir="ltr" className="flex gap-1 flex-wrap">
+       {blog.tags.length > 0 &&
+        blog.tags.map((tag) => (
+         <Link
+          to={`/blogs/${tag}`}
+          key={tag}
+          style={{
+           backgroundColor: isDark
+            ? colors.dark.secondaryBackground
+            : colors.light.secondaryBackground,
+          }}
+          className="text-xs px-2 py-1 rounded-lg"
+         >
+          {tag}
+         </Link>
+        ))}
       </div>
      </div>
     ))
    ) : (
-    <p className="text-gray-500 text-center mt-3.5 mb-10">لا يوجد منشورات</p>
+    <p className="text-gray-500 text-center mt-3.5 mb-10">لا توجد منشورات</p>
    )}
    <Pagination
     currentPage={currentPage}

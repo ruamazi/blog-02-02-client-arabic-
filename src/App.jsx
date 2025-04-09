@@ -19,6 +19,7 @@ import { getCurrentUser, getWebData } from "./functions/api";
 import { useTheme } from "./context/ThemeContext";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
+import ContactAdmins from "./pages/ContactAdmins";
 
 function App() {
  const { currentUser, setCurrentUser } = useAuth();
@@ -136,6 +137,7 @@ function App() {
        currentUser?.role === "user" ? <Navigate to="/" /> : <Dashboard />
       }
      />
+     <Route path="/contact" element={<ContactAdmins />} />
      <Route path="*" element={<PageNotFound />} />
     </Routes>
    </main>

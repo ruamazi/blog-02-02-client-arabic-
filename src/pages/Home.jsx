@@ -9,6 +9,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import Pagination from "../components/Pagination";
 import PopularBlogs from "../components/blog/PopularBlogs";
+import FollowedUsersBlogs from "../components/blog/FollowedUsersBlogs";
 
 const Home = ({ webSettings }) => {
  const [blogs, setBlogs] = useState([]);
@@ -96,6 +97,7 @@ const Home = ({ webSettings }) => {
       {/* Sidebar for Most Used Tags */}
       {blogs?.length > 0 && <MostUsedTags />}
       <PopularBlogs />
+      <FollowedUsersBlogs />
      </div>
     </div>
    </div>

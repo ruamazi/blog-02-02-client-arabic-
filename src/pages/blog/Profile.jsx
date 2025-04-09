@@ -10,6 +10,7 @@ import { MdDashboardCustomize } from "react-icons/md";
 import { useTheme } from "../../context/ThemeContext";
 import { isValidImageUrl } from "../../functions/helpers";
 import Pagination from "../../components/Pagination";
+import { LuMessageCircleQuestion } from "react-icons/lu";
 
 const Profile = ({ setCurrentUser }) => {
  const { currentUser } = useAuth();
@@ -134,6 +135,18 @@ const Profile = ({ setCurrentUser }) => {
        <MdDashboardCustomize className="mb-1" /> لوحة التحكم
       </Link>
      )}
+     <Link
+      to="/contact"
+      style={{
+       backgroundColor: isDark
+        ? colors.dark.quaternaryBtn
+        : colors.light.quaternaryBtn,
+      }}
+      className="opacity-85 hover:opacity-100 text-white px-4 py-2 rounded-lg transition duration-200 
+       mb-4 flex items-center gap-1 w-fit"
+     >
+      <LuMessageCircleQuestion className="mb-1" /> تواصل مع المشرفين
+     </Link>
      <div
       style={{
        backgroundColor: isDark

@@ -82,7 +82,7 @@ const PopularBlogs = () => {
          : colors.light.primaryBackground,
         color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
        }}
-       className="px-4 py-2 rounded text-sm opacity-80 "
+       className="px-4 py-2 rounded text-sm opacity-80 shadow-md hover:scale-101 transition-all duration-200"
       >
        {blog.title.length > 50
         ? `${blog.title.substring(0, 50)}...`
