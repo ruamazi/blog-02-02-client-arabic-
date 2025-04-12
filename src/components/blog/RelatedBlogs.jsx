@@ -33,11 +33,11 @@ const RelatedBlogs = ({ blogId }) => {
  if (relatedBlogs.length === 0) return null;
 
  return (
-  <div className="flex flex-col gap-2 flex-1">
+  <div className="flex flex-col gap-2 flex-1  ">
    <h2 className="text-xl">منشورات ذات صلة</h2>
    <div className="flex flex-row lg:flex-col flex-wrap gap-2 flex-1">
     {relatedBlogs.map((blog) => (
-     <Link to={`/blog/${blog._id}`} key={blog._id}>
+     <Link to={`/blog/${blog._id}`} key={blog._id} className="w-full">
       <BlogCard blog={blog} />
      </Link>
     ))}

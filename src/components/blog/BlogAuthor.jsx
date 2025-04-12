@@ -11,15 +11,15 @@ const BlogAuthor = ({ author }) => {
    style={{
     backgroundColor: isDark ? colors.dark.grayColor : colors.light.grayColor,
    }}
-   className="flex items-center mb-6 gap-2 w-fit py-[3px] px-3 rounded-xl opacity-70 hover:opacity-90 
-   transition-all duration-200"
+   className="flex items-center mb-3 gap-1 w-fit py-[1px] pl-3 rounded-2xl rounded-tr-none
+   opacity-70 hover:opacity-90 transition-all duration-200"
   >
    <img
     src={author.profilePicture}
     alt="Author"
     className="w-10 h-10 rounded-full mr-2 object-cover border-white border-2"
    />
-   <span className="text-white">{author.username}</span>
+   <span className="text-white font-bold">{author.username}</span>
   </Link>
  );
 };

@@ -30,7 +30,6 @@ const FollowedUsersBlogs = () => {
     withCredentials: true,
    });
    setBlogs(resp.data);
-   console.log(resp.data);
   } catch (error) {
    console.log(error);
    setError(error.response.data.error || "فشل في تحميل البيانات");

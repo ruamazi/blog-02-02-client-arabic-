@@ -179,6 +179,9 @@ const ContactAdmins = () => {
           }}
           className="w-full px-4 py-2 rounded-lg placeholder:text-gray-500"
          />
+         <span className="text-xs text-gray-500">
+          قد تتوصل بالرد على هذا البريد الإلكتروني.
+         </span>
         </div>
        )}
        <div className="flex justify-end">

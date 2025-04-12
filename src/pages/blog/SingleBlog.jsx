@@ -23,6 +23,8 @@ import RelatedBlogs from "../../components/blog/RelatedBlogs";
 import { useTheme } from "../../context/ThemeContext";
 import { apiUrl } from "./Register";
 import axios from "axios";
+import AddToFav from "../../components/blog/AddToFav";
+import Pagination from "../../components/Pagination";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -41,12 +43,25 @@ const SingleBlog = () => {
  const [loadingBlog, setLoadingBlog] = useState(false);
  const [privateLoading, setPrivateLoading] = useState(false);
  const [banPeriod, setBanPeriod] = useState("");
+ const [isFavorite, setIsFavorite] = useState(
+  currentUser?.favorites.includes(id)
+ );
+
+ const [comments, setComments] = useState([]);
+ const [fetchingComments, setFetchingComments] = useState(false);
+ const [commentsErr, setCommentsErr] = useState("");
+ const [commentsPage, setCommentsPage] = useState(1);
+ const [totalCommentsPages, setTotalCommentsPages] = useState(1);
+
  const navigate = useNavigate();
  const { colors, darkMode: isDark } = useTheme();
 
  useEffect(() => {
   fetchBlogData();
- }, [id, deletingComment]);
+ }, [id]);
+ useEffect(() => {
+  fetchComments();
+ }, [commentsPage, id]);
 
  const fetchBlogData = async () => {
   setError("");
@@ -59,6 +74,23 @@ const SingleBlog = () => {
    setError("المدونة المطلوبة غير موجودة");
   } finally {
    setLoadingBlog(false);
+  }
+ };
+
+ const fetchComments = async () => {
+  setFetchingComments(true);
+  setCommentsErr("");
+  try {
+   const resp = await axios.get(
+    `${apiUrl}/api/comments/blog-comments/${id}?page=${commentsPage}`
+   );
+   setComments(resp.data.comments);
+   setCommentsPage(resp.data.currentPage);
+   setTotalCommentsPages(resp.data.totalPages);
+  } catch (error) {
+   setCommentsErr(error.response.data.error || "فشل في تحميل التعليقات");
+  } finally {
+   setFetchingComments(false);
   }
  };
 
@@ -80,7 +112,7 @@ const SingleBlog = () => {
     }
    );
    setComment("");
-   fetchBlogData();
+   fetchComments();
   } catch (err) {
    console.log(err);
    setCommentingError(err.response.data.error || "فشل في إضافة تعليق");
@@ -109,7 +141,7 @@ const SingleBlog = () => {
   setDeletingComment(true);
   try {
    await deleteComment(commentId);
-   fetchBlogData();
+   fetchComments();
   } catch (error) {
    console.log(error);
   } finally {
@@ -227,13 +259,20 @@ const SingleBlog = () => {
        </p>
        <BlogAuthor author={blog.author} />
        {currentUser && (
-        <LikeDislikeButtons
-         blog={blog}
-         likedByCurrentUser={likedByCurrentUser}
-         dislikedByCurrentUser={dislikedByCurrentUser}
-         handleLikeDislike={handleLikeDislike}
-         likingLoading={likingLoading}
-        />
+        <div className="flex items-center justify-between gap-4">
+         <LikeDislikeButtons
+          blog={blog}
+          likedByCurrentUser={likedByCurrentUser}
+          dislikedByCurrentUser={dislikedByCurrentUser}
+          handleLikeDislike={handleLikeDislike}
+          likingLoading={likingLoading}
+         />
+         <AddToFav
+          isFavorite={isFavorite}
+          setIsFavorite={setIsFavorite}
+          blogId={id}
+         />
+        </div>
        )}
        <div className="flex flex-wrap gap-2">
         {blog?.tags[0] !== "" &&
@@ -278,14 +317,24 @@ const SingleBlog = () => {
        >
         التعليقات
        </h2>
-       <CommentList
-        comments={blog.comments}
-        currentUser={currentUser}
-        deletingComment={deletingComment}
-        setShowDeleteCommentModal={setShowDeleteCommentModal}
-        setCommentToDelete={setCommentToDelete}
+       {fetchingComments ? (
+        <Loader />
+       ) : (
+        <CommentList
+         comments={comments}
+         currentUser={currentUser}
+         deletingComment={deletingComment}
+         setShowDeleteCommentModal={setShowDeleteCommentModal}
+         setCommentToDelete={setCommentToDelete}
+         commentsErr={commentsErr}
+         setComments={setComments}
+        />
+       )}
+       <Pagination
+        currentPage={commentsPage}
+        setCurrentPage={setCommentsPage}
+        totalPages={totalCommentsPages}
        />
-
        {currentUser && blog.commentsEnabled && (
         <CommentForm
          comment={comment}

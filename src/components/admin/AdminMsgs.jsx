@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 import { FaReply, FaSearch, FaFilter } from "react-icons/fa";
 import {
  MdOutlineMarkEmailRead,
@@ -20,6 +19,20 @@ const AdminMsgs = () => {
  const [statusFilter, setStatusFilter] = useState("pending");
  const { colors, darkMode: isDark } = useTheme();
 
+ const bgPrimary = isDark
+  ? colors.dark.primaryBackground
+  : colors.light.primaryBackground;
+ const bgSecondary = isDark
+  ? colors.dark.secondaryBackground
+  : colors.light.secondaryBackground;
+ const textPrimary = isDark
+  ? colors.dark.primaryColor
+  : colors.light.primaryColor;
+ const btnPrimary = isDark ? colors.dark.primaryBtn : colors.light.primaryBtn;
+ const btnSecondary = isDark
+  ? colors.dark.secondaryBtn
+  : colors.light.secondaryBtn;
+
  useEffect(() => {
   fetchMessages();
  }, [statusFilter]);
@@ -28,11 +41,11 @@ const AdminMsgs = () => {
   setLoading(true);
   try {
    const res = await axios.get(
-    `${apiUrl}/api/contact/admin/messages?status=${statusFilter}`,
+    `${apiUrl}/api/contact/get-msgs-for-admins?status=${statusFilter}`,
     { withCredentials: true }
    );
    // Sort with pending first, then by date (newest first)
-   const sortedMessages = res.data.messages.sort((a, b) => {
+   const sortedMessages = res.data.sort((a, b) => {
     if (a.status === "pending" && b.status !== "pending") return -1;
     if (a.status !== "pending" && b.status === "pending") return 1;
     return new Date(b.createdAt) - new Date(a.createdAt);
@@ -47,15 +60,14 @@ const AdminMsgs = () => {
 
  const handleReplySubmit = async (messageId) => {
   if (!replyContent.trim()) {
-   setError("Please enter a reply message");
+   setError("المرجو كتابة الرد");
    return;
   }
 
   try {
-   await axios.post(
-    `${apiUrl}/api/contact/admin/reply`,
+   await axios.patch(
+    `${apiUrl}/api/contact/reply-to-msg/${messageId}`,
     {
-     messageId,
      reply: replyContent,
     },
     { withCredentials: true }
@@ -64,14 +76,14 @@ const AdminMsgs = () => {
    setReplyingTo(null);
    fetchMessages(); // Refresh the list
   } catch (err) {
-   setError(err.response?.data?.error || "Failed to send reply");
+   setError(err.response?.data?.error || "فشل في إرسال الرد");
   }
  };
 
  const markAsClosed = async (messageId) => {
   try {
    await axios.patch(
-    `${apiUrl}/api/contact/admin/close/${messageId}`,
+    `${apiUrl}/api/contact/close-msg/${messageId}`,
     {},
     { withCredentials: true }
    );
@@ -122,22 +134,20 @@ const AdminMsgs = () => {
  if (loading) return <Loader />;
 
  return (
-  <div className="min-h-screen p-4">
+  <div className="min-h-screen p-1 md:p-4">
    <div
     style={{
-     backgroundColor: isDark
-      ? colors.dark.secondaryBackground
-      : colors.light.secondaryBackground,
+     backgroundColor: bgSecondary,
     }}
-    className="p-6 rounded-lg shadow-md mx-auto max-w-6xl"
+    className="md:p-6 rounded-lg shadow-md mx-auto max-w-6xl"
    >
     <h1
      style={{
-      color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
+      color: textPrimary,
      }}
      className="text-2xl font-bold mb-6"
     >
-     Messages Management
+     إدارة الرسائل
     </h1>
 
     {/* Filters and Search */}
@@ -148,13 +158,11 @@ const AdminMsgs = () => {
       </div>
       <input
        type="text"
-       placeholder="Search messages..."
+       placeholder="ابحث في الرسائل..."
        value={searchTerm}
        onChange={(e) => setSearchTerm(e.target.value)}
        style={{
-        backgroundColor: isDark
-         ? colors.dark.primaryBackground
-         : colors.light.primaryBackground,
+        backgroundColor: bgPrimary,
        }}
        className="pl-10 w-full px-4 py-2 rounded-lg"
       />
@@ -165,16 +173,14 @@ const AdminMsgs = () => {
        value={statusFilter}
        onChange={(e) => setStatusFilter(e.target.value)}
        style={{
-        backgroundColor: isDark
-         ? colors.dark.primaryBackground
-         : colors.light.primaryBackground,
+        backgroundColor: bgPrimary,
        }}
        className="px-4 py-2 rounded-lg"
       >
-       <option value="all">All Messages</option>
-       <option value="pending">Pending Only</option>
-       <option value="replied">Replied Only</option>
-       <option value="closed">Closed Only</option>
+       <option value="all">جميع الرسائل</option>
+       <option value="pending">لم يتم الرد عليها</option>
+       <option value="replied">تم الرد عليها</option>
+       <option value="closed">رسائل مغلقة</option>
       </select>
      </div>
     </div>
@@ -186,29 +192,27 @@ const AdminMsgs = () => {
     {/* Messages List */}
     <div className="space-y-4">
      {filteredMessages.length === 0 ? (
-      <p className="text-center py-8">No messages found</p>
+      <p className="text-center py-8">لم يتم العثور على رسائل.</p>
      ) : (
       filteredMessages.map((msg) => (
        <div
         key={msg._id}
         style={{
-         backgroundColor: isDark
-          ? colors.dark.primaryBackground
-          : colors.light.primaryBackground,
+         backgroundColor: bgPrimary,
          borderColor: isDark
-          ? colors.dark.borderColor
-          : colors.light.borderColor,
+          ? colors.dark.backToHomeBtn
+          : colors.light.backToHomeBtn,
         }}
         className="p-4 rounded-lg border"
        >
-        <div className="flex justify-between items-start mb-2">
+        <div className="flex justify-between flex-col md:flex-row items-start mb-2">
          <div>
           <h3 className="font-medium">{msg.subject}</h3>
           <p className="text-sm text-gray-500">
            From: {msg.username} ({msg.email})
           </p>
          </div>
-         <div className="flex items-center gap-3">
+         <div className="flex items-center gap-3 flex-wrap">
           <span className="text-sm text-gray-500">
            {new Date(msg.createdAt).toLocaleString()}
           </span>
@@ -223,21 +227,21 @@ const AdminMsgs = () => {
         {msg.adminReply && (
          <div
           style={{
-           backgroundColor: isDark
-            ? colors.dark.secondaryBackground
-            : colors.light.secondaryBackground,
+           backgroundColor: bgSecondary,
           }}
           className="p-3 rounded-lg mb-4"
          >
-          <div className="flex justify-between items-center mb-2">
-           <strong>Admin Reply:</strong>
+          <div className="flex justify-between items-center mb-2 ">
+           <strong>جواب الأدمن: ({msg.adminId?.username}) </strong>
            {msg.repliedAt && (
             <span className="text-sm text-gray-500">
              {new Date(msg.repliedAt).toLocaleString()}
             </span>
            )}
           </div>
-          <p className="whitespace-pre-line">{msg.adminReply}</p>
+          <p className="whitespace-pre-line overflow-hidden">
+           {msg.adminReply}
+          </p>
          </div>
         )}
 
@@ -250,9 +254,7 @@ const AdminMsgs = () => {
               setReplyingTo(replyingTo === msg._id ? null : msg._id)
              }
              style={{
-              backgroundColor: isDark
-               ? colors.dark.primaryBtn
-               : colors.light.primaryBtn,
+              backgroundColor: btnPrimary,
              }}
              className="flex items-center gap-1 text-white px-3 py-1 rounded"
             >
@@ -262,9 +264,7 @@ const AdminMsgs = () => {
            <button
             onClick={() => markAsClosed(msg._id)}
             style={{
-             backgroundColor: isDark
-              ? colors.dark.secondaryBtn
-              : colors.light.secondaryBtn,
+             backgroundColor: btnSecondary,
             }}
             className="text-white px-3 py-1 rounded"
            >
@@ -277,24 +277,20 @@ const AdminMsgs = () => {
         {replyingTo === msg._id && (
          <div className="mt-4">
           <textarea
-           placeholder="Type your reply here..."
+           placeholder="اكتب الجواب هنا..."
            value={replyContent}
            onChange={(e) => setReplyContent(e.target.value)}
            rows={4}
            style={{
-            backgroundColor: isDark
-             ? colors.dark.primaryBackground
-             : colors.light.primaryBackground,
+            backgroundColor: bgSecondary,
            }}
-           className="w-full p-3 rounded-lg mb-2"
+           className="w-full p-3 rounded-lg mb-2 placeholder:text-gray-500"
           />
           <div className="flex justify-end gap-2">
            <button
             onClick={() => setReplyingTo(null)}
             style={{
-             backgroundColor: isDark
-              ? colors.dark.secondaryBtn
-              : colors.light.secondaryBtn,
+             backgroundColor: btnSecondary,
             }}
             className="text-white px-3 py-1 rounded"
            >
@@ -303,9 +299,7 @@ const AdminMsgs = () => {
            <button
             onClick={() => handleReplySubmit(msg._id)}
             style={{
-             backgroundColor: isDark
-              ? colors.dark.primaryBtn
-              : colors.light.primaryBtn,
+             backgroundColor: btnPrimary,
             }}
             className="text-white px-3 py-1 rounded"
            >

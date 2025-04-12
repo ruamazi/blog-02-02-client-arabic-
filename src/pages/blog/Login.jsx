@@ -5,6 +5,7 @@ import { apiUrl } from "./Register";
 import { useAuth } from "../../context/AuthContext";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import { useTheme } from "../../context/ThemeContext";
+import { LuMessageCircleQuestion } from "react-icons/lu";
 
 const Login = () => {
  const [email, setEmail] = useState("");
@@ -197,6 +198,15 @@ const Login = () => {
      className="hover:underline text-sm"
     >
      &#9679; نسيت كلمة المرور
+    </Link>
+    <Link
+     to="/contact"
+     style={{
+      color: isDark ? colors.dark.primaryBtn : colors.light.primaryBtn,
+     }}
+     className="hover:underline text-sm flex gap-1 items-center"
+    >
+     <LuMessageCircleQuestion className="mb-1" /> تواصل مع المشرفين
     </Link>
    </div>
   </div>

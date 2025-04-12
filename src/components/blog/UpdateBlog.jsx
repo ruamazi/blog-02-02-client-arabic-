@@ -24,6 +24,7 @@ const UpdateBlog = () => {
   try {
    const resp = await axios.get(`${apiUrl}/api/blogs/${id}`);
    setBlog(resp.data);
+   setContent(resp.data.content);
    setLoading(false);
   } catch (err) {
    setError("Failed to fetch blog");

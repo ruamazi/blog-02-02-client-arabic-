@@ -14,7 +14,7 @@ const LikeDislikeButtons = ({
  likingLoading,
 }) => {
  return (
-  <div className="flex items-center justify-center gap-4 w-fit my-4">
+  <div className="flex items-center justify-center gap-3 w-fit my-4">
    <button
     onClick={() => handleLikeDislike("like")}
     className="relative cursor-pointer text-gray-600 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"

@@ -13,6 +13,7 @@ import { VscVerifiedFilled, VscUnverified } from "react-icons/vsc";
 import UserBan from "../../components/blog/UserBan";
 import ConfirmationModal from "../../components/blog/ConfirmationModal";
 import FollowUnfollow from "../../components/blog/FollowUnfollow";
+import UserFavorites from "../../components/blog/UserFavorites";
 
 const User = ({ canAdminDeleteUser }) => {
  const { username } = useParams();
@@ -254,6 +255,12 @@ const User = ({ canAdminDeleteUser }) => {
    {/* User Blogs Section (Unchanged) */}
    {profileUser?._id && (
     <UserBlogs userId={profileUser._id} username={profileUser.username} />
+   )}
+   {profileUser?._id && (
+    <UserFavorites
+     userId={profileUser._id}
+     showFavState={profileUser?.showFavorites}
+    />
    )}
    <BackToHome />
    <ConfirmationModal

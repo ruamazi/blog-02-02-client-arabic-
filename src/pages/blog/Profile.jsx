@@ -135,18 +135,20 @@ const Profile = ({ setCurrentUser }) => {
        <MdDashboardCustomize className="mb-1" /> لوحة التحكم
       </Link>
      )}
-     <Link
-      to="/contact"
-      style={{
-       backgroundColor: isDark
-        ? colors.dark.quaternaryBtn
-        : colors.light.quaternaryBtn,
-      }}
-      className="opacity-85 hover:opacity-100 text-white px-4 py-2 rounded-lg transition duration-200 
-       mb-4 flex items-center gap-1 w-fit"
-     >
-      <LuMessageCircleQuestion className="mb-1" /> تواصل مع المشرفين
-     </Link>
+     {currentUser.role === "user" && (
+      <Link
+       to="/contact"
+       style={{
+        backgroundColor: isDark
+         ? colors.dark.quaternaryBtn
+         : colors.light.quaternaryBtn,
+       }}
+       className="opacity-85 hover:opacity-100 text-white px-4 py-2 rounded-lg transition duration-200 
+        mb-4 flex items-center gap-1 w-fit"
+      >
+       <LuMessageCircleQuestion className="mb-1" /> تواصل مع المشرفين
+      </Link>
+     )}
      <div
       style={{
        backgroundColor: isDark
