@@ -46,7 +46,7 @@ const Login = () => {
     err.response?.data?.message ||
      err.response?.data?.error ||
      err.response?.data ||
-     "Login failed"
+     "فشل تسجيل الدخول"
    );
   } finally {
    setLoading(false);

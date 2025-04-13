@@ -201,11 +201,10 @@ const TextEditor = ({ content, setContent }) => {
     {/* Insert Image */}
     <button
      onClick={(e) => {
-      const url = prompt("Enter image URL:");
+      e.preventDefault();
+      const url = prompt("ادخل رابط الصورة:");
       if (url) {
-       handleButtonClick(e, () =>
-        editor.chain().focus().setImage({ src: url }).run()
-       );
+       editor.chain().focus().setImage({ src: url }).run();
       }
      }}
      style={{
@@ -219,11 +218,10 @@ const TextEditor = ({ content, setContent }) => {
     {/* Insert Video (YouTube) */}
     <button
      onClick={(e) => {
-      const url = prompt("Enter YouTube URL:");
+      e.preventDefault();
+      const url = prompt("ادخل رابط الفيديو على اليوتيوب:");
       if (url) {
-       handleButtonClick(e, () =>
-        editor.chain().focus().setYoutubeVideo({ src: url }).run()
-       );
+       editor.chain().focus().setYoutubeVideo({ src: url }).run();
       }
      }}
      style={{

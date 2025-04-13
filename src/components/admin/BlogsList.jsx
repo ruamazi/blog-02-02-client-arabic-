@@ -11,9 +11,9 @@ const BlogsList = () => {
  const [blogs, setBlogs] = useState([]);
  const [loadingBlogs, setLoadingBlogs] = useState(false);
  const [error, setError] = useState(null);
- const [deletingBlog, setDeletingBlog] = useState(false);
- const [updatingStatus, setUpdatingStatus] = useState(false);
- const [loadingApprove, setLoadingApprove] = useState(false);
+ const [deletingBlogId, setDeletingBlogId] = useState(null);
+ const [updatingStatusId, setUpdatingStatusId] = useState(null);
+ const [approvingBlogId, setApprovingBlogId] = useState(null);
  const [showModal, setShowModal] = useState({ status: false, blogId: null });
  const [currentPage, setCurrentPage] = useState(1);
  const [totalPages, setTotalPages] = useState(1);
@@ -44,7 +44,7 @@ const BlogsList = () => {
  };
 
  const handleToggleStatus = async (blogId) => {
-  setUpdatingStatus(true);
+  setUpdatingStatusId(blogId);
   try {
    await axios.put(
     `${apiUrl}/api/admin/blogs/${blogId}/status`,
@@ -57,12 +57,12 @@ const BlogsList = () => {
   } catch (error) {
    console.error(error);
   } finally {
-   setUpdatingStatus(false);
+   setUpdatingStatusId(null);
   }
  };
 
  const handleDeleteBlog = async (blogId) => {
-  setDeletingBlog(true);
+  setDeletingBlogId(blogId);
   try {
    await axios.delete(`${apiUrl}/api/blogs/${blogId}`, {
     withCredentials: true,
@@ -71,13 +71,13 @@ const BlogsList = () => {
   } catch (error) {
    console.error(error);
   } finally {
-   setDeletingBlog(false);
+   setDeletingBlogId(null);
    setShowModal({ status: false, blogId: null });
   }
  };
 
  const handleApproveBlog = async (blogId) => {
-  setLoadingApprove(true);
+  setApprovingBlogId(blogId);
   try {
    const resp = await axios.get(`${apiUrl}/api/admin/approve-blog/${blogId}`, {
     withCredentials: true,
@@ -90,7 +90,7 @@ const BlogsList = () => {
   } catch (error) {
    console.log(error);
   } finally {
-   setLoadingApprove(false);
+   setApprovingBlogId(null);
   }
  };
 
@@ -201,14 +201,18 @@ const BlogsList = () => {
             : colors.light.primaryBtn,
           }}
           onClick={() => handleToggleStatus(blog._id)}
-          disabled={updatingStatus}
+          disabled={updatingStatusId === blog._id}
           className="opacity-90 hover:opacity-100 transition-opacity duration-300 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
          >
-          {updatingStatus ? "جاري التحديث" : !blog.private ? "اخفاء" : "عام"}
+          {updatingStatusId === blog._id
+           ? "جاري التحديث"
+           : !blog.private
+           ? "اخفاء"
+           : "عام"}
          </button>
          <button
           onClick={() => setShowModal({ status: true, blogId: blog._id })}
-          disabled={deletingBlog}
+          disabled={deletingBlogId === blog._id}
           style={{
            backgroundColor: isDark
             ? colors.dark.tertiaryBtn
@@ -216,12 +220,12 @@ const BlogsList = () => {
           }}
           className="opacity-90 hover:opacity-100 transition-opacity duration-300 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
          >
-          {deletingBlog ? "جاري الحذف" : "حذف"}
+          {deletingBlogId === blog._id ? "جاري الحذف" : "حذف"}
          </button>
          {blog.status === "pending" && (
           <button
            onClick={() => handleApproveBlog(blog._id)}
-           disabled={loadingApprove}
+           disabled={approvingBlogId === blog._id}
            style={{
             backgroundColor: isDark
              ? colors.dark.secondaryBtn
@@ -229,7 +233,7 @@ const BlogsList = () => {
            }}
            className="opacity-90 hover:opacity-100 transition-opacity duration-300 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm"
           >
-           {loadingApprove ? "جاري الموافقة" : "موافقة"}
+           {approvingBlogId === blog._id ? "جاري الموافقة" : "موافقة"}
           </button>
          )}
         </div>

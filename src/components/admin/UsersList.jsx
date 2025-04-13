@@ -11,8 +11,8 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
  const [users, setUsers] = useState([]);
  const [loodingUsers, setLoodingUsers] = useState(true);
  const [error, setError] = useState(null);
- const [deletingUser, setDeletingUser] = useState(false);
- const [updatingUserRole, setUpdatingUserRole] = useState(false);
+ const [deletingUser, setDeletingUser] = useState(null);
+ const [updatingUserRole, setUpdatingUserRole] = useState(null);
  const [showModal, setShowModal] = useState({
   status: false,
   userId: null,
@@ -46,7 +46,7 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
  };
 
  const handleRoleUpdate = async (userId) => {
-  setUpdatingUserRole(true);
+  setUpdatingUserRole(userId);
   try {
    await axios.put(
     `${apiUrl}/api/admin/users/${userId}/role`,
@@ -59,12 +59,12 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
   } catch (error) {
    console.error(error);
   } finally {
-   setUpdatingUserRole(false);
+   setUpdatingUserRole(null);
   }
  };
 
  const handleDeleteUser = async (userId) => {
-  setDeletingUser(true);
+  setDeletingUser(userId);
   try {
    await axios.delete(`${apiUrl}/api/users/delete-user/${userId}`, {
     withCredentials: true,
@@ -73,7 +73,7 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
   } catch (error) {
    console.error(error);
   } finally {
-   setDeletingUser(false);
+   setDeletingUser(null);
    setShowModal({ status: false, userId: null });
   }
  };
@@ -150,9 +150,9 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
             : colors.light.primaryBtn,
           }}
           className="opacity-90 hover:opacity-100 transition-all duration-200 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm  btndisabled"
-          disabled={user.role === "superAdmin" || updatingUserRole}
+          disabled={user.role === "superAdmin" || updatingUserRole === user._id}
          >
-          {updatingUserRole ? "جاري التحديث" : "تعديل الدور"}
+          {updatingUserRole === user._id ? "جاري التحديث" : "تعديل الدور"}
          </button>
          {currentUserRole === "admin" && !canAdminDeleteUser ? null : (
           <button
@@ -163,9 +163,9 @@ const UsersList = ({ currentUserRole, canAdminDeleteUser }) => {
              : colors.light.tertiaryBtn,
            }}
            className="opacity-90 hover:opacity-100 transition-all duration-200 text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-xs sm:text-sm btndisabled"
-           disabled={user.role === "superAdmin" || deletingUser}
+           disabled={user.role === "superAdmin" || deletingUser === user._id}
           >
-           {deletingUser ? "جاري الحذف" : "حذف"}
+           {deletingUser === user._id ? "جاري الحذف" : "حذف"}
           </button>
          )}
         </div>

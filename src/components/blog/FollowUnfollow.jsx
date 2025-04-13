@@ -3,7 +3,6 @@ import axios from "axios";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
 import { apiUrl } from "../../pages/blog/Register";
-import { RiUserUnfollowFill, RiUserFollowFill } from "react-icons/ri";
 
 const FollowUnfollow = ({ userId, setProfileUser }) => {
  const { currentUser } = useAuth();

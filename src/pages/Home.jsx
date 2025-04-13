@@ -68,6 +68,14 @@ const Home = ({ webSettings }) => {
    className="min-h-screen p-4"
   >
    <div className="container mx-auto">
+    {/* <iframe
+     className="w-full h-[400px] mx-auto max-w-[700px] px-auto"
+     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+     allowfullscreen
+     title="Tiktok video player"
+     src=\"https://www.facebook.com/video/embed?video_id=1234567890\"
+     frameborder="0"
+    ></iframe> */}
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
      {/* Main Content */}
      <div className="lg:col-span-3">

@@ -25,6 +25,8 @@ import { apiUrl } from "./Register";
 import axios from "axios";
 import AddToFav from "../../components/blog/AddToFav";
 import Pagination from "../../components/Pagination";
+import PageNotFound from "../../components/blog/PageNotFound";
+import DOMPurify from "dompurify";
 
 const SingleBlog = () => {
  const { id } = useParams();
@@ -183,6 +185,9 @@ const SingleBlog = () => {
   }
  };
 
+ // Optional: create DOMPurify instance to tweak config
+ const purify = DOMPurify.sanitize;
+
  const renderContentWithMedia = (content) => {
   // Regex for plain image URLs (common image extensions)
   const plainImageRegex =
@@ -190,10 +195,19 @@ const SingleBlog = () => {
   // Regex for plain YouTube URLs (both watch and youtu.be formats)
   const plainYoutubeRegex =
    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)(?:\S*)?(?![^<]*>)/gi;
+  // Regex for TikTok video URLs (captures the video ID)
+  const tiktokRegex =
+   /https?:\/\/www\.tiktok\.com\/@[\w.-]+\/video\/(\d+)(?:\?[^\s"']*)?(?![^<]*>)/gi;
+
   // First process plain YouTube URLs
   let formattedContent = content.replace(
    plainYoutubeRegex,
    `<div class="my-2"><iframe class="w-full h-[400px] mx-auto max-w-[700px]" src="https://www.youtube.com/embed/$1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+  );
+  // Process TikTok
+  formattedContent = formattedContent.replace(
+   tiktokRegex,
+   `<div class="my-2"><iframe class="w-full h-[400px] mx-auto max-w-[700px]" src="https://www.tiktok.com/player/v1/$1?music_info=1&description=1" title="Tiktok video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
   );
   // Then process plain image URLs
   formattedContent = formattedContent.replace(
@@ -205,8 +219,13 @@ const SingleBlog = () => {
    /<img([^>]*)>/g,
    `<img$1 class="my-2 w-full h-auto mx-auto max-w-[700px]" alt="Blog content">`
   );
+  // Sanitize the final HTML
+  const cleanHtml = DOMPurify.sanitize(formattedContent, {
+   ADD_TAGS: ["iframe"],
+   ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "src", "title"],
+  });
 
-  return { __html: formattedContent };
+  return { __html: cleanHtml };
  };
 
  useEffect(() => {
@@ -216,7 +235,7 @@ const SingleBlog = () => {
  }, [blog]);
 
  if (loadingBlog) return <Loader />;
- if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
+ if (error) return <PageNotFound />;
  if (!blog) return null;
  const likedByCurrentUser = blog?.likedBy?.includes(currentUser?._id);
  const dislikedByCurrentUser = blog?.dislikedBy?.includes(currentUser?._id);
