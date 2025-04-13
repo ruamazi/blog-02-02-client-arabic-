@@ -30,11 +30,12 @@ const Navbar = () => {
 
  const handleLogout = async () => {
   try {
-   await axios.get(`${apiUrl}/api/auth/logout`, {
+   await axios.get(`${apiUrl}/api/auth/logout?_=${Date.now()}`, {
     withCredentials: true,
    });
    setCurrentUser(null);
    navigate("/login");
+   window.location.reload();
   } catch (error) {
    console.log(error);
   }
@@ -46,7 +47,6 @@ const Navbar = () => {
   setWebData(data);
   setLoadingSettings(false);
  };
-
  const textColor = {
   color: isDark ? colors.dark.primaryColor : colors.light.primaryColor,
  };
