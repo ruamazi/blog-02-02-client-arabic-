@@ -35,7 +35,6 @@ const Navbar = () => {
    });
    setCurrentUser(null);
    navigate("/login");
-   window.location.reload();
   } catch (error) {
    console.log(error);
   }
