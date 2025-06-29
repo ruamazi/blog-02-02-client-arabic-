@@ -20,6 +20,8 @@ import { useTheme } from "./context/ThemeContext";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ContactAdmins from "./pages/ContactAdmins";
+import M3u from "./pages/M3u";
+import SearchResults from "./pages/SearchResults";
 
 function App() {
  const { currentUser, setCurrentUser } = useAuth();
@@ -92,6 +94,7 @@ function App() {
    <main className="container mx-auto px-4 py-8">
     <Routes>
      <Route path="/" element={<Home webSettings={webSettings} />} />
+     <Route path="/search" element={<SearchResults />} />
      <Route
       path="/register"
       element={currentUser ? <Navigate to="/" /> : <Register />}
@@ -139,6 +142,7 @@ function App() {
      />
      <Route path="/contact" element={<ContactAdmins />} />
      <Route path="*" element={<PageNotFound />} />
+     <Route path="/m3u" element={<M3u />} />
     </Routes>
    </main>
   </div>
